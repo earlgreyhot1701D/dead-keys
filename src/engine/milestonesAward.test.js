@@ -181,7 +181,7 @@ test("random histories: awarded once, valid, and never about slowing down", () =
         assert.equal(new Set(ids(got)).size, got.length);
         for (const m of got) {
           assert.equal(validate("Milestone", m).status, "valid", JSON.stringify(m));
-          assert.doesNotMatch(`${m.id} ${m.label}`, /slow|dip|worse|decline/i);
+          assert.doesNotMatch(`${m.id} ${m.label}`, /bad|slow|dip|worse|decline/i);
         }
         assert.deepEqual(run({ ...progress, milestones: got }, result), []); // nothing awarded twice
         assert.deepEqual(got, run(progress, result)); // same input, same output

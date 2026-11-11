@@ -207,3 +207,52 @@ Built: `config`, `rng`, `score`, `match`, `targets`, `round`, `lifecycle`, `resu
 | Reviewer: lives and waves apply to lesson, testout, daily and specwave; lessons pass on accuracy | Deferred to Block 8: decide whether those modes use lives and waves | Block 8 |
 
 Pattern worth writing up: the spec said "flag, don't guess", and every gap in this block (slots, resume, key time, the continue reset) became a one-line question with a one-line answer. The one real bug a property test found (the `wpm` underflow) is one example tests would have missed, and a deliberate mutation showed the contract property can fail.
+
+## Nov 11 2026: Block 3, progress math, flags and decisions (tasks 1 to 8)
+
+Built: `progressConfig`, `keystats`, `heatmap`, `diagnose`, `milestones`, `dayStreak` in `src/engine/`, plus three contract changes (`Diagnosis.severity`, `Milestone.kind`, `Progress.bests`) and one late one (`Progress.dayStreak`). At task 8: `npm test` 164 of 164, `npm run lint` clean (91 files), checker 42 of 42. Source files all under 150 lines (largest: `milestones.js`, 121).
+
+| Flag | Status | Where |
+|---|---|---|
+| `bests` keys are not checked to be real modes or to exclude practice (the schema subset has no `propertyNames`; `rules.js` is not on this block's allowlist) | Deferred to Block 4: storage validates on load, and `updateBests` is the only writer | `progress.json` |
+| `lastSeen` depended on merge order | Fixed: `lastSeen` is the later of the saved date and the round's date, and the order property now checks it. My first grouping test was wrong (one combined round has one date, so it cannot reproduce per-key `lastSeen`); grouping checks counts only | `keystats.js` |
+| Zero-attempt deltas still touch a key | No action: the engine never emits one | `keystats.js` |
+| `mergeRound`, `bandFor`, `diagnose`, `updateBests`, `updateDayStreak` throw on malformed input | No action: approved, design decision 6 | `src/engine/` |
+| `heatmap` returns `missRate: null` for no-data keys | No action: approved. A rate from a few keystrokes should not read as a verdict | `heatmap.js` |
+| Internal band names are camelCase (`noData`) | No action | `progressConfig.js` |
+| Apostrophe, hyphen and brackets are only in "symbols" (design decision 1 defines the rows without them); space is in no group | No action: approved | `progressConfig.js` |
+| Spanish accented letters (á, ñ) are in no group, and `Á` is only in shift | Deferred to Block 15 (Spanish pack): add an "accents" group so the diagnosis can say "your accented letters..." | `progressConfig.js` |
+| WPM bands had no accuracy floor, so 30 WPM at 40% accuracy would earn "30 words per minute" | Fixed: bands need the same 90% floor as bests. Req 4.3 and design decision 9 updated; test: 30 WPM at 40% earns none, exactly 90% does | `milestones.js` |
+| Weak keys with no misses (a flawless player would get six arbitrary keys) | Fixed in spec and code: weak keys need 10+ attempts and at least one miss. Req 3.5 and design decision 10 updated | `diagnose.js` |
+| `newMilestones` took a fourth `dayOf` argument | Fixed: dropped when the day streak moved into Progress. Back to three arguments, as in the original design table | `milestones.js` |
+| `newMilestones` assumes `progress` is the saved progress and `result` is the new round (counted once even if already in `rounds`); rounds are in saved order, ties keep it; lesson milestones come from `lessonsPassed` whatever the round's mode | No action: approved, design decisions 11 and 12 | `milestones.js` |
+| The 7-day streak was worked out from saved rounds, but only 200 are kept, so a player doing about 30 a day would never show 7 days | Fixed: `Progress.dayStreak` `{ lastDay, count }` is required; `updateDayStreak` keeps the count on the same day, adds 1 on the next, resets to 1 after a gap; `newMilestones` awards from it. Req 4.8, 5.4 and design decision 14 added; types, nine fixtures and one ugly fixture (negative count) updated. Tests: month end, year end, leap day, a gap, same day twice, and a random-play property | `dayStreak.js`, `progress.json` |
+| `milestones.js` reached 156 lines with the streak code | Fixed: streak code split into `dayStreak.js` (allowlist and `structure.md` updated) | `src/engine/` |
+| An earlier day than `lastDay` (clock or time zone change) | No action: decided, it changes nothing, so travelling west cannot break a streak (design 14) | `dayStreak.js` |
+| `newMilestones` updates the streak for `localDay` itself | No action: it gives the same answer whether or not the caller already updated it (tested) | `milestones.js` |
+| `dayStreak.lastDay` format is not checked by the schema (no `pattern` keyword); it only checks a string of length 10 or null | Deferred to Block 4: `updateDayStreak` throws on a bad day, and storage validates on load | `progress.json` |
+| Nothing yet calls `updateDayStreak` | Deferred to Block 4: wiring must call it for every round, practice included, and save the result | Block 4 |
+| An existing test (`milestones.test.js`) failed when `dayStreak` became required | Proven: the contract change was caught by a test that builds a Progress, not by luck. Fixed the helper | `milestones.test.js` |
+| Sentence wording says "at least twice" and "at least three times", and "misses most keys" when over about two thirds | No action: approved; a test pins the ratios 2 and 3 the wording assumes | `diagnose.js` |
+| Plural groups ("shift keys", "digits", "symbols") use "miss", singular ones "misses" | No action | `diagnose.js` |
+| `updateBests` returns a boolean `newBest`, never sets a best at 0 WPM, and returns the same object when nothing changes | No action: approved, design decision 13 | `milestones.js` |
+| WPM bands are capped at 1000 so bad data cannot loop forever | No action | `milestones.js` |
+| Test files over the 150 soft cap: `keystats.test.js` (167), `milestonesAward.test.js` (207), `diagnose.test.js` (233) | No action: approved, each tests one source file and all are under 250 | n/a |
+| The `Date` identifier is banned in engine source by the Block 2 scan test | No action: day math is plain arithmetic (`dayNumber`), and the scan still passes | `dayStreak.js` |
+
+### Block 3 reviewer findings and decisions (Nov 11 2026)
+
+| Flag | Status | Where |
+|---|---|---|
+| `newMilestones` back to three arguments (the `dayOf` argument was dropped when the day streak moved into Progress) | No action: approved | `milestones.js` |
+| An earlier day than `lastDay` leaves the streak unchanged | No action: approved | `dayStreak.js` |
+| Reviewer 1: Req 1.1 and task 2 said `lastSeen` is the round's date, but the code takes the later of the saved date and the round's | Fixed: Req 1.1, Req 1.3 and task 2 reworded; the code and the "older round never moves it back" test were already right | `requirements.md`, `tasks.md` |
+| Reviewer 2: key groups had no independent test; `diagnose.test.js` looked groups up through the code under test | Fixed and Proven: a hand-written table of 43 keys (left vs right hand, digits, symbols, capitals and shifted keys counting toward their base key's row and hand, space in no group), plus letter and digit invariants. A throwaway mutation (adding `y` to the left hand) failed two tests; the file was hashed first and the restored hash matched | `progressConfig.test.js` |
+| Reviewer 3: the spec's example sentence said "twice"; the code writes "at least twice" | Fixed: Req 3.4 and design decision 3 now give the real wording, and note "at least three times" and "misses most keys" | `requirements.md`, `design.md` |
+| Reviewer 4: `structure.md` and `current-block.md` edited outside the allowlist | No action: those edits were approved | n/a |
+| Reviewer 5: saved data is only partly validated at the engine boundary (`mergeRound` does not check `misses <= attempts` or key length; `updateBests` throws a raw TypeError on a malformed `bests[mode]`) | Deferred to Block 4: storage validates saved data on load | Block 4 |
+| Reviewer 6: one missed `Q` can flag top row, left hand and shift, giving three overlapping sentences | Deferred to Block 11: check how the overlap reads when the results screen renders it | Block 11 |
+| Reviewer 7: `fixture-check` was meant to retire when the contract freezes | Fixed: Block 3 passes and the contract is frozen, so the hook is switched off with `"enabled": false` (a documented field at kiro.dev/docs/hooks). The file stays for the record, and its description says it is retired. The checker script stays and `npm test` still runs it. Not re-proven by a save: hooks load at session start, so the switch takes effect from the next session | `.kiro/hooks/fixture-check.json` |
+| Reviewer 8: the milestone tone regex left out "bad" | Fixed: `/bad\|slow\|dip\|worse\|decline/i` | `milestonesAward.test.js` |
+
+Contract frozen at the end of Block 3 (tag `block-3`): the eleven shapes, `keyDeltas`, `continued`, `Diagnosis.severity`, `Milestone.kind`, `Progress.bests` and `Progress.dayStreak`. Any change from here is a new decision, not a drive-by edit.

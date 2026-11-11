@@ -33,7 +33,7 @@ results    -> diagnose(keys)                      diagnose.js    -> Diagnosis
 
 1. **Groups (US QWERTY, PRD G7).** Top row `qwertyuiop`, home row `asdfghjkl;`, bottom row `zxcvbnm,./`. Left hand `qwertasdfgzxcvb12345` plus their shifted forms, right hand the rest of the letters, digits and `;,./`. Shift: capitals and shifted symbols. Digits `0-9`. Symbols: everything else in the charset except space. A key can sit in more than one group (row and hand). Space is in no group.
 2. **Shifted keys** count toward the shift group and toward their row and hand by their base key, so `A` counts for home row and left hand too.
-3. **Sentence text** comes from one template per group with the rate written as "about 1 in N" (N rounded), so no percentages that read like grades. Example: "Your top row misses about 1 in 6 keys, twice your usual rate."
+3. **Sentence text** comes from one template per group with the rate written as "about 1 in N" (N rounded), so no percentages that read like grades. Example: "Your top row misses about 1 in 6 keys, at least twice your usual rate." (High severity says "at least three times"; a group above about two thirds says "misses most keys".)
 4. **Weak keys** come from all keys with 10+ attempts, not only flagged groups, so drills (Block 9) still get targets when no group is flagged.
 5. **Local day** is passed in as `"YYYY-MM-DD"`, so time zones never live in the engine. Past rounds are never matched to days (see decision 14), so no `dayOf` function is needed.
 6. **Milestone ids** are stable strings (`wpm-30`, `acc-streak-3`, `day-streak-7`, `lesson-4`), so "already earned" is a lookup by id.

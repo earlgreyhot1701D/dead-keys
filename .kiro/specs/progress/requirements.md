@@ -23,9 +23,9 @@ Block 2 scores one round. This block turns many rounds into what the player sees
 
 ## Requirement 1: Per-key stats
 
-1. WHEN a finished RoundResult is merged into the saved key stats, THE SYSTEM SHALL add each key's attempts and misses from `keyDeltas` and set `lastSeen` to the round's date.
+1. WHEN a finished RoundResult is merged into the saved key stats, THE SYSTEM SHALL add each key's attempts and misses from `keyDeltas` and set `lastSeen` to the later of the saved `lastSeen` and the round's date, so an older round never moves it back.
 2. Keys not in the round SHALL be unchanged. The input SHALL never be changed.
-3. Merging rounds one at a time or in any grouping SHALL give the same totals.
+3. Merging rounds one at a time or in any grouping SHALL give the same totals, and merging them in any order SHALL give the same totals and the same `lastSeen`.
 
 ## Requirement 2: Heat map bands
 
@@ -40,7 +40,7 @@ Block 2 scores one round. This block turns many rounds into what the player sees
 1. THE SYSTEM SHALL compute the player's overall miss rate across all keys.
 2. WHEN a group has 20 or more attempts, its miss rate is at least 2× the overall rate, and its miss rate is at least the floor below, THE SYSTEM SHALL flag it.
 3. THE SYSTEM SHALL return at most 3 sentences, worst first (highest ratio to overall), each with a severity and the group's keys that are themselves shaky or missed.
-4. Sentences SHALL be plain, kind and specific, from fixed templates, for example: "Your top row misses about 1 in 6 keys, twice your usual rate." Never "bad," "slow" or "you got worse."
+4. Sentences SHALL be plain, kind and specific, from fixed templates, for example: "Your top row misses about 1 in 6 keys, at least twice your usual rate." Never "bad," "slow" or "you got worse."
 5. `weakKeys` SHALL be up to 6 keys with 10+ attempts and at least one miss, highest miss rate first, ties broken by more attempts, then by key.
 6. `sufficientData` SHALL be true only when total attempts reach the minimum below. When false, sentences SHALL be empty.
 7. Same input, same Diagnosis. The output SHALL pass the contract.

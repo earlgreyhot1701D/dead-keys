@@ -4,7 +4,8 @@
     {
       "name": "fixture-check",
       "trigger": "PostFileSave",
-      "description": "PRD G12 H3. Runs the fixture checker when a file under contract/ or fixtures/ is saved. Retires when the contract freezes, after Block 3.",
+      "enabled": false,
+      "description": "PRD G12 H3. RETIRED Nov 11 2026: Block 3 passed and the contract is frozen, so the hook is switched off with enabled false. Kept for the record. The checker (scripts/check-fixtures.js) stays and npm test still runs it. Was: runs the fixture checker when a file under contract/ or fixtures/ is saved.",
       "matcher": "(^|[\\\\/])(contract|fixtures)[\\\\/]",
       "action": {
         "type": "command",
