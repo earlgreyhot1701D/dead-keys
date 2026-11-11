@@ -1,28 +1,28 @@
 # Current block
 
-**Block 3: progress math** (PRD G5, backlog item 3, size D). Spec: `.kiro/specs/progress/`.
+**Block 4: storage** (PRD G9, backlog item 4, size D). Spec: `.kiro/specs/storage/`.
 
-Block 1 passed Nov 11 (tag `block-1`). Block 2 passed Nov 11 (tag `block-2`).
+Blocks 1 to 3 passed Nov 11 (tags `block-1`, `block-2`, `block-3`). The contract is frozen: no new shapes.
 
 ## Files this block may touch
 
-- `src/engine/progressConfig.js`, `keystats.js`, `heatmap.js`, `diagnose.js`, `milestones.js`, `dayStreak.js` (the last added Nov 11 when `milestones.js` hit the line cap)
-- Their `*.test.js` files in `src/engine/`
-- `contract/schemas/diagnosis.json`, `milestone.json`, `progress.json`, `contract/types.js` (design decision 8 only)
-- `fixtures/normal/*.json`, `fixtures/ugly/*.json` (updates for those shapes and the new ugly cases)
-- `.kiro/specs/progress/*`
+- `contract/schemas.js` (browser switch only, design decision 1)
+- If the spike fails: `scripts/bundle-schemas.js`, `contract/schemas.bundle.js` and its test
+- `src/storage/notices.js`, `vet.js`, `migrate.js`, `store.js`, `exportImport.js`, and their `*.test.js`
+- `src/engine/record.js`, `src/engine/record.test.js`
+- `.kiro/specs/storage/*`
 - `KIRO-NOTES.md`
 
 Anything else: stop and ask Shara.
 
 ## Rigor tier
 
-Full. These produce what the player sees about their own typing.
+Full. Every input checked, every failure path handled.
 
 ## PASS line
 
-Every requirement in `.kiro/specs/progress/requirements.md` has a test. `npm test` is green. `npm run lint` is clean. `node scripts/check-fixtures.js` passes. Source files under 150 lines without Shara's OK; nothing over 250. The reviewer has run and Shara has read its report.
+Every requirement in `.kiro/specs/storage/requirements.md` has a test. `npm test` is green. `npm run lint` is clean. `node scripts/check-fixtures.js` passes. Source files under 150 lines without Shara's OK; nothing over 250. The reviewer has run and Shara has read its report.
 
 ## Hooks alive
 
-`line-cap` (permanent), `block-scope` (permanent), `fixture-check` (retires when the contract freezes at the end of this block).
+`line-cap` (permanent), `block-scope` (permanent). `fixture-check` retired at the end of Block 3.
