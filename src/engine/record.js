@@ -17,17 +17,20 @@ export const MAX_ROUNDS = 200;
  * @param {import("../../contract/types.js").Progress} progress
  * @param {import("../../contract/types.js").RoundResult} result A finished round, passing the contract.
  * @param {string} localDay The player's local day for the round, "YYYY-MM-DD".
+ * A round already in `progress.rounds` (same id) is ignored and `progress` comes back unchanged,
+ * so a results screen that fires twice cannot crash or count a round's keys twice. The round is
+ * stored as a copy, so the caller's object and the saved one share nothing.
  * @returns {import("../../contract/types.js").Progress}
- * @throws {TypeError|RangeError} If an input is malformed, or the round is already in
- *   `progress.rounds` (recording it twice would count its keys twice). Programmer errors.
+ * @throws {TypeError|RangeError} If an input is malformed (programmer error).
  */
 export function record(progress, result, localDay) {
   if (typeof progress !== "object" || progress === null || !Array.isArray(progress.rounds)) {
     throw new TypeError("progress needs a rounds list");
   }
-  if (progress.rounds.some((r) => r?.id === result?.id)) {
-    throw new RangeError(`round "${result?.id}" is already recorded`);
+  if (typeof result?.id !== "string" || result.id === "") {
+    throw new TypeError("the round needs an id");
   }
+  if (progress.rounds.some((r) => r?.id === result.id)) return progress;
   const keys = mergeRound(progress.keys, result);
   const { bests } = updateBests(progress.bests, result);
   const dayStreak = updateDayStreak(progress.dayStreak, localDay);
@@ -35,7 +38,7 @@ export function record(progress, result, localDay) {
   const earned = newMilestones(updated, result, localDay);
   return {
     ...updated,
-    rounds: [...progress.rounds, result].slice(-MAX_ROUNDS),
+    rounds: [...progress.rounds, structuredClone(result)].slice(-MAX_ROUNDS),
     milestones: [...progress.milestones, ...earned],
   };
 }

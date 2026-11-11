@@ -50,6 +50,7 @@ settings    -> exportText(progress)          -> string
 13. **`migrate(value, now)`** takes the clock, for the fresh `createdAt` of an upgraded save, and returns `{ ok: true, progress }` only for results that pass the contract and the vet checks (decided Nov 11).
 14. **`clear` returns `persist`** (decided Nov 11): false when storage refused the removal, since the old data may still be there.
 15. **One fresh shape** (decided Nov 11). `freshProgress` is written once, in `migrate.js`; `store.js` re-exports it and the version 0 upgrade starts from it, so they cannot drift. `load` writes only data `migrate` or `freshProgress` just produced, so it needs no `save`, and `saveClear.js` imports `store.js` without a cycle.
+16. **`record` ignores a duplicate and copies the round** (decided Nov 11). A round whose id is already in `progress.rounds` returns `progress` unchanged (it was first built to throw; a double-fired results screen must not crash or double count). The appended round is a `structuredClone`. Known limit: an id that has already fallen out of the last 200 rounds is not seen, which a double-fire cannot reach. `record` returns only the progress; an explicit "new best" return is Deferred to Block 11.
 
 ## Tests
 
@@ -63,3 +64,4 @@ settings    -> exportText(progress)          -> string
 | Clear removes both keys | example | Leftover data |
 | Each vet rule, including `__proto__` | examples | Prototype pollution, bad keys |
 | Import over 2 MB is refused before parsing | example | Memory spikes |
+

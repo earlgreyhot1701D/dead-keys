@@ -156,9 +156,43 @@ test("the same input gives the same output", () => {
   assert.deepEqual(rec(p, round(1, { wpm: 34 })), rec(p, round(1, { wpm: 34 })));
 });
 
-test("recording the same round twice is refused, so its keys are never counted twice", () => {
-  const once = rec(fresh(), round(1));
-  assert.throws(() => rec(once, round(1)), RangeError);
+test("recording the same round twice changes nothing: the same progress comes back", () => {
+  const once = rec(fresh(), round(1, { wpm: 34 }));
+  const twice = rec(once, round(1, { wpm: 34 }));
+  assert.equal(twice, once);
+  assert.equal(twice.keys.find((k) => k.key === "a").attempts, 10); // counted once
+  assert.equal(twice.rounds.length, 1);
+});
+
+test("a duplicate is spotted by id even when it is not the newest round", () => {
+  let p = fresh();
+  for (let i = 0; i < 5; i++) p = rec(p, round(i, { dayOffset: i }));
+  assert.equal(rec(p, round(2, { dayOffset: 2 })), p);
+});
+
+test("a round with the same id as an old one that has left the 200 is a new round", () => {
+  // Past 200 rounds the oldest are dropped; their ids can no longer be seen, so an id that old is new.
+  const full = fixture("ugly/progress.200-rounds-all-keys.json");
+  const old = full.rounds[0];
+  const after = rec(rec(full, round(1000, { dayOffset: 40 })), {
+    ...round(1001, { dayOffset: 41 }),
+    id: old.id,
+  });
+  assert.equal(after.rounds.at(-1).id, old.id);
+  assert.equal(after.rounds.length, MAX_ROUNDS);
+});
+
+test("the saved round is a copy: editing either leaves the other alone", () => {
+  const r = round(1, { wpm: 34 });
+  const before = JSON.stringify(r);
+  const after = rec(fresh(), r);
+  assert.notEqual(after.rounds[0], r);
+  assert.deepEqual(after.rounds[0], r);
+  after.rounds[0].keyDeltas.a.attempts = 999;
+  after.rounds[0].wpm = 1;
+  assert.equal(JSON.stringify(r), before);
+  r.keyDeltas.b.misses = 5;
+  assert.equal(after.rounds[0].keyDeltas.b.misses, 0);
 });
 
 test("malformed input is a programmer error", () => {
@@ -172,7 +206,12 @@ test("malformed input is a programmer error", () => {
   for (const day of ["2026-02-30", "tomorrow", "", null]) {
     assert.throws(() => record(fresh(), r, day), RangeError);
   }
-  assert.throws(() => record(fresh(), null, "2026-11-01"));
+  assert.throws(() => record(fresh(), null, "2026-11-01"), TypeError);
+  for (const noId of [{}, { ...r, id: undefined }, { ...r, id: "" }, { ...r, id: 5 }]) {
+    // a round with no id must never be mistaken for a duplicate of one that has no id either
+    const p = { ...fresh(), rounds: [{ wpm: 1 }] };
+    assert.throws(() => record(p, noId, "2026-11-01"), TypeError);
+  }
 });
 
 // Whatever rounds are played, in whatever mix, the save stays valid and within the cap.
@@ -194,7 +233,7 @@ test("random runs of rounds never exceed 200, never break the contract, and keep
         const before = p;
         p = rec(p, r);
         assert.ok(p.rounds.length <= MAX_ROUNDS);
-        assert.equal(p.rounds.at(-1), r);
+        assert.deepEqual(p.rounds.at(-1), r);
         assert.ok(p.dayStreak.count >= 1);
         assert.equal(new Set(p.milestones.map((m) => m.id)).size, p.milestones.length);
         assert.ok(p.milestones.length >= before.milestones.length);

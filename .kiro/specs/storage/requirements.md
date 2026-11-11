@@ -49,6 +49,8 @@ THE SYSTEM SHALL reject a save where any of these is false (the Deferred-to-Bloc
 1. `record(progress, result, localDay)` SHALL merge key stats, update bests, update the day streak (every round, practice included), add new milestones, and append the round.
 2. WHEN rounds pass 200, THE SYSTEM SHALL drop the oldest.
 3. It SHALL be pure, never change its input, and its output SHALL pass the contract and the vet checks.
+4. IF the round is already in `progress.rounds` (same id), THE SYSTEM SHALL ignore it and return `progress` unchanged, so a results screen that fires twice cannot crash or count the round's keys twice. Only rounds still among the last 200 can be seen this way. A round with no id is a programmer error.
+5. The appended round SHALL be a copy, so the caller's object and the saved one share nothing.
 
 ## Requirement 5: Save and clear
 
