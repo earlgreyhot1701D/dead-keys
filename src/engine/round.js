@@ -42,7 +42,7 @@ export function createRound({ mode, mechanic, items, seed, speed }) {
   const state = fill({
     mode,
     mechanic,
-    items,
+    items: items.map((i) => ({ ...i })), // the caller can't change a running round
     rng: createRng(seed).state,
     speed,
     lives: LIVES_MAX,

@@ -10,7 +10,7 @@ One engine runs both mechanics. It knows targets, a lock, keystrokes, time and s
 
 ## Scope
 
-**In:** `src/engine/rng.js`, `match.js`, `score.js`, `round.js`. Tightening `RoundResult.keyDeltas` in the contract. Property-based tests for every rule below.
+**In:** `src/engine/config.js`, `rng.js`, `score.js`, `match.js`, `targets.js`, `round.js`, `lifecycle.js`, `result.js`. Tightening `RoundResult.keyDeltas` in the contract. Property-based tests for every rule below.
 **Out:** heat map, diagnosis, milestones (Block 3). Storage (Block 4). Any rendering, sound or DOM (Blocks 6, 7, 14). Weighted sampling and daily seed (Blocks 9, 12; they reuse `rng.js`). Lessons and test out (Block 8).
 
 ## Glossary
@@ -82,7 +82,7 @@ One engine runs both mechanics. It knows targets, a lock, keystrokes, time and s
 
 ---
 
-## Proposed numbers (Shara to confirm)
+## Confirmed numbers
 
 The PRD names lives, waves and a speed slider but no numbers. These live as named constants in one file so tuning never touches the rules.
 
@@ -93,5 +93,5 @@ The PRD names lives, waves and a speed slider but no numbers. These live as name
 | Wave size | 10 targets cleared |
 | Speed up per wave | travel 10% faster each wave |
 | Speed slider | 0.5× to 2×, default 1× |
-| Targets on screen | starts at 3, one more each wave, up to 8 |
+| Targets on screen | starts at 3, one more each wave, up to 8 (falling), 4 (corners) |
 | Miss with nothing locked | counts as a keystroke (accuracy drops), no key delta, since no key was expected |

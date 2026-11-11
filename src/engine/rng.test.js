@@ -1,6 +1,6 @@
 // Req 1: same seed same sequence, every value in [0, 1), no Math.random.
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { test } from "node:test";
 import * as fc from "fast-check";
 import { createRng } from "./rng.js";
@@ -57,9 +57,27 @@ test("a seed that is not a finite number is a programmer error", () => {
   }
 });
 
-test("the engine never calls Math.random", () => {
+// Req 1.4 (no Math.random) and Req 5.2 (no clock): scan the code, not the comments.
+const FORBIDDEN = [/Math\.random\s*\(/, /\bDate\b/, /\bperformance\./, /\bsetTimeout\b/];
+const stripComments = (src) => src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+const hits = (src) => FORBIDDEN.filter((re) => re.test(stripComments(src)));
+
+test("the scan finds a forbidden call in code and ignores one in a comment", () => {
+  assert.equal(hits("const x = Math.random();").length, 1);
+  assert.equal(hits("const t = Date.now();").length, 1);
+  assert.equal(hits("const t = performance.now();").length, 1);
+  assert.equal(hits("setTimeout(f, 1);").length, 1);
+  assert.equal(
+    hits("// Math.random() and Date\n/* performance.now() setTimeout */ const a = 1;").length,
+    0,
+  );
+});
+
+test("no engine source file calls Math.random, reads a clock or sets a timer", () => {
   const dir = new URL("./", import.meta.url);
-  for (const f of ["config.js", "rng.js"]) {
-    assert.ok(!readFileSync(new URL(f, dir), "utf8").includes("Math.random"), f);
+  const files = readdirSync(dir).filter((f) => f.endsWith(".js") && !f.endsWith(".test.js"));
+  assert.ok(files.length >= 8, `only found ${files.length} engine files`);
+  for (const f of files) {
+    assert.deepEqual(hits(readFileSync(new URL(f, dir), "utf8")), [], f);
   }
 });

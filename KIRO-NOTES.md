@@ -157,3 +157,53 @@ Other results from the same run:
 | 200-rounds fixture contents unconfirmed | Deferred | `fixtures/ugly/progress.200-rounds-all-keys.json` |
 | `linecap.js` on the allowlist? | Fixed: `git status` shows it unchanged | n/a |
 | Rules and limits with no fixture (Medium) | Fixed: task 17c, 11 ugly cases added. All 11 came back invalid on the first run, so no rule was missing. One fixture had my own typo (85 characters, not 81); the checker's `expectError` caught it | tasks.md 17c |
+
+## Nov 11 2026: Block 2, engine core, flags and decisions (tasks 1 to 11)
+
+Built: `config`, `rng`, `score`, `match`, `targets`, `round`, `lifecycle`, `result` in `src/engine/`, plus the `keyDeltas` and `continued` contract change. At task 11: `npm test` 91 of 91, `npm run lint` clean (74 files), checker 38 of 38. Source files all under 150 lines (largest: `round.js`, 144).
+
+| Flag | Status | Where |
+|---|---|---|
+| `SLOTS` had no numbers in the spec | Fixed: falling 8, corners 4. Target cap is min(wave cap, slots for the mechanic), so corners holds at most 4 (one word per corner) | `config.js`, `targets.js` |
+| Which mechanic do lesson, daily, testout, specwave and practice use | Fixed: `createRound` takes `mechanic` separately from `mode`; `SLOTS` keyed by mechanic. Practice uses a mechanic for layout but never moves | `round.js` |
+| `accuracy` and `wpm` clamped bad input | Fixed: they throw `RangeError` on negative, non-finite, non-number input, and on correct > total (design decision 6) | `score.js` |
+| Property test found `wpm(0, 5e-324)` returning NaN (`ms / 60000` underflowed to 0) | Fixed and Proven: rearranged to `chars x 12000 / ms`. The test caught what example tests would not | `score.js` |
+| `wpm` overflow guard returns 0 on absurd valid inputs | No action: real rounds never reach it | `score.js` |
+| RNG shape: `{ state, next }` with `next(state)` pure | No action: confirmed. State is a plain number, so a round can be copied | `rng.js` |
+| `keyDeltas` shape, `continued`, and the misses-over-attempts rule | Fixed: schema, `rules.js`, `types.js`, and every fixture holding a RoundResult | `contract/` |
+| Generated fixtures `progress.200-rounds-all-keys` and `progress.201-rounds` were reflowed by my script (large diffs) | No action: the only content change was `continued: false` | `fixtures/ugly/` |
+| Misses over attempts nested inside a Progress round had no fixture | Fixed: `progress.round-keydelta-misses-over-attempts` | `fixtures/ugly/` |
+| `keyDeltas` keys are not checked to be one character | Deferred: the schema subset has no `propertyNames`; Req 6 does not ask for it | `contract/` |
+| `pickLock` returns the target; `match` throws on bad input | No action: approved. The round filters bad input first (design decision 6) | `match.js` |
+| `mechanic in SLOTS` accepted "constructor" and "toString" | Fixed: `Object.hasOwn`, with a test | `targets.js`, `round.js` |
+| `nextId` added to round state | No action: needed so ids keep rising after targets leave | `design.md` |
+| `spawn` adds one target per call; `round.js` loops to fill | No action: matches design decision 2 | `targets.js` |
+| `advance` returns `{ state, arrived }`, not events | No action: arrival is not an event yet | `targets.js` |
+| Stray key emits `miss` with `expected: null` | No action | `round.js` |
+| Practice stays in wave 1 internally; `toResult` reports wave 0, cleared as counted | No action: decided (design 14) | `result.js` |
+| Keystroke log is uncapped in state | Deferred: the 2,000 cap belongs to the ghost block | `round.js` |
+| `round.js` was 153 lines after part 1 | Fixed: split approved. `lifecycle.js` (tick, resolveOutOfLives, endRound, resume) and `result.js` (toResult); allowlist, `structure.md`, `design.md` updated | design 12 |
+| Keystroke time: `tMs` and `startMs` could not exclude paused time | Fixed: `t` is `activeMs` at the key (resolution one tick); `key` takes no time, `createRound` takes no start time. Req 5.1 edited to match | design 9 |
+| No way to resume except Escape | Fixed: Escape while paused resumes, and `resume(state)` is exported for the dialog button. Both emit `resumed` | design 10 |
+| `escape` shadows the old global; Biome rejected the declaration | Fixed: renamed `pressEscape` in code, tests and design, no alias | design 11 |
+| `round.js` exports `fill` for `lifecycle.js` | No action: small addition to the export list, noted in the design table | `design.md` |
+| Continue with targets near danger would waste the free continue | Fixed: continue releases the lock, clears the screen, respawns fresh targets. Req 5.5 and design 13 edited so the spec matches the code | `lifecycle.js` |
+| Two targets arrive at 1 life: both removed, both emit `lifeLost`, lives stop at 0 | No action | `lifecycle.js` |
+| Lock released on arrival with `lifeLost` only, no `unlocked` | No action: approved; `lifeLost` carries `targetId` | `lifecycle.js` |
+| `toResult` returned the round's own `keyDeltas` object | Fixed: `structuredClone`, with a test that editing the result leaves the round alone | `result.js` |
+| Contract property might never fail | Proven: a throwaway mutation (drop `Math.round` on `durationMs`) failed it with "expected integer"; the file was hashed in a separate call first, and the restored hash matched | `result.test.js` |
+| `lifecycle.test.js` reached 306 lines, over the hard cap (found by running `scripts/linecap.js` by hand) | Fixed: random-play tests moved to `lifecycleRandom.test.js` | `src/engine/` |
+| `round.test.js` (227), `lifecycle.test.js` (236), `targets.test.js` (185), `result.test.js` (175) over the 150 soft cap; `check-fixtures.js` at 151 | No action: approved. Each tests one source file and all are under 250 | n/a |
+| Test helpers (`freeze`, `opts`, `items`) repeated across test files | No action: a shared test-kit file is not on the allowlist | n/a |
+| Tab hidden then shown sends one huge `dtMs`, so every target arrives at once and all lives are lost (Claude's review) | Deferred to Block 7: the renderer must auto-pause on `visibilitychange`, clamp `dt` per tick, and guard NaN (`tick` throws on a bad `dtMs`, so a NaN on the first frame would otherwise hit the "never a blank screen" rule) | Block 7 |
+| `WAVE_SPEEDUP` has no ceiling: wave 20 is about 1.3 s per word, wave 30 about 0.5 s (Claude's review) | Deferred to Block 7: tune or cap it when it can be seen | Block 7 |
+| A stray space counts as a miss in falling mode, where words have no spaces (Claude's review) | Deferred to Block 7: revisit after the first playtest | Block 7 |
+| Reviewer: `structure.md` and `current-block.md` edited outside the allowlist | No action: the edits were approved in the split decision | n/a |
+| Reviewer: `requirements.md` drifted from the code (targets "up to 8", "Shara to confirm" heading, short Scope list) | Fixed: targets row reads "up to 8 (falling), 4 (corners)", heading is "Confirmed numbers", Scope lists all eight engine files | `requirements.md` |
+| Reviewer: the Req 1.4 test scanned two files; Req 5.2 (no clock) had no direct test | Fixed: one test scans every non-test file in `src/engine/` for `Math.random(`, `Date`, `performance.` and `setTimeout`, with comments stripped. A second test proves the scan finds a call in code and ignores one in a comment | `rng.test.js` |
+| Reviewer: `createRound` kept the caller's `items` by reference | Fixed: shallow copy of the array and of each item. The new test failed without the fix and passes with it (proven by running it first, and again after moving it) | `round.js`, `roundInput.test.js` |
+| `round.test.js` reached 255 lines after the new test, over the hard cap (found by running `scripts/linecap.js`) | Fixed: the new test moved to `roundInput.test.js` | `src/engine/` |
+| Reviewer: `activeMs` counts the whole `dt` when a round ends mid-tick | No action: the error is at most one tick (design decision 9) | n/a |
+| Reviewer: lives and waves apply to lesson, testout, daily and specwave; lessons pass on accuracy | Deferred to Block 8: decide whether those modes use lives and waves | Block 8 |
+
+Pattern worth writing up: the spec said "flag, don't guess", and every gap in this block (slots, resume, key time, the continue reset) became a one-line question with a one-line answer. The one real bug a property test found (the `wpm` underflow) is one example tests would have missed, and a deliberate mutation showed the contract property can fail.
