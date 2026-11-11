@@ -55,7 +55,7 @@ One engine runs both mechanics. It knows targets, a lock, keystrokes, time and s
 
 ## Requirement 5: Round lifecycle
 
-1. THE SYSTEM SHALL create a round from a mode, a pack's items, a seed, a speed setting and a start time, all passed in.
+1. THE SYSTEM SHALL create a round from a mode, a pack's items, a seed, a speed setting and a mechanic, all passed in. (Start time dropped Nov 11: keystroke time is the round's active time, design decision 9.)
 2. THE SYSTEM SHALL advance the round only when given elapsed milliseconds. It SHALL not read a clock itself.
 3. WHEN a target reaches the danger line, THE SYSTEM SHALL remove it, take one life and emit `lifeLost`. IF it was locked, the lock SHALL be released.
 4. WHEN lives reach 0 and the round's free continue is unused, THE SYSTEM SHALL hold the round (no movement, no keystrokes) and emit `outOfLives`.

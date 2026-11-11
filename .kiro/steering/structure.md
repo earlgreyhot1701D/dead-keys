@@ -10,7 +10,7 @@ One file, one responsibility. Soft cap 150 lines, hard cap 250. Over 250, split 
 |---|---|---|
 | `contract/` | `schemas/*.json`, `types.js`, `schemas.js`, `validate.js`, `rules.js` | Data shapes only (PRD G4) |
 | `fixtures/` | `normal/`, `ugly/` | Sample data both tracks build against |
-| `src/engine/` | config, rng, score, match, targets, round, heatmap, diagnose, sample, daily, ghost, milestones, recommend | Pure functions. No DOM, no storage, no network. |
+| `src/engine/` | config, rng, score, match, targets, round, lifecycle, result, heatmap, diagnose, sample, daily, ghost, milestones, recommend | Pure functions. No DOM, no storage, no network. |
 | `src/storage/` | store, migrate, exportImport | localStorage only, every call in try/catch |
 | `src/packs/` | load, validate | Validator also runs as a CLI |
 | `src/net/` | drillClient | The only fetch. Timeout, try/catch, built-in fallback |

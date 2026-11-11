@@ -6,8 +6,8 @@ Block 1 (data contract) passed Nov 11, tag `block-1`.
 
 ## Files this block may touch
 
-- `src/engine/config.js`, `rng.js`, `score.js`, `match.js`, `targets.js`, `round.js`
-- `src/engine/*.test.js`
+- `src/engine/config.js`, `rng.js`, `score.js`, `match.js`, `targets.js`, `round.js`, `lifecycle.js`, `result.js` (the last two added Nov 11 when `round.js` hit the line cap)
+- `src/engine/*.test.js` (including `lifecycle.test.js` and `result.test.js`)
 - `contract/schemas/roundResult.json`, `contract/rules.js`, `contract/types.js` (keyDeltas and `continued` only, design decision 8)
 - `fixtures/normal/*.json`, `fixtures/ugly/*.json` (RoundResult updates and the two new ugly cases)
 - `.kiro/specs/engine/*`

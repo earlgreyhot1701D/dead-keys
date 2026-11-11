@@ -10,8 +10,9 @@ Every engine function is pure. It takes the round state plus an input and return
 ```
 caller (later: renderer)            engine
   createRound(opts)          ->     { state, events }
-  key(state, char, tMs)      ->     { state, events }
-  escape(state)              ->     { state, events }
+  key(state, char)           ->     { state, events }
+  pressEscape(state)         ->     { state, events }
+  resume(state)              ->     { state, events }   (the pause dialog button)
   tick(state, dtMs)          ->     { state, events }
   resolveOutOfLives(state, continue?) -> { state, events }
   endRound(state)            ->     { state, events }   (practice, or player quits)
@@ -27,7 +28,9 @@ caller (later: renderer)            engine
 | `src/engine/score.js` | WPM and accuracy | `wpm(correctChars, durationMs)`, `accuracy(correct, total)` |
 | `src/engine/match.js` | Lock choice and one keystroke against a target | `pickLock(targets, char)`, `applyKey(target, char)` |
 | `src/engine/targets.js` | Spawn targets and move them toward danger | `spawn(state)`, `advance(state, dtMs)` |
-| `src/engine/round.js` | Round lifecycle: the exported functions above | as in the diagram |
+| `src/engine/round.js` | Create a round, take keys, handle Escape | `createRound`, `key`, `pressEscape` (and `fill`, shared with `lifecycle.js`) |
+| `src/engine/lifecycle.js` | Time, lives, continue, resume, end | `tick`, `resolveOutOfLives`, `endRound`, `resume` |
+| `src/engine/result.js` | Turn a finished round into a RoundResult | `toResult(state, meta)` |
 | `src/engine/*.test.js` | One test file per engine file | |
 
 `round.js` uses the others. Nothing outside `src/engine/` is imported except `contract/validate.js`, and only by tests.
@@ -46,8 +49,14 @@ caller (later: renderer)            engine
 4. **Correct characters** = keystrokes that matched. Used for WPM.
 5. **Escape on a lock** resets that target's typed count to 0 (Req 3.1).
 6. **Bad input** (a string that isn't one character, a key while paused, held or ended) is ignored with no event. Engine functions throw only on programmer errors, such as `createRound` with no items.
-7. **RoundResult `id` and `date`** come from the caller in `meta`, so the engine stays deterministic.
+7. **RoundResult `id` and `date`** come from the caller in `meta`, so the engine stays deterministic. So do `packId`, `lessonId` and `drillSource`, which the engine does not know.
 8. **Contract change, no version bump.** `keyDeltas` becomes `{ [key]: { attempts, misses } }` and `continued` (boolean) is added. `misses ≤ attempts` goes in `rules.js`. `schemaVersion` stays 1 because nothing has shipped and no player has a save yet.
+
+9. **Keystroke time** (decided Nov 11). `Keystroke.t` is `activeMs` at the moment of the key, so paused time is never in it. `key` takes no time argument and `createRound` takes no start time. Resolution is one tick: two keys between ticks get the same `t`.
+10. **Resume** (decided Nov 11). Escape while paused resumes. `resume(state)` does the same for the pause dialog button. Both emit `resumed`. `resume` on a round that isn't paused is ignored.
+11. **Name** (decided Nov 11). The Escape function is `pressEscape`, not `escape`, because Biome rejects a declaration that shadows the old global.
+12. **File split** (decided Nov 11). `round.js` reached the line cap after part 1, so `tick`, `resolveOutOfLives`, `endRound` and `resume` live in `lifecycle.js`, and `toResult` in `result.js`.
+13. **Practice in the result** (decided Nov 11). Internally practice stays in wave 1; `toResult` reports `wave` 0 for it and `cleared` as counted.
 
 ## Tests
 
