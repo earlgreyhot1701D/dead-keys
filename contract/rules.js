@@ -58,6 +58,13 @@ function statErrors(stat, path) {
     : [];
 }
 
+/** misses must not exceed attempts for any key in a round's keyDeltas. */
+function deltaErrors(round, path) {
+  return Object.entries(round.keyDeltas).flatMap(([k, d]) =>
+    statErrors(d, `${path}keyDeltas.${JSON.stringify(k)}`),
+  );
+}
+
 /** Report the second and later entries that repeat an id. */
 function dupErrors(list, idOf, path, what) {
   const seen = new Set();
@@ -79,8 +86,10 @@ function dupErrors(list, idOf, path, what) {
  */
 export function checkRules(shape, value, ctx = {}) {
   if (shape === "KeyStat") return statErrors(value, "");
+  if (shape === "RoundResult") return deltaErrors(value, "");
   if (shape === "Progress") {
     return [
+      ...value.rounds.flatMap((r, i) => deltaErrors(r, `rounds[${i}].`)),
       ...value.keys.flatMap((k, i) => statErrors(k, `keys[${i}]`)),
       ...dupErrors(value.keys, (k) => k.key, "keys", "key"),
       ...dupErrors(value.ghosts, (g) => `${g.mode}|${g.packId}`, "ghosts", "mode and pack"),

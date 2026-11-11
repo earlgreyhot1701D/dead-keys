@@ -15,7 +15,8 @@
     "cleared",
     "wave",
     "keyDeltas",
-    "drillSource"
+    "drillSource",
+    "continued"
   ],
   "additionalProperties": false,
   "properties": {
@@ -73,12 +74,25 @@
     },
     "keyDeltas": {
       "type": "object",
-      "description": "Per-key attempts and misses for this round. Loose until Block 2 (engine) defines it."
+      "description": "One entry per key. An attempt is a keystroke where that key was expected; a miss is one of those that did not match. misses <= attempts is checked in rules.js.",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["attempts", "misses"],
+        "additionalProperties": false,
+        "properties": {
+          "attempts": { "type": "integer", "minimum": 0 },
+          "misses": { "type": "integer", "minimum": 0 }
+        }
+      }
     },
     "drillSource": {
       "type": ["string", "null"],
       "enum": ["built-in", "ai", null],
       "description": "Null when the round was not a drill."
+    },
+    "continued": {
+      "type": "boolean",
+      "description": "True if the round's one free continue was used."
     }
   }
 }

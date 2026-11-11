@@ -19,7 +19,8 @@
         "cleared": 12,
         "wave": 2,
         "keyDeltas": { "f": { "attempts": 10, "misses": 1 } },
-        "drillSource": "built-in"
+        "drillSource": "built-in",
+        "continued": false
       }
     ],
     "keys": [

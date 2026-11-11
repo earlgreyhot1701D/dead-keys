@@ -60,8 +60,9 @@ export const CURRENT_SCHEMA_VERSION = 1;
  * @property {number} accuracy 0 to 1.
  * @property {number} cleared
  * @property {number} wave
- * @property {object} keyDeltas Shape defined in Block 2.
+ * @property {Object<string, { attempts: number, misses: number }>} keyDeltas One entry per key.
  * @property {"built-in"|"ai"|null} drillSource
+ * @property {boolean} continued True if the round's one free continue was used.
  */
 
 /**
