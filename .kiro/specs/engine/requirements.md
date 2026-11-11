@@ -59,7 +59,7 @@ One engine runs both mechanics. It knows targets, a lock, keystrokes, time and s
 2. THE SYSTEM SHALL advance the round only when given elapsed milliseconds. It SHALL not read a clock itself.
 3. WHEN a target reaches the danger line, THE SYSTEM SHALL remove it, take one life and emit `lifeLost`. IF it was locked, the lock SHALL be released.
 4. WHEN lives reach 0 and the round's free continue is unused, THE SYSTEM SHALL hold the round (no movement, no keystrokes) and emit `outOfLives`.
-5. WHEN the player continues, THE SYSTEM SHALL refill lives to the maximum, keep score, wave and cleared count, mark the continue as used and emit `continued`. WHEN the player declines, THE SYSTEM SHALL end the round and emit `ended`.
+5. WHEN the player continues, THE SYSTEM SHALL refill lives to the maximum, keep score, wave and cleared count, mark the continue as used, release any lock, clear the screen and respawn fresh targets (so none is already near danger), and emit `continued`. WHEN the player declines, THE SYSTEM SHALL end the round and emit `ended`.
 6. WHEN lives reach 0 and the continue is already used, THE SYSTEM SHALL end the round and emit `ended`.
 7. WHEN the number of targets cleared in this wave reaches the wave size, THE SYSTEM SHALL start the next wave, give back one life up to the maximum, and emit `waveUp`.
 8. WHERE the mode is `practice`, THE SYSTEM SHALL not move targets toward danger and SHALL not take lives. The round ends when the player ends it.

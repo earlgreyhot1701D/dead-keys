@@ -56,7 +56,8 @@ caller (later: renderer)            engine
 10. **Resume** (decided Nov 11). Escape while paused resumes. `resume(state)` does the same for the pause dialog button. Both emit `resumed`. `resume` on a round that isn't paused is ignored.
 11. **Name** (decided Nov 11). The Escape function is `pressEscape`, not `escape`, because Biome rejects a declaration that shadows the old global.
 12. **File split** (decided Nov 11). `round.js` reached the line cap after part 1, so `tick`, `resolveOutOfLives`, `endRound` and `resume` live in `lifecycle.js`, and `toResult` in `result.js`.
-13. **Practice in the result** (decided Nov 11). Internally practice stays in wave 1; `toResult` reports `wave` 0 for it and `cleared` as counted.
+13. **Continue restarts the screen** (decided Nov 11). On continue, `resolveOutOfLives` releases the lock, clears every target and respawns a fresh set at progress 0. Otherwise targets left near danger could take the refilled lives at once and waste the free continue.
+14. **Practice in the result** (decided Nov 11). Internally practice stays in wave 1; `toResult` reports `wave` 0 for it and `cleared` as counted.
 
 ## Tests
 
