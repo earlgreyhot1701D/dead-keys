@@ -11,6 +11,7 @@ Same rules as the engine: pure functions, no clock, no randomness, never change 
 round ends -> toResult (Block 2)
            -> mergeRound(keys, result)            keystats.js
            -> updateBests(bests, result)          milestones.js  -> { bests, newBest }
+           -> updateDayStreak(dayStreak, localDay)  dayStreak.js  -> dayStreak
            -> newMilestones(progress, result, localDay) milestones.js -> Milestone[]
 heat map   -> bandFor(keyStat) / heatmap(keys)    heatmap.js
 results    -> diagnose(keys)                      diagnose.js    -> Diagnosis
@@ -24,7 +25,8 @@ results    -> diagnose(keys)                      diagnose.js    -> Diagnosis
 | `src/engine/keystats.js` | Merge a round's keyDeltas into saved KeyStats | `mergeRound(keys, result)` |
 | `src/engine/heatmap.js` | Band per key | `bandFor(stat)`, `heatmap(keys)` returning `{ key, band, glyph, label, missRate }[]` |
 | `src/engine/diagnose.js` | Groups, sentences, weak keys | `diagnose(keys)` returning a Diagnosis |
-| `src/engine/milestones.js` | Personal bests and milestones | `updateBests(bests, result)`, `newMilestones(progress, result, localDay)` |
+| `src/engine/dayStreak.js` | The saved day streak (split from `milestones.js` at the line cap, Nov 11) | `updateDayStreak(dayStreak, localDay)` |
+| `src/engine/milestones.js` | Personal bests and milestones | `updateBests(bests, result)`, `newMilestones(progress, result, localDay)` (three arguments: a `dayOf` function was tried and dropped when the day streak moved into Progress) |
 | one `*.test.js` per file | | |
 
 ## Decisions
@@ -33,10 +35,16 @@ results    -> diagnose(keys)                      diagnose.js    -> Diagnosis
 2. **Shifted keys** count toward the shift group and toward their row and hand by their base key, so `A` counts for home row and left hand too.
 3. **Sentence text** comes from one template per group with the rate written as "about 1 in N" (N rounded), so no percentages that read like grades. Example: "Your top row misses about 1 in 6 keys, twice your usual rate."
 4. **Weak keys** come from all keys with 10+ attempts, not only flagged groups, so drills (Block 9) still get targets when no group is flagged.
-5. **Local day** is passed in as `"YYYY-MM-DD"`. Rounds are matched to days by a `dayOf(ms)` function the caller passes too, so time zones never live in the engine.
+5. **Local day** is passed in as `"YYYY-MM-DD"`, so time zones never live in the engine. Past rounds are never matched to days (see decision 14), so no `dayOf` function is needed.
 6. **Milestone ids** are stable strings (`wpm-30`, `acc-streak-3`, `day-streak-7`, `lesson-4`), so "already earned" is a lookup by id.
 7. **Personal bests** skip practice and need 90%+ accuracy. A tie isn't a new best.
-8. **Contract changes:** `Diagnosis.severity` enum high/medium, `Milestone.kind` enum, `Progress.bests` shape. No version bump; nothing has shipped.
+8. **Contract changes:** `Diagnosis.severity` enum high/medium, `Milestone.kind` enum, `Progress.bests` shape, and (decision 14) a required `Progress.dayStreak`. No version bump; nothing has shipped.
+9. **WPM bands need the accuracy floor** (decided Nov 11). A band is awarded only from a non-practice round at BEST_ACCURACY (90%) or better, so mashing keys never earns "30 words per minute".
+10. **Weak keys need a miss** (decided Nov 11). A key with 10+ attempts and no misses is not weak, so a flawless player gets none rather than six arbitrary keys.
+11. **What `newMilestones` assumes** (decided Nov 11). `progress` is the saved progress and `result` is the round that just finished; if `progress.rounds` already holds a round with the result's id it is counted once. Rounds are in saved order, oldest first; ties on date keep that order. The accuracy streak is worked out from the whole history, so calling it twice never awards a card twice.
+12. **Lesson milestones come from `lessonsPassed`** (decided Nov 11), whatever the round's mode. The caller adds the lesson to `lessonsPassed` first.
+13. **`updateBests`** returns `{ bests, newBest }` with `newBest` a boolean; a round with 0 WPM never sets a best; with no new best the same `bests` object comes back.
+14. **The day streak is stored** (decided Nov 11). `Progress.dayStreak` is `{ lastDay, count }`. `updateDayStreak(dayStreak, localDay)` (in `dayStreak.js`) keeps the count on the same day, adds 1 on the next day, resets to 1 after a gap, and changes nothing for an earlier day (a clock or time zone change must not break a streak). `newMilestones` applies it to the local day itself and awards `day-streak-7` when the count reaches 7, so it gives the same answer whether or not the caller already updated the streak. Reason: Progress keeps only 200 rounds, and a player doing 30 a day would never show 7 days in them.
 
 ## Tests
 

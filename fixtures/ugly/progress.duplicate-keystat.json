@@ -12,6 +12,7 @@
       { "key": "f", "attempts": 10, "misses": 0, "lastSeen": 1793000000000 }
     ],
     "bests": {},
+    "dayStreak": { "lastDay": null, "count": 0 },
     "lessonsPassed": [],
     "milestones": [],
     "settings": {},

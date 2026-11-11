@@ -41,7 +41,7 @@ Block 2 scores one round. This block turns many rounds into what the player sees
 2. WHEN a group has 20 or more attempts, its miss rate is at least 2× the overall rate, and its miss rate is at least the floor below, THE SYSTEM SHALL flag it.
 3. THE SYSTEM SHALL return at most 3 sentences, worst first (highest ratio to overall), each with a severity and the group's keys that are themselves shaky or missed.
 4. Sentences SHALL be plain, kind and specific, from fixed templates, for example: "Your top row misses about 1 in 6 keys, twice your usual rate." Never "bad," "slow" or "you got worse."
-5. `weakKeys` SHALL be up to 6 keys with 10+ attempts, highest miss rate first, ties broken by more attempts, then by key.
+5. `weakKeys` SHALL be up to 6 keys with 10+ attempts and at least one miss, highest miss rate first, ties broken by more attempts, then by key.
 6. `sufficientData` SHALL be true only when total attempts reach the minimum below. When false, sentences SHALL be empty.
 7. Same input, same Diagnosis. The output SHALL pass the contract.
 
@@ -49,18 +49,20 @@ Block 2 scores one round. This block turns many rounds into what the player sees
 
 1. A personal best SHALL be the highest WPM per mode, counted only from rounds at or above the accuracy floor below, so speed never beats accuracy.
 2. WHEN a round sets a new personal best, THE SYSTEM SHALL report it.
-3. THE SYSTEM SHALL award each of these once: every 10 WPM band reached (10, 20, 30 ...), 3 rounds in a row at 95%+ accuracy, a 7-day streak of local days with at least one round, and each lesson passed.
+3. THE SYSTEM SHALL award each of these once: every 10 WPM band reached (10, 20, 30 ...) by a round at or above the same accuracy floor as personal bests, 3 rounds in a row at 95%+ accuracy, a 7-day streak of local days with at least one round (Req 4.8), and each lesson passed.
 4. Practice rounds SHALL count toward streaks and lesson milestones but not toward WPM bands or bests, because practice is untimed by design.
 5. THE SYSTEM SHALL never award, label or report anything for getting slower.
 6. Milestones already earned SHALL not be awarded again. The output SHALL pass the contract.
 7. The day boundary for streaks SHALL be the player's local day, passed in, not read from a clock.
+8. THE SYSTEM SHALL keep the day streak as `{ lastDay, count }` saved in Progress, not work it out from saved rounds, because only the last 200 rounds are kept and a busy player would never show 7 days. WHEN a round is played, the same local day SHALL keep the count, the next day SHALL add 1, a gap SHALL reset it to 1, and a day earlier than `lastDay` (a clock or time zone change) SHALL change nothing. The 7-day milestone SHALL be awarded from this count, once.
 
 ## Requirement 5: Contract
 
 1. `Diagnosis.severity` SHALL become one of: high, medium.
 2. `Milestone.kind` SHALL become one of: wpm-band, accuracy-streak, day-streak, lesson-passed.
 3. `Progress.bests` SHALL become `{ [mode]: { wpm, date } }`.
-4. Fixtures holding these shapes SHALL be updated, with ugly cases for each new limit, and the checker SHALL pass.
+4. `Progress` SHALL gain a required `dayStreak`: `{ lastDay: "YYYY-MM-DD" or null, count: whole number >= 0 }` (added Nov 11 for Req 4.8).
+5. Fixtures holding these shapes SHALL be updated, with ugly cases for each new limit, and the checker SHALL pass.
 
 ## Requirement 6: Tests
 

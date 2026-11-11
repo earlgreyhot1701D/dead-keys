@@ -22,6 +22,7 @@ const progressWith = (bests) => ({
   rounds: [],
   keys: [],
   bests,
+  dayStreak: { lastDay: null, count: 0 },
   lessonsPassed: [],
   milestones: [],
   settings: {},

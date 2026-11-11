@@ -9,6 +9,7 @@
     "rounds": [],
     "keys": [],
     "bests": { "corners": { "wpm": -5, "date": 1793000000000 } },
+    "dayStreak": { "lastDay": null, "count": 0 },
     "lessonsPassed": [],
     "milestones": [],
     "settings": {},

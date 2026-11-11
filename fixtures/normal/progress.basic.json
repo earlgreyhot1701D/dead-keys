@@ -28,6 +28,7 @@
       { "key": "j", "attempts": 10, "misses": 0, "lastSeen": 1793000000000 }
     ],
     "bests": { "corners": { "wpm": 30, "date": 1793000000000 } },
+    "dayStreak": { "lastDay": "2026-10-26", "count": 1 },
     "lessonsPassed": [{ "lessonId": "1", "how": "lesson" }],
     "milestones": [
       {

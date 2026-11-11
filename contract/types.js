@@ -114,6 +114,7 @@ export const CURRENT_SCHEMA_VERSION = 1;
  * @property {RoundResult[]} rounds At most 200.
  * @property {KeyStat[]} keys
  * @property {Object<string, { wpm: number, date: number }>} bests Highest WPM per mode.
+ * @property {{ lastDay: string|null, count: number }} dayStreak Days in a row with a round.
  * @property {{ lessonId: string, how: "lesson"|"testout" }[]} lessonsPassed
  * @property {Milestone[]} milestones
  * @property {object} settings Defined in Block 6.

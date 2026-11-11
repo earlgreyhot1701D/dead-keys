@@ -7,6 +7,7 @@
     "rounds",
     "keys",
     "bests",
+    "dayStreak",
     "lessonsPassed",
     "milestones",
     "settings",
@@ -43,6 +44,21 @@
           "wpm": { "type": "number", "minimum": 0 },
           "date": { "type": "integer", "minimum": 0, "description": "Epoch milliseconds." }
         }
+      }
+    },
+    "dayStreak": {
+      "type": "object",
+      "description": "Days in a row with at least one round. Kept here, not worked out from rounds, because only the last 200 rounds are saved.",
+      "required": ["lastDay", "count"],
+      "additionalProperties": false,
+      "properties": {
+        "lastDay": {
+          "type": ["string", "null"],
+          "minLength": 10,
+          "maxLength": 10,
+          "description": "The player's last local day with a round, YYYY-MM-DD. Null before the first round. The format itself is checked by updateDayStreak (the schema subset has no pattern)."
+        },
+        "count": { "type": "integer", "minimum": 0 }
       }
     },
     "lessonsPassed": {

@@ -1,0 +1,18 @@
+{
+  "shape": "Progress",
+  "expect": "invalid",
+  "expectError": "-1 is below the minimum of 0",
+  "reason": "a day streak of -1 is impossible",
+  "value": {
+    "schemaVersion": 1,
+    "createdAt": 1792900000000,
+    "rounds": [],
+    "keys": [],
+    "bests": {},
+    "dayStreak": { "lastDay": "2026-10-26", "count": -1 },
+    "lessonsPassed": [],
+    "milestones": [],
+    "settings": {},
+    "ghosts": []
+  }
+}

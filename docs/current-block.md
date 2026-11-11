@@ -6,7 +6,7 @@ Block 1 passed Nov 11 (tag `block-1`). Block 2 passed Nov 11 (tag `block-2`).
 
 ## Files this block may touch
 
-- `src/engine/progressConfig.js`, `keystats.js`, `heatmap.js`, `diagnose.js`, `milestones.js`
+- `src/engine/progressConfig.js`, `keystats.js`, `heatmap.js`, `diagnose.js`, `milestones.js`, `dayStreak.js` (the last added Nov 11 when `milestones.js` hit the line cap)
 - Their `*.test.js` files in `src/engine/`
 - `contract/schemas/diagnosis.json`, `milestone.json`, `progress.json`, `contract/types.js` (design decision 8 only)
 - `fixtures/normal/*.json`, `fixtures/ugly/*.json` (updates for those shapes and the new ugly cases)

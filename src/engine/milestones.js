@@ -1,5 +1,6 @@
-// Personal bests and milestones (PRD G5: Milestones). Pure; never changes input.
+// Personal bests, the day streak and milestones (PRD G5: Milestones). Pure; never changes input.
 // Nothing here ever awards, labels or reports anything for getting slower.
+import { updateDayStreak } from "./dayStreak.js";
 import {
   BEST_ACCURACY,
   STREAK_ACCURACY,
@@ -53,57 +54,31 @@ export function updateBests(bests, result) {
   };
 }
 
-/** Whole days for "YYYY-MM-DD" (civil-days arithmetic, no clock). Throws on a bad date. */
-function dayNumber(s) {
-  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
-  if (!m) throw new RangeError(`bad day "${s}"`);
-  const [y, mo, d] = [Number(m[1]), Number(m[2]), Number(m[3])];
-  const leap = y % 4 === 0 && (y % 100 !== 0 || y % 400 === 0);
-  const inMonth = [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][mo - 1];
-  if (!(d >= 1 && d <= inMonth)) throw new RangeError(`bad day "${s}"`);
-  const yy = mo <= 2 ? y - 1 : y;
-  const era = Math.floor(yy / 400);
-  const yoe = yy - era * 400;
-  const doy = Math.floor((153 * ((mo + 9) % 12) + 2) / 5) + d - 1;
-  return era * 146097 + yoe * 365 + Math.floor(yoe / 4) - Math.floor(yoe / 100) + doy;
-}
-
-/** True if the ascending, unique day numbers hold `n` days in a row. */
-function hasRun(days, n) {
-  let run = 1;
-  for (let i = 1; i < days.length; i++) {
-    run = days[i] === days[i - 1] + 1 ? run + 1 : 1;
-    if (run >= n) return true;
-  }
-  return false;
-}
-
 /**
  * Milestones earned that the player does not have yet, worked out from the whole history, so
  * calling it twice never awards a card twice. `progress` is the saved progress; `result` is the
  * round that just finished (it is used even if `progress.rounds` already holds it).
- * Awards: each WPM band reached (10, 20, 30 ...; practice excluded), 3 rounds in a row at 95%+,
- * 7 local days in a row with a round (practice counts), and each lesson in `lessonsPassed`.
+ * Awards: each WPM band reached (10, 20, 30 ...) by a non-practice round at BEST_ACCURACY or
+ * better, 3 rounds in a row at 95%+ (practice counts), the 7-day streak from the saved
+ * `dayStreak` (updated here for `localDay`), and each lesson in `lessonsPassed`.
  * @param {import("../../contract/types.js").Progress} progress
  * @param {import("../../contract/types.js").RoundResult} result
  * @param {string} localDay The player's local day for `result`, "YYYY-MM-DD".
- * @param {(ms: number) => string} dayOf The player's local day for an earlier round's date.
  * @returns {import("../../contract/types.js").Milestone[]}
  * @throws {TypeError|RangeError} If the input is malformed (programmer error).
  */
-export function newMilestones(progress, result, localDay, dayOf) {
+export function newMilestones(progress, result, localDay) {
   const lists = [progress?.rounds, progress?.milestones, progress?.lessonsPassed];
   if (!lists.every(Array.isArray))
     throw new TypeError("progress needs rounds, milestones, lessonsPassed");
-  if (typeof dayOf !== "function") throw new TypeError("dayOf must be a function");
   checkRound(result);
   const past = progress.rounds.filter((r) => r.id !== result.id);
   past.forEach(checkRound);
-  const rounds = [...past.map((r) => ({ ...r, day: dayOf(r.date) })), { ...result, day: localDay }]
-    .sort((a, b) => a.date - b.date) // stable: same-date rounds keep their saved order
-    .map((r) => ({ ...r, dayNo: dayNumber(r.day) }));
+  const rounds = [...past, result].sort((a, b) => a.date - b.date); // stable: ties keep saved order
   const earned = [];
-  const timed = rounds.filter((r) => r.mode !== "practice").map((r) => r.wpm);
+  const timed = rounds
+    .filter((r) => r.mode !== "practice" && r.accuracy >= BEST_ACCURACY)
+    .map((r) => r.wpm);
   const top = Math.min(Math.max(0, ...timed), WPM_CAP);
   for (let w = WPM_BAND; w <= top; w += WPM_BAND) {
     earned.push({ id: `wpm-${w}`, kind: "wpm-band", threshold: w, label: `${w} words per minute` });
@@ -124,8 +99,7 @@ export function newMilestones(progress, result, localDay, dayOf) {
       label,
     });
   }
-  const days = [...new Set(rounds.map((r) => r.dayNo))].sort((a, b) => a - b);
-  if (hasRun(days, STREAK_DAYS)) {
+  if (updateDayStreak(progress.dayStreak, localDay).count >= STREAK_DAYS) {
     const label = `${STREAK_DAYS} days in a row`;
     earned.push({
       id: `day-streak-${STREAK_DAYS}`,

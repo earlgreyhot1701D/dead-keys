@@ -3504,6 +3504,7 @@
       { "key": "~", "attempts": 114, "misses": 3, "lastSeen": 1792000094000 }
     ],
     "bests": {},
+    "dayStreak": { "lastDay": null, "count": 0 },
     "lessonsPassed": [],
     "milestones": [],
     "settings": {},
