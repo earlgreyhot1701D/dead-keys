@@ -63,5 +63,6 @@ Shara picked the Stitch direction and locked it. The static mock lives at `mock/
 | Play screens | One HUD bar (no top header during play). Danger zone (falling) and danger ring (corners) in amber with `[!]` on words inside. Locked target has the strongest treatment; a beam or fire line joins it to the ship or base. Far words smaller and dimmer. Words always lowercase, exactly as typed. |
 | Title | Live attract demo behind a 680px panel: lanes, falling cards, a locked demo word, station on the baseline, Pause demo works, reduced motion shows a still frame. |
 | Copy rule | Only true numbers and real features. No ranks, grades, fake telemetry or shortcuts that don't exist. Personality lives in flavor labels (TERMINAL 84, PID 0xDEAD, STATION_ID). |
+| Escape (decided Nov 11 2026) | Layered. If a word is locked, Escape drops the lock. If nothing is locked, Escape pauses. Resolves the G2 vs G5 conflict. |
 
-**Open for the engine block:** PRD G2 says Escape pauses; G5 says Escape drops the lock. The mock shows Escape as pause. Decide before Block 2. Also still to design as moments, not screens: miss feedback, word cleared, wave up (each with a reduced-motion version).
+**Open for the engine block:** still to design as moments, not screens: miss feedback, word cleared, wave up (each with a reduced-motion version).

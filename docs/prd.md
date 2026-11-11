@@ -74,7 +74,7 @@ One document, gated sections. A closed gate is not reopened. If something later 
 **Core play**
 - Two mechanics, one engine: four-corner defense (MasterType, 1981) and falling targets (Type Attack, 1982). Player chooses.
 - Practice mode (untimed): its own main-menu entry.
-- Pause (Escape), speed slider for every mode, settings, first-run onboarding.
+- Pause (Escape drops the lock first; pauses when nothing is locked), speed slider for every mode, settings, first-run onboarding.
 
 **Learning**
 - Lesson 0 "Meet your keyboard" and the lesson ladder (G7). Passed on accuracy, not speed.
@@ -194,7 +194,7 @@ All deterministic, all pure functions, all covered by property-based tests. This
 |---|---|
 | WPM | (correct characters ÷ 5) ÷ minutes |
 | Accuracy | correct keystrokes ÷ total keystrokes. Backspace is not counted as a keystroke. |
-| Lock | The first character typed locks the target nearest to danger that starts with it. Escape drops the lock. |
+| Lock | The first character typed locks the target nearest to danger that starts with it. Escape is layered: if a word is locked, it drops the lock; if nothing is locked, it pauses. |
 | Miss | A typed character that doesn't match the expected next character. Counted against the expected key. |
 | Case | Case and punctuation always count, except lessons 1 to 6, which use lowercase letters only. |
 | Miss rate | misses ÷ attempts per key. A key needs 10 attempts before it's colored. Below that it shows a hatched "not enough data" pattern. |
@@ -542,6 +542,7 @@ The README carries what judges can't see by playing.
 
 ## Changelog
 
+- **Nov 11 2026, note.** Escape conflict resolved (G2 pause vs G5 drop lock) as layered: drop lock first, pause when nothing is locked.
 - **Nov 11 2026, note.** H1 (line-cap) moved from Post Task Execution to Stop, because PostTaskExec only fires through Kiro's task runner and tasks here are ticked by editing `tasks.md`. The G12 table is unchanged.
 - **Nov 11 2026, note.** UI track started (G11 already runs it in parallel with Blocks 1 to 3): `docs/design-brief.md`, mock round 1 compared across Claude Design, Google Stitch and ChatGPT. Added to steering: mock data and fixtures never ship; the build output is searched before every production deploy.
 - **Nov 11 2026, note.** Sandbox not used: it blocked `npm install` on Windows, so `sandbox.json` was removed under G12's existing fallback. No gate reopened. Logged in `KIRO-NOTES.md`.
