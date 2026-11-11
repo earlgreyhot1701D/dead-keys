@@ -1,7 +1,7 @@
 # Requirements: Block 1, data contract and fixtures
 
 **Spec:** `contract` (PRD G4). **Rigor:** Full for schemas and the fixture checker, Working for everything else.
-**Status:** Draft, waiting on Shara's approval. `design.md` and `tasks.md` are not started.
+**Status:** Approved by Shara Nov 11.
 **Sources:** `docs/prd.md` G4 (shapes, ugly cases), G5 (limits that bound data), G8 (drill limits), G9 (`schemaVersion`). `docs/current-block.md` (file allowlist, PASS line).
 
 ## Introduction
@@ -41,10 +41,11 @@ Both build tracks (engine and UI) work against the same data shapes. This block 
 3. THE contract check SHALL accept `accuracy` only from 0 to 1 inclusive, and `wpm` only at 0 or above.
 4. THE contract check SHALL accept counts (`attempts`, `misses`, `correctChars`, `totalKeystrokes`, `durationMs`, `Keystroke.t`) only as whole numbers at 0 or above.
 5. IF a KeyStat has more `misses` than `attempts`, THEN THE contract check SHALL reject it.
+12. IF a Progress has two KeyStats for the same key, or two GhostRuns for the same mode and pack, THEN THE contract check SHALL reject it. (One ghost per mode and pack keeps saved data small.)
 6. THE contract check SHALL reject a Progress with more than 200 rounds, and a GhostRun with more than 2,000 keystrokes.
 7. THE contract check SHALL reject a Diagnosis with more than 6 weak keys or more than 3 sentences. Each sentence SHALL have `text`, `severity`, and `keys`.
 8. THE contract check SHALL accept each `Progress.lessonsPassed` entry only with how it was passed: `lesson` or `testout`.
-9. THE contract check SHALL accept a DrillRequest only with at most 6 weak keys, each with a rate from 0 to 1, and `recentWpm` from 0 to 250.
+9. THE contract check SHALL accept a DrillRequest only with 1 to 6 weak keys (no weak keys means no AI call; the built-in drill runs), each with a rate from 0 to 1, and `recentWpm` from 0 to 250.
 10. THE contract check SHALL accept a DrillResponse only with 1 to 8 lines, each 1 to 80 characters, and `source` equal to `ai`.
 11. THE contract check SHALL accept `Item.source` only as a non-empty citation or the word `original`.
 
@@ -60,7 +61,7 @@ Both build tracks (engine and UI) work against the same data shapes. This block 
 
 **User story:** As the builder of storage (Block 4), I want old saved progress told apart from broken progress, so old players get migrated instead of wiped.
 
-1. THE contract check SHALL accept `Progress.schemaVersion` only as a whole number of 1 or more. The current version is 1.
+1. THE contract check SHALL accept `Progress.schemaVersion` only as a whole number of 0 or more. The current version is 1; 0 is the pre-release format, so an old save reads as `needs-migration`, not `invalid`.
 2. WHEN a Progress has a `schemaVersion` lower than current, THE contract check SHALL report `needs-migration`, not `invalid`.
 3. WHEN a Progress has a `schemaVersion` higher than current, THE contract check SHALL report `invalid` with the reason "newer than this build."
 
@@ -130,5 +131,5 @@ Both build tracks (engine and UI) work against the same data shapes. This block 
 
 ## Notes for design.md (not requirements)
 
-- The corrupted-JSON fixture may trip `npm run lint` (Biome reads `.json` files). Design should say how that's handled without touching files off the allowlist.
+- Lint and the corrupted-JSON fixture: resolved in `design.md` (bad JSON is stored as a `raw` string inside a valid fixture file).
 - Charset checks need the pack as input, so the check for DrillRequest and DrillResponse takes a pack (or charset) alongside the value.

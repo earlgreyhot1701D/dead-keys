@@ -1,0 +1,15 @@
+{
+  "shape": "Progress",
+  "expect": "valid",
+  "value": {
+    "schemaVersion": 1,
+    "createdAt": 1792900000000,
+    "rounds": [],
+    "keys": [],
+    "bests": {},
+    "lessonsPassed": [],
+    "milestones": [],
+    "settings": {},
+    "ghosts": []
+  }
+}

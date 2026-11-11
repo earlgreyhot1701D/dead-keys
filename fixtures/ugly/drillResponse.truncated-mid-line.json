@@ -1,0 +1,8 @@
+{
+  "shape": "DrillResponse",
+  "expect": "invalid",
+  "expectError": "not JSON",
+  "reason": "response text was cut off in the middle of line 2, so it is not valid JSON",
+  "pack": "pack.mini",
+  "raw": "{\"lines\": [\"fad sad\", \"a lad as"
+}

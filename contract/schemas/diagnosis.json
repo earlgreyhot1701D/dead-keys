@@ -1,0 +1,40 @@
+{
+  "type": "object",
+  "description": "Diagnosis (PRD G4, G5). Plain sentences about the player's typing, worst first.",
+  "required": ["sentences", "weakKeys", "sufficientData"],
+  "additionalProperties": false,
+  "properties": {
+    "sentences": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["text", "severity", "keys"],
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "severity": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Loose until Block 3 (diagnose) defines the scale."
+          },
+          "keys": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1, "maxLength": 1 }
+          }
+        }
+      }
+    },
+    "weakKeys": {
+      "type": "array",
+      "maxItems": 6,
+      "items": { "type": "string", "minLength": 1, "maxLength": 1 }
+    },
+    "sufficientData": {
+      "type": "boolean"
+    }
+  }
+}

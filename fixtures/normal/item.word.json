@@ -1,0 +1,10 @@
+{
+  "shape": "Item",
+  "expect": "valid",
+  "value": {
+    "id": "mini-w1",
+    "text": "fad",
+    "kind": "word",
+    "source": "original"
+  }
+}

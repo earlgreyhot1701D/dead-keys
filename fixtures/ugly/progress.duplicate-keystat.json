@@ -1,0 +1,20 @@
+{
+  "shape": "Progress",
+  "expect": "invalid",
+  "expectError": "duplicate key",
+  "reason": "two KeyStat entries for the key f",
+  "value": {
+    "schemaVersion": 1,
+    "createdAt": 1792900000000,
+    "rounds": [],
+    "keys": [
+      { "key": "f", "attempts": 12, "misses": 1, "lastSeen": 1793000000000 },
+      { "key": "f", "attempts": 10, "misses": 0, "lastSeen": 1793000000000 }
+    ],
+    "bests": {},
+    "lessonsPassed": [],
+    "milestones": [],
+    "settings": {},
+    "ghosts": []
+  }
+}

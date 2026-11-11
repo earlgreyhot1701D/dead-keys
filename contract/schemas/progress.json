@@ -1,0 +1,70 @@
+{
+  "type": "object",
+  "description": "Progress (PRD G4, G9). Everything saved in the browser under deadkeys:v1. rules.js checks schemaVersion first: older means needs-migration, newer means invalid.",
+  "required": [
+    "schemaVersion",
+    "createdAt",
+    "rounds",
+    "keys",
+    "bests",
+    "lessonsPassed",
+    "milestones",
+    "settings",
+    "ghosts"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "createdAt": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Epoch milliseconds."
+    },
+    "rounds": {
+      "type": "array",
+      "maxItems": 200,
+      "items": { "$ref": "roundResult.json" }
+    },
+    "keys": {
+      "type": "array",
+      "items": { "$ref": "keyStat.json" }
+    },
+    "bests": {
+      "type": "object",
+      "description": "Personal bests. Loose until Block 3 (progress math) defines it."
+    },
+    "lessonsPassed": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["lessonId", "how"],
+        "additionalProperties": false,
+        "properties": {
+          "lessonId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "how": {
+            "type": "string",
+            "enum": ["lesson", "testout"]
+          }
+        }
+      }
+    },
+    "milestones": {
+      "type": "array",
+      "items": { "$ref": "milestone.json" }
+    },
+    "settings": {
+      "type": "object",
+      "description": "Player settings. Loose until Block 6 (shell UI) defines it."
+    },
+    "ghosts": {
+      "type": "array",
+      "items": { "$ref": "ghostRun.json" }
+    }
+  }
+}

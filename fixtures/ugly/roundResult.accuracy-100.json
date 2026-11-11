@@ -1,0 +1,20 @@
+{
+  "shape": "RoundResult",
+  "expect": "valid",
+  "value": {
+    "id": "round-perfect",
+    "date": 1793000000000,
+    "mode": "practice",
+    "packId": "mini",
+    "lessonId": null,
+    "durationMs": 60000,
+    "correctChars": 300,
+    "totalKeystrokes": 300,
+    "wpm": 60,
+    "accuracy": 1,
+    "cleared": 0,
+    "wave": 0,
+    "keyDeltas": {},
+    "drillSource": null
+  }
+}

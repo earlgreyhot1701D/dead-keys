@@ -1,0 +1,10 @@
+{
+  "shape": "Milestone",
+  "expect": "valid",
+  "value": {
+    "id": "lesson-1",
+    "kind": "lesson-passed",
+    "threshold": null,
+    "label": "Lesson 1 passed"
+  }
+}

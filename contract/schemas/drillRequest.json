@@ -1,0 +1,40 @@
+{
+  "type": "object",
+  "description": "DrillRequest (PRD G4, G8). What the browser sends to the AI route: weak keys and recent speed only. Each weak key must be in the pack charset; that check is in rules.js.",
+  "required": ["packId", "weakKeys", "recentWpm"],
+  "additionalProperties": false,
+  "properties": {
+    "packId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "weakKeys": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "required": ["key", "rate"],
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1
+          },
+          "rate": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Miss rate."
+          }
+        }
+      }
+    },
+    "recentWpm": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 250
+    }
+  }
+}

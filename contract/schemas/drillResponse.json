@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "description": "DrillResponse (PRD G4, G8). Lines from the AI route. Every character must be in the pack charset; that check is in rules.js and one bad character rejects the whole response.",
+  "required": ["lines", "source"],
+  "additionalProperties": false,
+  "properties": {
+    "lines": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 8,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 80
+      }
+    },
+    "source": {
+      "type": "string",
+      "const": "ai"
+    }
+  }
+}

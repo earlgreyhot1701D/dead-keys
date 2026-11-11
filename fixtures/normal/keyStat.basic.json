@@ -1,0 +1,10 @@
+{
+  "shape": "KeyStat",
+  "expect": "valid",
+  "value": {
+    "key": "f",
+    "attempts": 12,
+    "misses": 1,
+    "lastSeen": 1793000000000
+  }
+}

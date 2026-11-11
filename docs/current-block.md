@@ -8,6 +8,9 @@ Block 0 (repo setup) was done by Claude on Nov 11: steering, hooks, settings, re
 
 - `contract/schemas/*.json`
 - `contract/types.js`
+- `contract/validate.js`, `contract/rules.js` (added by design.md, Nov 11)
+- `contract/schemas.js` (split from validate.js, Nov 11)
+- `.kiro/hooks/line-cap.json` (trigger fix only, Nov 11)
 - `fixtures/normal/*.json`
 - `fixtures/ugly/*.json`
 - `scripts/check-fixtures.js`
@@ -15,6 +18,7 @@ Block 0 (repo setup) was done by Claude on Nov 11: steering, hooks, settings, re
 - `.kiro/specs/contract/*`
 - `.kiro/hooks/fixture-check.json` (hook H3, added this block, retired when the contract freezes)
 - `KIRO-NOTES.md`
+- `biome.json` (added Nov 11: Biome had no config, so it ran on defaults)
 
 Anything else: stop and ask Shara.
 
@@ -22,13 +26,13 @@ Anything else: stop and ask Shara.
 
 Full for the schemas and the fixture checker. Working for everything else.
 
-## Open decision for design.md
+## Decided in design.md
 
-How to validate JSON against the schemas: small hand-written validators in `contract/types.js`, or a validation library. If a library, ask Shara first and run a longevity check.
+Hand-written schema-subset validator in `contract/validate.js`, extra rules in `contract/rules.js`. No library.
 
 ## PASS line
 
-Every normal fixture validates. Every ugly fixture case passes or fails exactly as its expectation says. `npm test` is green. The reviewer agent has run and Shara has read its report.
+Every normal fixture validates. Every ugly fixture case passes or fails exactly as its expectation says. `npm test` is green. `npm run lint` is clean. The reviewer agent has run and Shara has read its report.
 
 ## Hooks alive
 

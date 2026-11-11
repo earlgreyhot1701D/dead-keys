@@ -1,0 +1,20 @@
+{
+  "shape": "DrillRequest",
+  "expect": "invalid",
+  "expectError": "7 items, max is 6",
+  "reason": "7 weak keys, one over the limit of 6",
+  "pack": "pack.mini",
+  "value": {
+    "packId": "mini",
+    "weakKeys": [
+      { "key": "a", "rate": 0.3 },
+      { "key": "s", "rate": 0.3 },
+      { "key": "d", "rate": 0.3 },
+      { "key": "f", "rate": 0.3 },
+      { "key": "j", "rate": 0.3 },
+      { "key": "k", "rate": 0.3 },
+      { "key": "l", "rate": 0.3 }
+    ],
+    "recentWpm": 28
+  }
+}

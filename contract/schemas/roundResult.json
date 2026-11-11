@@ -1,0 +1,84 @@
+{
+  "type": "object",
+  "description": "RoundResult (PRD G4). One finished round.",
+  "required": [
+    "id",
+    "date",
+    "mode",
+    "packId",
+    "lessonId",
+    "durationMs",
+    "correctChars",
+    "totalKeystrokes",
+    "wpm",
+    "accuracy",
+    "cleared",
+    "wave",
+    "keyDeltas",
+    "drillSource"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "date": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Epoch milliseconds."
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["corners", "falling", "practice", "lesson", "testout", "daily", "specwave"]
+    },
+    "packId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lessonId": {
+      "type": ["string", "null"],
+      "description": "Null when the round is not a lesson or test out."
+    },
+    "durationMs": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "correctChars": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "totalKeystrokes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "wpm": {
+      "type": "number",
+      "minimum": 0
+    },
+    "accuracy": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "cleared": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Targets cleared. 0 when the mode has none."
+    },
+    "wave": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Wave reached. 0 when the mode has none."
+    },
+    "keyDeltas": {
+      "type": "object",
+      "description": "Per-key attempts and misses for this round. Loose until Block 2 (engine) defines it."
+    },
+    "drillSource": {
+      "type": ["string", "null"],
+      "enum": ["built-in", "ai", null],
+      "description": "Null when the round was not a drill."
+    }
+  }
+}

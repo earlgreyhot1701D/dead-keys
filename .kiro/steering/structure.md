@@ -8,7 +8,7 @@ One file, one responsibility. Soft cap 150 lines, hard cap 250. Over 250, split 
 
 | Folder | Holds | Rule |
 |---|---|---|
-| `contract/` | `schemas/*.json`, `types.js` | Data shapes only (PRD G4) |
+| `contract/` | `schemas/*.json`, `types.js`, `schemas.js`, `validate.js`, `rules.js` | Data shapes only (PRD G4) |
 | `fixtures/` | `normal/`, `ugly/` | Sample data both tracks build against |
 | `src/engine/` | match, score, rng, round, heatmap, diagnose, sample, daily, ghost, milestones, recommend | Pure functions. No DOM, no storage, no network. |
 | `src/storage/` | store, migrate, exportImport | localStorage only, every call in try/catch |
@@ -23,6 +23,7 @@ One file, one responsibility. Soft cap 150 lines, hard cap 250. Over 250, split 
 | `evals/` | golden.json, run.js | Golden set for AI drills |
 | `mcp/` | server.js | `run_golden_set`, `validate_pack` |
 | `scripts/` | hook scripts and CLIs | Small, single-purpose |
+| `mock/` | static HTML mock of the screens | UI track only. Never imported by `src/`, never in the build. |
 | `docs/` | prd, research, prior-work, current-block, start-here | Planning, not code |
 
 Contracts are referenced, not copied: point at `contract/schemas/<name>.json` with a file reference instead of pasting the shape into a spec.

@@ -542,6 +542,8 @@ The README carries what judges can't see by playing.
 
 ## Changelog
 
+- **Nov 11 2026, note.** H1 (line-cap) moved from Post Task Execution to Stop, because PostTaskExec only fires through Kiro's task runner and tasks here are ticked by editing `tasks.md`. The G12 table is unchanged.
+- **Nov 11 2026, note.** UI track started (G11 already runs it in parallel with Blocks 1 to 3): `docs/design-brief.md`, mock round 1 compared across Claude Design, Google Stitch and ChatGPT. Added to steering: mock data and fixtures never ship; the build output is searched before every production deploy.
 - **Nov 11 2026, note.** Sandbox not used: it blocked `npm install` on Windows, so `sandbox.json` was removed under G12's existing fallback. No gate reopened. Logged in `KIRO-NOTES.md`.
 - **Nov 11 2026, v1.5.** Repo set up in `C:\Users\corde\projects\dead-keys`. Ponytail moved to `.kiro/steering/ponytail.md` (its own Kiro adapter). Versions pinned. Vercel MCP caveat recorded.
 - **Nov 11 2026, v1.4.** G12 adds the rest of Kiro's project setup from kiro.dev docs: `.kiroignore`, MCP config, sandbox, two read-only custom agents (reviewer, a11y-auditor). Skills stubbed, workflows out of scope.

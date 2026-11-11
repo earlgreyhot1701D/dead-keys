@@ -1,0 +1,9 @@
+{
+  "shape": "Progress",
+  "expect": "needs-migration",
+  "value": {
+    "schemaVersion": 0,
+    "rounds": [{ "wpm": 22, "accuracy": 0.9 }],
+    "keys": {}
+  }
+}

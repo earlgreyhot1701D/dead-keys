@@ -1,0 +1,5 @@
+{
+  "shape": "Keystroke",
+  "expect": "valid",
+  "value": { "t": 420, "expected": "f", "typed": "f", "ok": true }
+}

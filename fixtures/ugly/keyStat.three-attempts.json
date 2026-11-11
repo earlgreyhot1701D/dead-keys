@@ -1,0 +1,5 @@
+{
+  "shape": "KeyStat",
+  "expect": "valid",
+  "value": { "key": "q", "attempts": 3, "misses": 1, "lastSeen": 1793000000000 }
+}

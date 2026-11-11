@@ -1,0 +1,49 @@
+{
+  "shape": "Progress",
+  "expect": "valid",
+  "value": {
+    "schemaVersion": 1,
+    "createdAt": 1792900000000,
+    "rounds": [
+      {
+        "id": "round-001",
+        "date": 1793000000000,
+        "mode": "corners",
+        "packId": "mini",
+        "lessonId": null,
+        "durationMs": 60000,
+        "correctChars": 150,
+        "totalKeystrokes": 160,
+        "wpm": 30,
+        "accuracy": 0.9375,
+        "cleared": 12,
+        "wave": 2,
+        "keyDeltas": { "f": { "attempts": 10, "misses": 1 } },
+        "drillSource": "built-in"
+      }
+    ],
+    "keys": [
+      { "key": "f", "attempts": 12, "misses": 1, "lastSeen": 1793000000000 },
+      { "key": "j", "attempts": 10, "misses": 0, "lastSeen": 1793000000000 }
+    ],
+    "bests": { "wpm": 30 },
+    "lessonsPassed": [{ "lessonId": "1", "how": "lesson" }],
+    "milestones": [
+      {
+        "id": "lesson-1",
+        "kind": "lesson-passed",
+        "threshold": null,
+        "label": "Lesson 1 passed"
+      }
+    ],
+    "settings": { "ai": false, "sound": "off" },
+    "ghosts": [
+      {
+        "mode": "daily",
+        "packId": "mini",
+        "wpm": 24,
+        "keystrokes": [{ "t": 380, "expected": "a", "typed": "a", "ok": true }]
+      }
+    ]
+  }
+}

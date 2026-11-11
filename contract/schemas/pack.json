@@ -1,0 +1,60 @@
+{
+  "type": "object",
+  "description": "Pack (PRD G4). Content for the game. Every Item's text must use only charset; that check is in rules.js.",
+  "required": [
+    "id",
+    "name",
+    "lang",
+    "version",
+    "license",
+    "attribution",
+    "charset",
+    "pools",
+    "lessons"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lang": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "license": {
+      "type": "string",
+      "minLength": 1
+    },
+    "attribution": {
+      "type": "string",
+      "description": "Credit line. May be empty for original content."
+    },
+    "charset": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Every character the pack allows. Include the space if the pack uses it."
+    },
+    "pools": {
+      "type": "object",
+      "description": "Named lists of Items. Any pool name is allowed.",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "$ref": "item.json" }
+      }
+    },
+    "lessons": {
+      "type": "array",
+      "items": { "type": "object" },
+      "description": "Loose until Block 8 (lessons) defines the lesson shape."
+    }
+  }
+}

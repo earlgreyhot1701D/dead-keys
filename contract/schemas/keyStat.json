@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "description": "KeyStat (PRD G4). Per-key attempts and misses. misses <= attempts is checked in rules.js.",
+  "required": ["key", "attempts", "misses", "lastSeen"],
+  "additionalProperties": false,
+  "properties": {
+    "key": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1
+    },
+    "attempts": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "misses": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "lastSeen": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Milliseconds since the Unix epoch. G4 gives no format; Block 3 (heatmap) may revisit."
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "shape": "DrillRequest",
+  "expect": "valid",
+  "pack": "pack.mini",
+  "value": {
+    "packId": "mini",
+    "weakKeys": [{ "key": "a", "rate": 0.3 }, { "key": "s", "rate": 0.2 }],
+    "recentWpm": 28
+  }
+}

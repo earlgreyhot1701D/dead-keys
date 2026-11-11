@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "fixture-check",
+      "trigger": "PostFileSave",
+      "description": "PRD G12 H3. Runs the fixture checker when a file under contract/ or fixtures/ is saved. Retires when the contract freezes, after Block 3.",
+      "matcher": "(^|[\\\\/])(contract|fixtures)[\\\\/]",
+      "action": {
+        "type": "command",
+        "command": "node scripts/check-fixtures.js"
+      }
+    }
+  ]
+}

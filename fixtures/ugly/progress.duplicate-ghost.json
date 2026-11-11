@@ -1,0 +1,30 @@
+{
+  "shape": "Progress",
+  "expect": "invalid",
+  "expectError": "duplicate mode and pack",
+  "reason": "two GhostRuns for mode daily and pack mini",
+  "value": {
+    "schemaVersion": 1,
+    "createdAt": 1792900000000,
+    "rounds": [],
+    "keys": [],
+    "bests": {},
+    "lessonsPassed": [],
+    "milestones": [],
+    "settings": {},
+    "ghosts": [
+      {
+        "mode": "daily",
+        "packId": "mini",
+        "wpm": 24,
+        "keystrokes": [{ "t": 380, "expected": "a", "typed": "a", "ok": true }]
+      },
+      {
+        "mode": "daily",
+        "packId": "mini",
+        "wpm": 26,
+        "keystrokes": [{ "t": 400, "expected": "a", "typed": "a", "ok": true }]
+      }
+    ]
+  }
+}

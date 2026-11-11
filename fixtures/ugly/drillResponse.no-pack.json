@@ -1,0 +1,7 @@
+{
+  "shape": "DrillResponse",
+  "expect": "invalid",
+  "expectError": "no pack given",
+  "reason": "a DrillResponse is checked against a pack charset, and none was given",
+  "value": { "lines": ["fad sad"], "source": "ai" }
+}

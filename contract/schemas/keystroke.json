@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "description": "Keystroke (PRD G4). One key press in a round. Backspace is not recorded as a keystroke (G5).",
+  "required": ["t", "expected", "typed", "ok"],
+  "additionalProperties": false,
+  "properties": {
+    "t": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Milliseconds from round start."
+    },
+    "expected": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1
+    },
+    "typed": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1
+    },
+    "ok": {
+      "type": "boolean"
+    }
+  }
+}

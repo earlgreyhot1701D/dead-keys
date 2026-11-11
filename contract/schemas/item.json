@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "description": "Item (PRD G4). One practice item in a pack pool. Charset check against the pack is in rules.js.",
+  "required": ["id", "text", "kind", "source"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unique within its pack."
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "description": "What the player types."
+    },
+    "kind": {
+      "type": "string",
+      "enum": ["word", "sentence", "number", "mixed", "pair"]
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1,
+      "description": "A citation, or the word original."
+    }
+  }
+}

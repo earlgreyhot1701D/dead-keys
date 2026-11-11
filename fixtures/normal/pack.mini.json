@@ -1,0 +1,48 @@
+{
+  "shape": "Pack",
+  "expect": "valid",
+  "value": {
+    "id": "mini",
+    "name": "Mini home row pack",
+    "lang": "en",
+    "version": "1.0.0",
+    "license": "MIT",
+    "attribution": "",
+    "charset": "asdfjkl; ",
+    "pools": {
+      "words": [
+        {
+          "id": "mini-w1",
+          "text": "fad",
+          "kind": "word",
+          "source": "original"
+        },
+        {
+          "id": "mini-w2",
+          "text": "sad",
+          "kind": "word",
+          "source": "original"
+        },
+        {
+          "id": "mini-w3",
+          "text": "flask",
+          "kind": "word",
+          "source": "original"
+        }
+      ],
+      "pairs": [
+        { "id": "mini-p1", "text": "as", "kind": "pair", "source": "original" },
+        { "id": "mini-p2", "text": "ad", "kind": "pair", "source": "original" }
+      ],
+      "sentences": [
+        {
+          "id": "mini-s1",
+          "text": "a lad asks a lass; all fall",
+          "kind": "sentence",
+          "source": "original"
+        }
+      ]
+    },
+    "lessons": []
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "shape": "DrillResponse",
+  "expect": "valid",
+  "pack": "pack.mini",
+  "value": {
+    "lines": ["sad lass asks dad", "a fall as all fall"],
+    "source": "ai"
+  }
+}

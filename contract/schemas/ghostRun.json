@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "description": "GhostRun (PRD G4). A saved run to race against.",
+  "required": ["mode", "packId", "wpm", "keystrokes"],
+  "additionalProperties": false,
+  "properties": {
+    "mode": {
+      "type": "string",
+      "minLength": 1,
+      "description": "A RoundResult mode name. Left as a plain string; Block 13 (ghost) decides which modes can be raced."
+    },
+    "packId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "wpm": {
+      "type": "number",
+      "minimum": 0
+    },
+    "keystrokes": {
+      "type": "array",
+      "maxItems": 2000,
+      "items": { "$ref": "keystroke.json" }
+    }
+  }
+}

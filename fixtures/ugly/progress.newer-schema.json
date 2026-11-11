@@ -1,0 +1,17 @@
+{
+  "shape": "Progress",
+  "expect": "invalid",
+  "expectError": "newer than this build",
+  "reason": "schemaVersion 2 was saved by a newer build than this one",
+  "value": {
+    "schemaVersion": 2,
+    "createdAt": 1792900000000,
+    "rounds": [],
+    "keys": [],
+    "bests": {},
+    "lessonsPassed": [],
+    "milestones": [],
+    "settings": {},
+    "ghosts": []
+  }
+}

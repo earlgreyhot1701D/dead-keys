@@ -1,0 +1,14 @@
+{
+  "shape": "GhostRun",
+  "expect": "valid",
+  "value": {
+    "mode": "daily",
+    "packId": "mini",
+    "wpm": 24,
+    "keystrokes": [
+      { "t": 380, "expected": "a", "typed": "a", "ok": true },
+      { "t": 760, "expected": "s", "typed": "d", "ok": false },
+      { "t": 1150, "expected": "s", "typed": "s", "ok": true }
+    ]
+  }
+}

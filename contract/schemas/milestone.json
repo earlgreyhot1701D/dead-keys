@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "description": "Milestone (PRD G4). kind is a loose string until Block 11 (milestones) defines the kinds.",
+  "required": ["id", "kind", "threshold", "label"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "kind": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Loose now. Block 11 defines the set."
+    },
+    "threshold": {
+      "type": ["number", "null"],
+      "description": "Number that triggers it, such as 30 WPM or a 7-day streak. Null when there is none (lesson passed)."
+    },
+    "label": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "shape": "RoundResult",
+  "expect": "valid",
+  "value": {
+    "id": "round-001",
+    "date": 1793000000000,
+    "mode": "corners",
+    "packId": "mini",
+    "lessonId": null,
+    "durationMs": 60000,
+    "correctChars": 150,
+    "totalKeystrokes": 160,
+    "wpm": 30,
+    "accuracy": 0.9375,
+    "cleared": 12,
+    "wave": 2,
+    "keyDeltas": { "f": { "attempts": 10, "misses": 1 } },
+    "drillSource": "built-in"
+  }
+}

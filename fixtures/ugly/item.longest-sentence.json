@@ -1,0 +1,10 @@
+{
+  "shape": "Item",
+  "expect": "valid",
+  "value": {
+    "id": "long-1",
+    "text": "The old clerk laid the ledger on the long oak table, counted every page twice, and then wrote a short note beside the last line.",
+    "kind": "sentence",
+    "source": "original"
+  }
+}

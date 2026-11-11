@@ -1,0 +1,24 @@
+{
+  "shape": "Pack",
+  "expect": "valid",
+  "value": {
+    "id": "es-mini",
+    "name": "Mini Spanish pack",
+    "lang": "es",
+    "version": "1.0.0",
+    "license": "MIT",
+    "attribution": "",
+    "charset": "abcdefghijklmnopqrstuvwxyzñá¿?¡! ",
+    "pools": {
+      "sentences": [
+        {
+          "id": "es-s1",
+          "text": "¿cuándo vuelve el niño?",
+          "kind": "sentence",
+          "source": "original"
+        }
+      ]
+    },
+    "lessons": []
+  }
+}

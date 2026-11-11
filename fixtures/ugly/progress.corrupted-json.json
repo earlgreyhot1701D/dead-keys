@@ -1,0 +1,7 @@
+{
+  "shape": "Progress",
+  "expect": "invalid",
+  "expectError": "not JSON",
+  "reason": "saved text is not valid JSON (cut off after the rounds list opens)",
+  "raw": "{\"schemaVersion\": 1, \"createdAt\": 1792900000000, \"rounds\": [{\"id\": \"round-0"
+}

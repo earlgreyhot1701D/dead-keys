@@ -3,8 +3,8 @@
   "hooks": [
     {
       "name": "line-cap",
-      "description": "PRD G12 H1, permanent. After each spec task: warn at 150 lines, error at 250.",
-      "trigger": "PostTaskExec",
+      "description": "PRD G12 H1, permanent. When the agent finishes a turn: warn at 150 lines, error at 250. Was PostTaskExec, which never fires because tasks are ticked by editing tasks.md.",
+      "trigger": "Stop",
       "action": { "type": "command", "command": "node scripts/linecap.js" }
     }
   ]

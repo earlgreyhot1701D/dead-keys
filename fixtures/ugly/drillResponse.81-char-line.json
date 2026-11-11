@@ -1,0 +1,11 @@
+{
+  "shape": "DrillResponse",
+  "expect": "invalid",
+  "expectError": "81 characters, max is 80",
+  "reason": "one line is 81 characters, one over the limit of 80",
+  "pack": "pack.mini",
+  "value": {
+    "lines": ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"],
+    "source": "ai"
+  }
+}

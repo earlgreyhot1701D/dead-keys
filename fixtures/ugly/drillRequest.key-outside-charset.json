@@ -1,0 +1,12 @@
+{
+  "shape": "DrillRequest",
+  "expect": "invalid",
+  "expectError": "not in the pack charset",
+  "reason": "weak key x is not in the pack charset",
+  "pack": "pack.mini",
+  "value": {
+    "packId": "mini",
+    "weakKeys": [{ "key": "x", "rate": 0.3 }],
+    "recentWpm": 28
+  }
+}

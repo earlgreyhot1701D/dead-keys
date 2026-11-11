@@ -1,0 +1,19 @@
+{
+  "shape": "Pack",
+  "expect": "invalid",
+  "expectError": "not in the pack charset",
+  "reason": "the item fax has an x, which is not in the pack charset",
+  "value": {
+    "id": "bad",
+    "name": "Pack with a stray character",
+    "lang": "en",
+    "version": "1.0.0",
+    "license": "MIT",
+    "attribution": "",
+    "charset": "asdfjkl; ",
+    "pools": {
+      "words": [{ "id": "bad-w1", "text": "fax", "kind": "word", "source": "original" }]
+    },
+    "lessons": []
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "shape": "Diagnosis",
+  "expect": "valid",
+  "value": {
+    "sentences": [
+      {
+        "text": "You miss the left pinky keys more than the rest.",
+        "severity": "high",
+        "keys": ["a", "s"]
+      }
+    ],
+    "weakKeys": ["a", "s", "f"],
+    "sufficientData": true
+  }
+}

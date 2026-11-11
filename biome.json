@@ -1,0 +1,25 @@
+{
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "includes": [
+      "contract/**",
+      "fixtures/**",
+      "scripts/**",
+      "src/**",
+      "api/**",
+      "evals/**",
+      "mcp/**",
+      "package.json",
+      "biome.json"
+    ]
+  },
+  "formatter": {
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100
+  }
+}

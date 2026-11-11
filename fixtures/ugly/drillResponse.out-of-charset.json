@@ -1,0 +1,8 @@
+{
+  "shape": "DrillResponse",
+  "expect": "invalid",
+  "expectError": "not in the pack charset",
+  "reason": "line 2 has an x, which is not in the pack charset",
+  "pack": "pack.mini",
+  "value": { "lines": ["fad sad", "flax"], "source": "ai" }
+}

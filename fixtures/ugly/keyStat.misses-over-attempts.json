@@ -1,0 +1,7 @@
+{
+  "shape": "KeyStat",
+  "expect": "invalid",
+  "expectError": "misses but only",
+  "reason": "5 misses on 3 attempts is impossible",
+  "value": { "key": "f", "attempts": 3, "misses": 5, "lastSeen": 1793000000000 }
+}
