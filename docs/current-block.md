@@ -1,28 +1,28 @@
 # Current block
 
-**Block 2: engine core** (PRD G5, backlog item 2, size W). Spec: `.kiro/specs/engine/`.
+**Block 3: progress math** (PRD G5, backlog item 3, size D). Spec: `.kiro/specs/progress/`.
 
-Block 1 (data contract) passed Nov 11, tag `block-1`.
+Block 1 passed Nov 11 (tag `block-1`). Block 2 passed Nov 11 (tag `block-2`).
 
 ## Files this block may touch
 
-- `src/engine/config.js`, `rng.js`, `score.js`, `match.js`, `targets.js`, `round.js`, `lifecycle.js`, `result.js` (the last two added Nov 11 when `round.js` hit the line cap)
-- `src/engine/*.test.js` (including `lifecycle.test.js` and `result.test.js`)
-- `contract/schemas/roundResult.json`, `contract/rules.js`, `contract/types.js` (keyDeltas and `continued` only, design decision 8)
-- `fixtures/normal/*.json`, `fixtures/ugly/*.json` (RoundResult updates and the two new ugly cases)
-- `.kiro/specs/engine/*`
+- `src/engine/progressConfig.js`, `keystats.js`, `heatmap.js`, `diagnose.js`, `milestones.js`
+- Their `*.test.js` files in `src/engine/`
+- `contract/schemas/diagnosis.json`, `milestone.json`, `progress.json`, `contract/types.js` (design decision 8 only)
+- `fixtures/normal/*.json`, `fixtures/ugly/*.json` (updates for those shapes and the new ugly cases)
+- `.kiro/specs/progress/*`
 - `KIRO-NOTES.md`
 
 Anything else: stop and ask Shara.
 
 ## Rigor tier
 
-Full. These functions produce every number a player sees.
+Full. These produce what the player sees about their own typing.
 
 ## PASS line
 
-Every requirement in `.kiro/specs/engine/requirements.md` has a test. `npm test` is green. `npm run lint` is clean. `node scripts/check-fixtures.js` passes. No engine file over 150 lines without Shara's OK. The reviewer agent has run and Shara has read its report.
+Every requirement in `.kiro/specs/progress/requirements.md` has a test. `npm test` is green. `npm run lint` is clean. `node scripts/check-fixtures.js` passes. Source files under 150 lines without Shara's OK; nothing over 250. The reviewer has run and Shara has read its report.
 
 ## Hooks alive
 
-`line-cap` (permanent), `block-scope` (permanent), `fixture-check` (until the contract freezes after Block 3).
+`line-cap` (permanent), `block-scope` (permanent), `fixture-check` (retires when the contract freezes at the end of this block).

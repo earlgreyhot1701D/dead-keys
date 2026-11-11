@@ -62,6 +62,7 @@ Shara picked the Stitch direction and locked it. The static mock lives at `mock/
 | Fourth heat band | "Uneven": teal dashed border with a vertical stripe pattern and the `?` mark. Bands: missed `!` stripes coral, shaky `~` dots amber, uneven `?`, steady `✓`, no data `·` hatch. Exact cutoffs set in Block 3. |
 | Play screens | One HUD bar (no top header during play). Danger zone (falling) and danger ring (corners) in amber with `[!]` on words inside. Locked target has the strongest treatment; a beam or fire line joins it to the ship or base. Far words smaller and dimmer. Words always lowercase, exactly as typed. |
 | Title | Live attract demo behind a 680px panel: lanes, falling cards, a locked demo word, station on the baseline, Pause demo works, reduced motion shows a still frame. |
+| Band labels (Nov 11) | Players see where a key is heading: Focus here `!`, Practicing `~`, Almost there `?`, Steady `✓`, Not enough yet `·`. Internal names (missed, shaky, uneven, steady) stay for code and "How we count". Glyphs, colors and patterns unchanged. |
 | Copy rule | Only true numbers and real features. No ranks, grades, fake telemetry or shortcuts that don't exist. Personality lives in flavor labels (TERMINAL 84, PID 0xDEAD, STATION_ID). |
 | Escape (decided Nov 11 2026) | Layered. If a word is locked, Escape drops the lock. If nothing is locked, Escape pauses. Resolves the G2 vs G5 conflict. |
 
