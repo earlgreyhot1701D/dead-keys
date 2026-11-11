@@ -1,0 +1,11 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "block-scope",
+      "description": "PRD G12 H2, permanent. Prints the current block, its file allowlist and its PASS line at session start.",
+      "trigger": "SessionStart",
+      "action": { "type": "command", "command": "node scripts/current-block.js" }
+    }
+  ]
+}

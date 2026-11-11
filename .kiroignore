@@ -1,0 +1,9 @@
+# Kiro can't read these. Secrets never reach the agent (PRD G12).
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+secrets/
+credentials/
