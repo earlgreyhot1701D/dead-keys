@@ -10,10 +10,10 @@ Storage is passed in (`window.localStorage` in the app, a stand-in in tests), so
 ```
 app start   -> load(storage, now)            -> { progress, notice, persist }
 round ends  -> record(progress, result, day) -> progress        (engine, pure)
-            -> save(storage, progress)       -> { notice }       (only if persist)
+            -> save(storage, progress)       -> { notice } | { notice, reason }   (only if persist; reason "invalid" or "storage")
 settings    -> exportText(progress)          -> string
             -> importText(text, now)         -> { ok, progress } | { ok: false, reason }
-            -> clear(storage, now)           -> { progress, notice }
+            -> clear(storage, now)           -> { progress, notice, persist }
             -> readCorrupt(storage)          -> string | null
 ```
 
@@ -26,8 +26,9 @@ settings    -> exportText(progress)          -> string
 | `contract/schemas.js` | (changed) load schemas without `node:fs` | unchanged API |
 | `src/storage/notices.js` | The five approved notices: id, line, button | `NOTICES` |
 | `src/storage/vet.js` | Checks the schema subset can't express (Req 3) | `vet(progress)` returning errors |
-| `src/storage/migrate.js` | Old saves to current, one step per version | `migrate(value)` |
-| `src/storage/store.js` | Load, save, clear, read the corrupt copy | `load`, `save`, `clear`, `readCorrupt`, `freshProgress`, `KEY`, `CORRUPT_KEY` |
+| `src/storage/migrate.js` | Old saves to current, one step per version; also the one place the fresh shape is written | `migrate(value, now)` (an optional third argument is the step table, for tests), `freshProgress(now)`, `STEPS` |
+| `src/storage/store.js` | Load, read the corrupt copy | `load`, `readCorrupt`, `KEY`, `CORRUPT_KEY`, and a re-export of `freshProgress` |
+| `src/storage/saveClear.js` | Write and remove the save (split from `store.js` at the line cap, Nov 11) | `save`, `clear` |
 | `src/storage/exportImport.js` | Backup text out and in | `exportText`, `importText`, `MAX_IMPORT_BYTES` |
 | `src/engine/record.js` | Fold one round into Progress | `record(progress, result, localDay)` |
 | one `*.test.js` per file | | |
@@ -43,6 +44,12 @@ settings    -> exportText(progress)          -> string
 7. **Prototype keys.** `vet` rejects `__proto__`, `constructor` and `prototype` anywhere in the tree, which closes the gap left by map-like fields (`keyDeltas`, `bests`).
 8. **Record order.** keys, then bests, then day streak, then milestones (which read the updated streak), then append and cap at 200.
 9. **No new shapes.** The contract stays frozen; `vet` adds checks, not fields.
+10. **Corrupt copy that cannot be written** (decided Nov 11). Nothing is touched: the damaged text stays under `deadkeys:v1`, the game runs in memory with `persist` false, and the notice is `blocked`. Otherwise the `corrupt` notice would promise a copy that does not exist, and a later save would destroy the only one. After a good copy, fresh progress is written at once so the notice is not repeated on every load.
+11. **`save` refuses invalid progress** (decided Nov 11). Progress that fails the contract or the vet checks is never written and returns `{ notice: "saveFailed", reason: "invalid" }`; a storage that refuses returns `reason: "storage"`. The player sees the same line, but a bug cannot pass as a full disk.
+12. **An upgraded save that cannot be written** still loads, with the `saveFailed` notice (decided Nov 11).
+13. **`migrate(value, now)`** takes the clock, for the fresh `createdAt` of an upgraded save, and returns `{ ok: true, progress }` only for results that pass the contract and the vet checks (decided Nov 11).
+14. **`clear` returns `persist`** (decided Nov 11): false when storage refused the removal, since the old data may still be there.
+15. **One fresh shape** (decided Nov 11). `freshProgress` is written once, in `migrate.js`; `store.js` re-exports it and the version 0 upgrade starts from it, so they cannot drift. `load` writes only data `migrate` or `freshProgress` just produced, so it needs no `save`, and `saveClear.js` imports `store.js` without a cycle.
 
 ## Tests
 

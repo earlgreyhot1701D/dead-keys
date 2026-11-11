@@ -10,7 +10,7 @@ Progress lives only in the player's browser, under one key. This block loads it,
 
 ## Scope
 
-**In:** `src/storage/store.js` (load, save, clear), `migrate.js`, `exportImport.js`, `vet.js` (checks the schema can't express), `src/engine/record.js` (fold one finished round into Progress). The browser switch for `contract/schemas.js`. Tests.
+**In:** `src/storage/store.js` (load), `saveClear.js` (save, clear), `migrate.js`, `exportImport.js`, `vet.js` (checks the schema can't express), `src/engine/record.js` (fold one finished round into Progress). The browser switch for `contract/schemas.js`. Tests.
 **Out:** the Settings screen, confirm dialogs and notice styling (Block 6). Settings fields (Block 6). Ghost saving (Block 13).
 
 ## Glossary
@@ -30,8 +30,8 @@ Progress lives only in the player's browser, under one key. This block loads it,
 
 1. THE SYSTEM SHALL read exactly one key, `deadkeys:v1`.
 2. IF nothing is saved, THE SYSTEM SHALL start fresh progress with no notice.
-3. IF the saved text is not JSON, or fails the contract or the vet checks, THE SYSTEM SHALL copy the raw text to `deadkeys:v1:corrupt`, start fresh, and return the corrupt notice.
-4. IF the save is an older `schemaVersion`, THE SYSTEM SHALL migrate it, check the result, save it, and return no notice. IF migration fails, treat it as corrupt.
+3. IF the saved text is not JSON, or fails the contract or the vet checks, THE SYSTEM SHALL copy the raw text to `deadkeys:v1:corrupt`, start fresh (and write the fresh progress at once, so the notice is not repeated on every load), and return the corrupt notice. IF the raw text cannot be copied, THE SYSTEM SHALL leave the saved text untouched, run in memory, and return the blocked notice instead, so a notice never promises a copy that does not exist and a later save never destroys the only one.
+4. IF the save is an older `schemaVersion`, THE SYSTEM SHALL migrate it, check the result, save it, and return no notice. IF the upgraded save cannot be written, it SHALL still load and the saveFailed notice SHALL be returned. IF migration fails, treat it as corrupt.
 5. IF the save is a newer `schemaVersion`, THE SYSTEM SHALL not overwrite it, SHALL run in memory, and return the newer-version notice.
 6. IF storage throws or is missing, THE SYSTEM SHALL run in memory and return the blocked notice.
 7. WHEN a corrupt copy exists, THE SYSTEM SHALL return its raw text on request, so the screen can offer it as a download.
@@ -53,8 +53,8 @@ THE SYSTEM SHALL reject a save where any of these is false (the Deferred-to-Bloc
 ## Requirement 5: Save and clear
 
 1. THE SYSTEM SHALL save the whole Progress to `deadkeys:v1` after each recorded round.
-2. IF a save throws (quota, blocked), THE SYSTEM SHALL keep the game running in memory and return the not-saved notice.
-3. Clear SHALL remove `deadkeys:v1` and `deadkeys:v1:corrupt` and return fresh progress. The confirm step is the screen's job.
+2. IF a save throws (quota, blocked), THE SYSTEM SHALL keep the game running in memory and return the not-saved notice with the reason "storage". Progress that fails the contract or the vet checks SHALL never be written; the notice is the same but the reason is "invalid", so a bug cannot pass as a full disk.
+3. Clear SHALL remove `deadkeys:v1` and `deadkeys:v1:corrupt` and return fresh progress, trying both keys even if the first fails. IF storage refuses, it SHALL return the blocked notice and `persist` false. The confirm step is the screen's job.
 
 ## Requirement 6: Export and import
 

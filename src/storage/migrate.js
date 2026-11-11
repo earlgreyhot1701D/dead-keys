@@ -11,18 +11,18 @@ const fail = (reason) => ({ ok: false, reason });
 const maxRounds = () => loadSchemas().get("progress.json").properties.rounds.maxItems;
 
 /**
- * Version 0 to 1. Keeps the rounds that pass the RoundResult contract and the vet checks (the
- * newest 200), and fills every other field fresh. Anything else in the old save is dropped.
- * No real player has a version 0 save; the step exists so the path is tested before it is needed.
+ * A new, empty Progress (design decision 5). The one place the fresh shape is written; store.js
+ * re-exports it and the version 0 upgrade starts from it.
+ * @param {number} now Milliseconds, for `createdAt`.
+ * @returns {import("../../contract/types.js").Progress}
+ * @throws {TypeError} If `now` is not a whole number (programmer error).
  */
-function zeroToOne(old, now) {
-  const rounds = (Array.isArray(old.rounds) ? old.rounds : []).filter(
-    (r) => validate("RoundResult", r).status === "valid" && vet({ rounds: [r] }).length === 0,
-  );
+export function freshProgress(now) {
+  if (!Number.isInteger(now) || now < 0) throw new TypeError("now must be a whole number");
   return {
-    schemaVersion: 1,
+    schemaVersion: CURRENT_SCHEMA_VERSION,
     createdAt: now,
-    rounds: structuredClone(rounds.slice(-maxRounds())),
+    rounds: [],
     keys: [],
     bests: {},
     dayStreak: { lastDay: null, count: 0 },
@@ -31,6 +31,18 @@ function zeroToOne(old, now) {
     settings: {},
     ghosts: [],
   };
+}
+
+/**
+ * Version 0 to 1. Keeps the rounds that pass the RoundResult contract and the vet checks (the
+ * newest 200), and fills every other field fresh. Anything else in the old save is dropped.
+ * No real player has a version 0 save; the step exists so the path is tested before it is needed.
+ */
+function zeroToOne(old, now) {
+  const rounds = (Array.isArray(old.rounds) ? old.rounds : []).filter(
+    (r) => validate("RoundResult", r).status === "valid" && vet({ rounds: [r] }).length === 0,
+  );
+  return { ...freshProgress(now), rounds: structuredClone(rounds.slice(-maxRounds())) };
 }
 
 /** One entry per version step. `run(old, now)` returns the next version. */

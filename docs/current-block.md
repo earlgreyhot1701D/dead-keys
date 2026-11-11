@@ -9,7 +9,7 @@ Blocks 1 to 3 passed Nov 11 (tags `block-1`, `block-2`, `block-3`). The contract
 - `contract/schemas.js` (browser switch only, design decision 1; spike passed Nov 11, so plan B is not needed)
 - `contract/contract.test.js` (one test that the `FILES` list matches `contract/schemas/`, added Nov 11)
 - `package.json` (the `engines` field only, added Nov 11)
-- `src/storage/notices.js`, `vet.js`, `migrate.js`, `store.js`, `exportImport.js`, and their `*.test.js`
+- `src/storage/notices.js`, `vet.js`, `migrate.js`, `store.js`, `saveClear.js`, `exportImport.js`, and their `*.test.js` (`saveClear.js` was split from `store.js` at the line cap, Nov 11; `storeHelpers.test.js` holds the `freshProgress` and `readCorrupt` tests)
 - `src/engine/record.js`, `src/engine/record.test.js`
 - `.kiro/specs/storage/*`
 - `KIRO-NOTES.md`
