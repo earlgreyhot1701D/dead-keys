@@ -3,9 +3,9 @@
 **Spec:** `engine`. Requirements and design approved Nov 11. **Rigor:** Full.
 One task at a time. Never "run all." Each task: touch only the files it names, then stop with a brief recap. Flag anything that looks off instead of guessing. DO NOT refactor other code.
 
-- [ ] 1. `src/engine/config.js`: the named constants from design.md with the confirmed numbers (LIVES_MAX 5, WAVE_SIZE 10, WAVE_SPEEDUP 1.1, SPEED_MIN 0.5, SPEED_MAX 2, TARGETS_START 3, TARGETS_MAX 8, BASE_TRAVEL_MS 8000, SLOTS per mode). Job line at top. _Req 5, Proposed numbers._
-- [ ] 2. `src/engine/rng.js` + `rng.test.js`: mulberry32 with state as plain data. Property tests: same seed same sequence, every value in [0, 1). _Req 1._
-- [ ] 3. `src/engine/score.js` + `score.test.js`: `wpm`, `accuracy`. Property tests: never negative, accuracy in [0, 1], never NaN or Infinity, zero cases. _Req 4._
+- [x] 1. `src/engine/config.js`: the named constants from design.md with the confirmed numbers (LIVES_MAX 5, WAVE_SIZE 10, WAVE_SPEEDUP 1.1, SPEED_MIN 0.5, SPEED_MAX 2, TARGETS_START 3, TARGETS_MAX 8, BASE_TRAVEL_MS 8000, SLOTS per mode). Job line at top. _Req 5, Proposed numbers._
+- [x] 2. `src/engine/rng.js` + `rng.test.js`: mulberry32 with state as plain data. Property tests: same seed same sequence, every value in [0, 1). _Req 1._
+- [x] 3. `src/engine/score.js` + `score.test.js`: `wpm`, `accuracy`. Property tests: never negative, accuracy in [0, 1], never NaN or Infinity, zero cases. _Req 4._
 - [ ] 4. `src/engine/match.js` + `match.test.js`: `pickLock`, `applyKey`. Property tests: lock goes to nearest-to-danger target whose next character matches, ties to lower id, never a target that doesn't start with the typed character; case counts. _Req 2._
 - [ ] 5. Contract change: `contract/schemas/roundResult.json` (`keyDeltas` as `{ [key]: { attempts, misses } }`, add required `continued` boolean), `contract/rules.js` (misses ≤ attempts per key), `contract/types.js`. Update every fixture that holds a RoundResult. Checker and `npm test` pass. _Req 6, design decision 8._
 - [ ] 6. Ugly fixtures for the change: a keyDelta with misses over attempts, a RoundResult missing `continued`. Both `expect: "invalid"` with `expectError`. _Req 6._
