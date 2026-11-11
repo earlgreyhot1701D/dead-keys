@@ -34,7 +34,16 @@
     },
     "bests": {
       "type": "object",
-      "description": "Personal bests. Loose until Block 3 (progress math) defines it."
+      "description": "Personal bests: the highest WPM per mode, with the round's date. Mode names are not checked here (the schema subset has no propertyNames).",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["wpm", "date"],
+        "additionalProperties": false,
+        "properties": {
+          "wpm": { "type": "number", "minimum": 0 },
+          "date": { "type": "integer", "minimum": 0, "description": "Epoch milliseconds." }
+        }
+      }
     },
     "lessonsPassed": {
       "type": "array",

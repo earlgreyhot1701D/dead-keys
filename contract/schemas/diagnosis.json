@@ -18,8 +18,8 @@
           },
           "severity": {
             "type": "string",
-            "minLength": 1,
-            "description": "Loose until Block 3 (diagnose) defines the scale."
+            "enum": ["high", "medium"],
+            "description": "high at 3x the player's overall miss rate or more, medium at 2x."
           },
           "keys": {
             "type": "array",

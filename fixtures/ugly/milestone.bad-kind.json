@@ -1,0 +1,12 @@
+{
+  "shape": "Milestone",
+  "expect": "invalid",
+  "expectError": "must be one of \"wpm-band\"",
+  "reason": "speed-dip is not a milestone kind; nothing is ever awarded for getting slower",
+  "value": {
+    "id": "speed-dip-1",
+    "kind": "speed-dip",
+    "threshold": null,
+    "label": "Speed dipped"
+  }
+}

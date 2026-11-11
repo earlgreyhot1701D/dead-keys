@@ -78,7 +78,7 @@ export const CURRENT_SCHEMA_VERSION = 1;
  * A reward. Schema: contract/schemas/milestone.json
  * @typedef {object} Milestone
  * @property {string} id
- * @property {string} kind Defined in Block 11.
+ * @property {"wpm-band"|"accuracy-streak"|"day-streak"|"lesson-passed"} kind
  * @property {number|null} threshold Null when there is none.
  * @property {string} label
  */
@@ -86,7 +86,7 @@ export const CURRENT_SCHEMA_VERSION = 1;
 /**
  * Plain-words summary of the player's typing. Schema: contract/schemas/diagnosis.json
  * @typedef {object} Diagnosis
- * @property {{ text: string, severity: string, keys: string[] }[]} sentences At most 3.
+ * @property {{ text: string, severity: "high"|"medium", keys: string[] }[]} sentences At most 3.
  * @property {string[]} weakKeys At most 6.
  * @property {boolean} sufficientData
  */
@@ -113,7 +113,7 @@ export const CURRENT_SCHEMA_VERSION = 1;
  * @property {number} createdAt
  * @property {RoundResult[]} rounds At most 200.
  * @property {KeyStat[]} keys
- * @property {object} bests Defined in Block 3.
+ * @property {Object<string, { wpm: number, date: number }>} bests Highest WPM per mode.
  * @property {{ lessonId: string, how: "lesson"|"testout" }[]} lessonsPassed
  * @property {Milestone[]} milestones
  * @property {object} settings Defined in Block 6.

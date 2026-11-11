@@ -1,0 +1,17 @@
+{
+  "shape": "Progress",
+  "expect": "invalid",
+  "expectError": "-5 is below the minimum of 0",
+  "reason": "a personal best of -5 WPM is impossible",
+  "value": {
+    "schemaVersion": 1,
+    "createdAt": 1792900000000,
+    "rounds": [],
+    "keys": [],
+    "bests": { "corners": { "wpm": -5, "date": 1793000000000 } },
+    "lessonsPassed": [],
+    "milestones": [],
+    "settings": {},
+    "ghosts": []
+  }
+}

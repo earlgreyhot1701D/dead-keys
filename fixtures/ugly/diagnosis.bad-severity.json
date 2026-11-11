@@ -1,0 +1,17 @@
+{
+  "shape": "Diagnosis",
+  "expect": "invalid",
+  "expectError": "must be one of \"high\", \"medium\"",
+  "reason": "severity \"low\" is not one of the two levels",
+  "value": {
+    "sentences": [
+      {
+        "text": "Your top row misses about 1 in 6 keys, twice your usual rate.",
+        "severity": "low",
+        "keys": ["q"]
+      }
+    ],
+    "weakKeys": ["q"],
+    "sufficientData": true
+  }
+}

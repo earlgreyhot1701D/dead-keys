@@ -27,7 +27,7 @@
       { "key": "f", "attempts": 12, "misses": 1, "lastSeen": 1793000000000 },
       { "key": "j", "attempts": 10, "misses": 0, "lastSeen": 1793000000000 }
     ],
-    "bests": { "wpm": 30 },
+    "bests": { "corners": { "wpm": 30, "date": 1793000000000 } },
     "lessonsPassed": [{ "lessonId": "1", "how": "lesson" }],
     "milestones": [
       {

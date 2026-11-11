@@ -1,6 +1,6 @@
 {
   "type": "object",
-  "description": "Milestone (PRD G4). kind is a loose string until Block 11 (milestones) defines the kinds.",
+  "description": "Milestone (PRD G4, G5). One reward, awarded once, found again by its stable id.",
   "required": ["id", "kind", "threshold", "label"],
   "additionalProperties": false,
   "properties": {
@@ -10,8 +10,7 @@
     },
     "kind": {
       "type": "string",
-      "minLength": 1,
-      "description": "Loose now. Block 11 defines the set."
+      "enum": ["wpm-band", "accuracy-streak", "day-streak", "lesson-passed"]
     },
     "threshold": {
       "type": ["number", "null"],
