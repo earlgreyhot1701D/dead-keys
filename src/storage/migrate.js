@@ -7,7 +7,8 @@ import { validate } from "../../contract/validate.js";
 import { vet } from "./vet.js";
 
 const isObj = (v) => typeof v === "object" && v !== null && !Array.isArray(v);
-const fail = (reason) => ({ ok: false, reason });
+/** Why an upgrade failed, as a code callers can rely on (the `reason` text is only for logs). */
+const fail = (code, reason) => ({ ok: false, code, reason });
 const maxRounds = () => loadSchemas().get("progress.json").properties.rounds.maxItems;
 
 /**
@@ -51,31 +52,32 @@ export const STEPS = Object.freeze([Object.freeze({ from: 0, to: 1, run: zeroToO
 /**
  * Bring a saved value up to the current version and check it. A value already at the current
  * version is only checked. A newer version, a missing step, a step that throws, or a result that
- * fails the contract or the vet checks all give `{ ok: false, reason }` (the caller treats it as
+ * fails the contract or the vet checks all give `{ ok: false, code, reason }` (the caller treats it as
  * corrupt). Never changes `value`.
  * @param {unknown} value Parsed JSON.
  * @param {number} now Milliseconds, for the fresh `createdAt` of an upgraded save.
  * @param {readonly { from: number, to: number, run: (old: any, now: number) => unknown }[]} [steps]
  *   The step table. Only tests pass this.
- * @returns {{ ok: true, progress: import("../../contract/types.js").Progress } | { ok: false, reason: string }}
+ * @returns {{ ok: true, progress: import("../../contract/types.js").Progress } | { ok: false, code: "notASave"|"newer"|"noPath"|"badStep"|"stepFailed"|"format"|"unsafe", reason: string }}
  * @throws {TypeError} If `now` is not a whole number (programmer error).
  */
 export function migrate(value, now, steps = STEPS) {
   if (!Number.isInteger(now) || now < 0) throw new TypeError("now must be a whole number");
   if (!isObj(value) || !Number.isInteger(value.schemaVersion) || value.schemaVersion < 0) {
-    return fail("this is not a Dead Keys save");
+    return fail("notASave", "this is not a Dead Keys save");
   }
   let version = value.schemaVersion;
-  if (version > CURRENT_SCHEMA_VERSION) return fail(`saved by a newer version (${version})`);
+  if (version > CURRENT_SCHEMA_VERSION)
+    return fail("newer", `saved by a newer version (${version})`);
   let current = value;
   while (version < CURRENT_SCHEMA_VERSION) {
     const step = steps.find((s) => s.from === version);
-    if (!step) return fail(`no upgrade path from version ${version}`);
-    if (!(step.to > version)) return fail(`bad upgrade step from version ${version}`);
+    if (!step) return fail("noPath", `no upgrade path from version ${version}`);
+    if (!(step.to > version)) return fail("badStep", `bad upgrade step from version ${version}`);
     try {
       current = step.run(current, now);
     } catch {
-      return fail(`upgrading from version ${version} failed`);
+      return fail("stepFailed", `upgrading from version ${version} failed`);
     }
     version = step.to;
   }
@@ -83,11 +85,15 @@ export function migrate(value, now, steps = STEPS) {
   if (checked.status !== "valid") {
     const first = checked.errors[0];
     return fail(
+      "format",
       `does not match the save format (${first ? `${first.path || "(root)"}: ${first.message}` : "unknown"})`,
     );
   }
   const problems = vet(current);
   if (problems.length > 0)
-    return fail(`failed a safety check (${problems[0].path || "(root)"}: ${problems[0].message})`);
+    return fail(
+      "unsafe",
+      `failed a safety check (${problems[0].path || "(root)"}: ${problems[0].message})`,
+    );
   return { ok: true, progress: current };
 }

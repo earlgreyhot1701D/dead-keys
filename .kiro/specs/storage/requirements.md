@@ -31,7 +31,7 @@ Progress lives only in the player's browser, under one key. This block loads it,
 1. THE SYSTEM SHALL read exactly one key, `deadkeys:v1`.
 2. IF nothing is saved, THE SYSTEM SHALL start fresh progress with no notice.
 3. IF the saved text is not JSON, or fails the contract or the vet checks, THE SYSTEM SHALL copy the raw text to `deadkeys:v1:corrupt`, start fresh (and write the fresh progress at once, so the notice is not repeated on every load), and return the corrupt notice. IF the raw text cannot be copied, THE SYSTEM SHALL leave the saved text untouched, run in memory, and return the blocked notice instead, so a notice never promises a copy that does not exist and a later save never destroys the only one.
-4. IF the save is an older `schemaVersion`, THE SYSTEM SHALL migrate it, check the result, save it, and return no notice. IF the upgraded save cannot be written, it SHALL still load and the saveFailed notice SHALL be returned. IF migration fails, treat it as corrupt.
+4. IF the save is an older `schemaVersion`, THE SYSTEM SHALL migrate it and check the result, then copy the raw text to `deadkeys:v1:corrupt` (an upgrade can drop data), then save the upgraded progress, and return no notice. IF the copy cannot be written, THE SYSTEM SHALL touch nothing, run the upgraded progress in memory, and return the blocked notice, as in Req 2.3. IF only the upgraded save cannot be written, it SHALL still load and the saveFailed notice SHALL be returned. IF migration fails or throws, treat the save as corrupt. (An imported backup is not copied: the file is still on the player's disk.)
 5. IF the save is a newer `schemaVersion`, THE SYSTEM SHALL not overwrite it, SHALL run in memory, and return the newer-version notice.
 6. IF storage throws or is missing, THE SYSTEM SHALL run in memory and return the blocked notice.
 7. WHEN a corrupt copy exists, THE SYSTEM SHALL return its raw text on request, so the screen can offer it as a download.
@@ -64,6 +64,8 @@ THE SYSTEM SHALL reject a save where any of these is false (the Deferred-to-Bloc
 2. Import SHALL accept text up to 2 MB, parse it with `JSON.parse` only, migrate if older, and check it with the contract and vet checks.
 3. IF import fails, THE SYSTEM SHALL change nothing and return a reason in plain words. IF it passes, it SHALL return the new Progress for the screen to confirm before saving.
 
+4. IF the failure is that the file was made by a newer version, THE SYSTEM SHALL recognise it by migrate's `code` ("newer"), never by matching message text.
+
 ## Requirement 7: Tests
 
 1. Every requirement SHALL have a property test or a named example, using a stand-in storage that can be set to throw.
@@ -71,6 +73,20 @@ THE SYSTEM SHALL reject a save where any of these is false (the Deferred-to-Bloc
 3. `npm test`, `npm run lint` and `node scripts/check-fixtures.js` SHALL pass.
 
 ---
+
+## Reasons (Shara to approve)
+
+`importText` returns one of these reasons with every failure. The screen (Block 6) shows the `importFailed` notice below, and may show the reason beside it. None contains text from inside the file. **Deferred to Block 6: Shara approves the wording when the screen shows it.**
+
+| When | Reason |
+|---|---|
+| The input is not text | That isn't a text file. |
+| The text is over 2 MB (UTF-8 bytes) | That file is too big to be a Dead Keys backup. The limit is 2 MB. |
+| It is not valid JSON | That file isn't a Dead Keys backup. It isn't valid JSON. |
+| It was made by a newer version | That backup was made by a newer version of Dead Keys. Refresh to get the latest version, then try again. |
+| Anything else: not a save, fails the contract, fails a vet check, cannot be upgraded | That file isn't a valid Dead Keys backup, or it is damaged. |
+
+`save` also returns a `reason`, "invalid" or "storage", but it is a code for the app and for tests; the player sees only the `saveFailed` notice.
 
 ## Notice wording (approved)
 

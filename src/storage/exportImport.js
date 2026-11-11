@@ -53,7 +53,7 @@ export function importText(text, now) {
   }
   const result = migrate(value, now);
   if (result.ok) return result;
-  if (result.reason.startsWith("saved by a newer version")) {
+  if (result.code === "newer") {
     return fail(
       "That backup was made by a newer version of Dead Keys. Refresh to get the latest version, then try again.",
     );

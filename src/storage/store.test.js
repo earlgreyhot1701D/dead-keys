@@ -114,7 +114,7 @@ test("an older version is upgraded, checked, saved, and shown without a notice",
   assert.equal(r.persist, true);
   assert.equal(r.progress.schemaVersion, 1);
   assert.deepEqual(JSON.parse(s.data.get(KEY)), r.progress);
-  assert.equal(s.data.has(CORRUPT_KEY), false);
+  assert.equal(s.data.get(CORRUPT_KEY), old); // the old save is kept, since an upgrade can drop data
 });
 
 test("an upgraded save that cannot be written still loads, with the saveFailed notice", () => {

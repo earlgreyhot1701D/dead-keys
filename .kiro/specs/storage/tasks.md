@@ -10,6 +10,6 @@ One task at a time. Never "run all." Touch only the files a task names. Tick eac
 - [x] 5. `src/storage/store.js` + test: `freshProgress`, `load`, `save`, `clear`, `readCorrupt`, with a stand-in storage that can throw on any call. Every Req 2 and Req 5 branch. _Req 2, 5._
 - [x] 6. `src/storage/exportImport.js` + test: round-trip property, junk property, the 2 MB limit. _Req 6._
 - [x] 7. `src/engine/record.js` + test: order per design decision 8, cap at 200, no mutation, output passes contract and vet. _Req 4._
-- [ ] 8. Run `npm run lint`, `npm test`, `node scripts/check-fixtures.js`. Report all three and line counts for every new file.
-- [ ] 9. `KIRO-NOTES.md`: Block 4 entry, every flag with a status. Mark each "Deferred to Block 4" row from earlier blocks as Fixed or still Deferred.
-- [ ] 10. Reviewer gate: run the reviewer against `docs/current-block.md` and this spec, run the three commands yourself, recap. Don't fix anything. Shara decides PASS.
+- [x] 8. Run `npm run lint`, `npm test`, `node scripts/check-fixtures.js`. Report all three and line counts for every new file.
+- [x] 9. `KIRO-NOTES.md`: Block 4 entry, every flag with a status. Mark each "Deferred to Block 4" row from earlier blocks as Fixed or still Deferred.
+- [x] 10. Reviewer gate: run the reviewer against `docs/current-block.md` and this spec, run the three commands yourself, recap. Don't fix anything. Shara decides PASS.

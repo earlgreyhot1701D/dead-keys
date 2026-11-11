@@ -51,6 +51,9 @@ settings    -> exportText(progress)          -> string
 14. **`clear` returns `persist`** (decided Nov 11): false when storage refused the removal, since the old data may still be there.
 15. **One fresh shape** (decided Nov 11). `freshProgress` is written once, in `migrate.js`; `store.js` re-exports it and the version 0 upgrade starts from it, so they cannot drift. `load` writes only data `migrate` or `freshProgress` just produced, so it needs no `save`, and `saveClear.js` imports `store.js` without a cycle.
 16. **`record` ignores a duplicate and copies the round** (decided Nov 11). A round whose id is already in `progress.rounds` returns `progress` unchanged (it was first built to throw; a double-fired results screen must not crash or double count). The appended round is a `structuredClone`. Known limit: an id that has already fallen out of the last 200 rounds is not seen, which a double-fire cannot reach. `record` returns only the progress; an explicit "new best" return is Deferred to Block 11.
+17. **An upgrade keeps the original first** (decided Nov 11). Version 0 keeps only valid rounds, so before `load` writes an upgraded save over `deadkeys:v1` it copies the raw text to `deadkeys:v1:corrupt`. If that copy cannot be written, nothing is touched, the upgraded progress runs in memory (`persist` false) and the notice is `blocked`, as in decision 10. A successful upgrade shows no notice. Import does not copy: the backup file is still on the player's disk. Known limit: the copy shares the one slot, so it replaces an earlier damaged copy that was never downloaded.
+18. **`migrate` failures carry a code** (decided Nov 11): `notASave`, `newer`, `noPath`, `badStep`, `stepFailed`, `format` or `unsafe`. `importText` reads the code, never the message text, so rewording a reason cannot change what the player sees.
+19. **A throwing upgrade is a damaged save** (decided Nov 11). `load` wraps the `migrate` call in try/catch; a throw takes the corrupt path. `load` takes an optional third argument (the migrate function) that only tests pass.
 
 ## Tests
 
@@ -64,4 +67,5 @@ settings    -> exportText(progress)          -> string
 | Clear removes both keys | example | Leftover data |
 | Each vet rule, including `__proto__` | examples | Prototype pollution, bad keys |
 | Import over 2 MB is refused before parsing | example | Memory spikes |
+
 

@@ -2,11 +2,30 @@
 // character gets through a DrillResponse (PRD G12).
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
+import { builtinModules } from "node:module";
 import { test } from "node:test";
 import * as fc from "fast-check";
 import { checkAll } from "../scripts/check-fixtures.js";
 import { loadSchemas } from "./schemas.js";
 import { validate } from "./validate.js";
+
+test("the contract files the browser build loads import nothing from node:", () => {
+  // Req 1.1: validate must run in the browser. A node: import (or a bare one such as "fs") would
+  // build in Node and fail in the browser, so every import specifier in these files is checked.
+  for (const f of ["schemas.js", "validate.js", "rules.js", "types.js"]) {
+    const src = readFileSync(new URL(`./${f}`, import.meta.url), "utf8");
+    const specs = [...src.matchAll(/(?:from\s*|import\s*\(?\s*)["']([^"']+)["']/g)].map(
+      (m) => m[1],
+    );
+    assert.ok(specs.length > 0 || f === "types.js", `${f}: found no imports to check`);
+    for (const spec of specs) {
+      assert.ok(
+        !spec.startsWith("node:") && !builtinModules.includes(spec),
+        `${f} imports ${spec}`,
+      );
+    }
+  }
+});
 
 test("schemas.js lists exactly the files in contract/schemas/", () => {
   // schemas.js imports each file by name (no node:fs), so a new file must be added there too.

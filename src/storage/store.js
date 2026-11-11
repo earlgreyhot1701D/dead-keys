@@ -37,19 +37,23 @@ const put = (storage, progress) => attempt(() => storage.setItem(KEY, JSON.strin
  * the save is from a newer version (never overwritten). In every case `progress` is usable.
  * - nothing saved: fresh, no notice
  * - saved and good: used as is
- * - older version: upgraded, checked and saved, no notice; if the upgraded save cannot be
- *   written it still loads, with `saveFailed`
+ * - older version: the raw text is copied to `deadkeys:v1:corrupt` first (an upgrade can drop
+ *   data), then the upgraded save is written, no notice; if the copy cannot be written, nothing is
+ *   touched, the upgraded progress runs in memory, `blocked`; if only the upgraded write fails it
+ *   still loads, with `saveFailed`
  * - newer version: left alone, fresh in memory, `newer`
- * - damaged (not JSON, fails the contract or the vet checks, or cannot be upgraded): the raw text
+ * - damaged (not JSON, fails the contract or the vet checks, cannot be upgraded, or the upgrade
+ *   throws): the raw text
  *   is copied to `deadkeys:v1:corrupt`, fresh progress replaces it at once, `corrupt`
  * - if that copy cannot be written, nothing is touched, fresh in memory, `blocked`
  * - storage missing or throwing: fresh in memory, `blocked`
  * @param {Storage} storage
  * @param {number} now Milliseconds, for a fresh `createdAt`.
+ * @param {typeof migrate} [migrateFn] Only tests pass this, to prove a throwing upgrade is handled.
  * @returns {{ progress: import("../../contract/types.js").Progress, notice: NoticeId | null, persist: boolean }}
  * @throws {TypeError} If `now` is not a whole number (programmer error).
  */
-export function load(storage, now) {
+export function load(storage, now, migrateFn = migrate) {
   if (!Number.isInteger(now) || now < 0) throw new TypeError("now must be a whole number");
   const blocked = () => ({ progress: freshProgress(now), notice: "blocked", persist: false });
   if (!usable(storage)) return blocked();
@@ -74,10 +78,21 @@ export function load(storage, now) {
   if (Number.isInteger(version) && version > CURRENT_SCHEMA_VERSION) {
     return { progress: freshProgress(now), notice: "newer", persist: false };
   }
-  const result = isJson ? migrate(parsed, now) : { ok: false };
+  let result = { ok: false };
+  if (isJson) {
+    try {
+      result = migrateFn(parsed, now);
+    } catch {
+      result = { ok: false }; // a throw while checking or upgrading means the save is damaged
+    }
+  }
   if (result.ok) {
     if (parsed.schemaVersion === CURRENT_SCHEMA_VERSION) {
       return { progress: result.progress, notice: null, persist: true };
+    }
+    // An upgrade can drop data (version 0 keeps only valid rounds), so keep the original first.
+    if (!attempt(() => storage.setItem(CORRUPT_KEY, raw))) {
+      return { progress: result.progress, notice: "blocked", persist: false };
     }
     const notice = put(storage, result.progress) ? null : "saveFailed";
     return { progress: result.progress, notice, persist: true };

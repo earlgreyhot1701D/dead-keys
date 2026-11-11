@@ -105,6 +105,7 @@ test("a current-version save that fails the contract or the vet checks is refuse
   const r = migrate(badDay, NOW);
   assert.equal(r.ok, false);
   assert.match(r.reason, /safety check/);
+  assert.equal(r.code, "unsafe");
   const proto = current();
   Object.defineProperty(proto.settings, "__proto__", { value: 1, enumerable: true });
   assert.equal(migrate(proto, NOW).ok, false);
@@ -112,7 +113,7 @@ test("a current-version save that fails the contract or the vet checks is refuse
 
 test("a newer version is refused, never rewritten", () => {
   const r = migrate({ ...current(), schemaVersion: 2 }, NOW);
-  assert.deepEqual(r, { ok: false, reason: "saved by a newer version (2)" });
+  assert.deepEqual(r, { ok: false, code: "newer", reason: "saved by a newer version (2)" });
 });
 
 test("things that are not a save are refused without throwing", () => {
@@ -133,6 +134,7 @@ test("things that are not a save are refused without throwing", () => {
     const r = migrate(junk, NOW);
     assert.equal(r.ok, false, JSON.stringify(junk));
     assert.equal(typeof r.reason, "string");
+    assert.equal(r.code, "notASave", JSON.stringify(junk));
   }
 });
 
@@ -160,6 +162,25 @@ test("a missing step, a step that throws, a bad step and a bad result all fail c
     return p;
   };
   assert.match(run([{ from: 0, to: 1, run: dirty }]).reason, /safety check/);
+});
+
+test("every failure carries a code, so callers never have to match message text", () => {
+  const run = (steps) => migrate(v0(), NOW, steps);
+  const boom = () => {
+    throw new Error("boom");
+  };
+  const dirty = (old, now) => ({
+    ...STEPS[0].run(old, now),
+    settings: JSON.parse('{"constructor":1}'),
+  });
+  assert.equal(run([]).code, "noPath");
+  assert.equal(run([{ from: 0, to: 1, run: boom }]).code, "stepFailed");
+  assert.equal(run([{ from: 0, to: 0, run: () => ({}) }]).code, "badStep");
+  assert.equal(run([{ from: 0, to: 1, run: () => ({ schemaVersion: 1 }) }]).code, "format");
+  assert.equal(run([{ from: 0, to: 1, run: dirty }]).code, "unsafe");
+  assert.equal(migrate({ ...current(), schemaVersion: 2 }, NOW).code, "newer");
+  assert.equal(migrate(null, NOW).code, "notASave");
+  assert.equal("code" in migrate(v0(), NOW), false); // success has none
 });
 
 test("the step table is v0 to v1 and nothing else", () => {

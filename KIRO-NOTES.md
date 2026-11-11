@@ -43,7 +43,7 @@ Pattern worth writing up: the spec said "don't invent," so the agent surfaced ev
 |---|---|---|
 | rules.js interface needed before task 14 | Fixed: Kiro's proposal approved | design.md, Rules |
 | validate.js can't run until rules.js exists | No action: expected, task 14 closes it | n/a |
-| validate.js is Node only (reads schemas with node:fs) | Deferred to Block 4: switch to static JSON imports | design.md, Known limits |
+| validate.js is Node only (reads schemas with node:fs) | Fixed in Block 4: `schemas.js` uses static JSON imports; the spike passed (test suite, a throwaway Vite build, and the built output validating a fixture) | `contract/schemas.js` |
 | Bad schema throws, bad data never does | No action: matches design; checker catches throws | design.md, Error handling |
 | validate.js at 144 lines | No action: under the 150 soft cap | n/a |
 | const/enum compare with JSON.stringify | Logged: fine for scalar values | design.md, Known limits |
@@ -85,7 +85,7 @@ The plan was thorough. Nobody checked that the plan was switched on. Found only 
 | Validator suite not re-run after the reformat | Fixed: task 18 makes the tests permanent | tasks.md 18 |
 | Checker compares status, not the reason | Fixed: `expectError` phrase must match a real error | tasks.md 17a, 17b |
 | Cases 9 and 11 hit the same "not JSON" path | No action: two real sources of bad JSON (saved data, cut-off network reply); both kept | n/a |
-| `progress.old-schema` body is deliberately invalid | Logged for Block 4: migration tests must not assume it parses | this note |
+| `progress.old-schema` body is deliberately invalid | Fixed in Block 4: the migrate test uses it, and the upgrade drops its bad round and `keys` to give a fresh, valid save | `migrate.test.js` |
 | Case 2 has no pack context | No action: the heat map block uses it as the every-key case | n/a |
 | `mock/` and `design-brief.md` untracked | No action: Claude made them for the UI track; they commit at the gate | n/a |
 
@@ -173,7 +173,7 @@ Built: `config`, `rng`, `score`, `match`, `targets`, `round`, `lifecycle`, `resu
 | `keyDeltas` shape, `continued`, and the misses-over-attempts rule | Fixed: schema, `rules.js`, `types.js`, and every fixture holding a RoundResult | `contract/` |
 | Generated fixtures `progress.200-rounds-all-keys` and `progress.201-rounds` were reflowed by my script (large diffs) | No action: the only content change was `continued: false` | `fixtures/ugly/` |
 | Misses over attempts nested inside a Progress round had no fixture | Fixed: `progress.round-keydelta-misses-over-attempts` | `fixtures/ugly/` |
-| `keyDeltas` keys are not checked to be one character | Deferred: the schema subset has no `propertyNames`; Req 6 does not ask for it | `contract/` |
+| `keyDeltas` keys are not checked to be one character | Fixed in Block 4: `vet` rule 1 checks every `keyDeltas` and `keys` key is one character, on load, import and save | `src/storage/vet.js` |
 | `pickLock` returns the target; `match` throws on bad input | No action: approved. The round filters bad input first (design decision 6) | `match.js` |
 | `mechanic in SLOTS` accepted "constructor" and "toString" | Fixed: `Object.hasOwn`, with a test | `targets.js`, `round.js` |
 | `nextId` added to round state | No action: needed so ids keep rising after targets leave | `design.md` |
@@ -214,7 +214,7 @@ Built: `progressConfig`, `keystats`, `heatmap`, `diagnose`, `milestones`, `daySt
 
 | Flag | Status | Where |
 |---|---|---|
-| `bests` keys are not checked to be real modes or to exclude practice (the schema subset has no `propertyNames`; `rules.js` is not on this block's allowlist) | Deferred to Block 4: storage validates on load, and `updateBests` is the only writer | `progress.json` |
+| `bests` keys are not checked to be real modes or to exclude practice (the schema subset has no `propertyNames`; `rules.js` is not on this block's allowlist) | Fixed in Block 4: `vet` rule 2 checks every `bests` key is a real mode and not `practice` | `vet.js` |
 | `lastSeen` depended on merge order | Fixed: `lastSeen` is the later of the saved date and the round's date, and the order property now checks it. My first grouping test was wrong (one combined round has one date, so it cannot reproduce per-key `lastSeen`); grouping checks counts only | `keystats.js` |
 | Zero-attempt deltas still touch a key | No action: the engine never emits one | `keystats.js` |
 | `mergeRound`, `bandFor`, `diagnose`, `updateBests`, `updateDayStreak` throw on malformed input | No action: approved, design decision 6 | `src/engine/` |
@@ -230,8 +230,8 @@ Built: `progressConfig`, `keystats`, `heatmap`, `diagnose`, `milestones`, `daySt
 | `milestones.js` reached 156 lines with the streak code | Fixed: streak code split into `dayStreak.js` (allowlist and `structure.md` updated) | `src/engine/` |
 | An earlier day than `lastDay` (clock or time zone change) | No action: decided, it changes nothing, so travelling west cannot break a streak (design 14) | `dayStreak.js` |
 | `newMilestones` updates the streak for `localDay` itself | No action: it gives the same answer whether or not the caller already updated it (tested) | `milestones.js` |
-| `dayStreak.lastDay` format is not checked by the schema (no `pattern` keyword); it only checks a string of length 10 or null | Deferred to Block 4: `updateDayStreak` throws on a bad day, and storage validates on load | `progress.json` |
-| Nothing yet calls `updateDayStreak` | Deferred to Block 4: wiring must call it for every round, practice included, and save the result | Block 4 |
+| `dayStreak.lastDay` format is not checked by the schema (no `pattern` keyword); it only checks a string of length 10 or null | Fixed in Block 4: `vet` rule 3 checks `dayStreak.lastDay` is null or a real calendar date (leap years included), on load, import and save | `vet.js` |
+| Nothing yet calls `updateDayStreak` | Fixed in Block 4: `record` calls it for every round, practice included, before it works out milestones (tested: the 7th day's card is awarded in the same call). Saving the result is `save` | `src/engine/record.js` |
 | An existing test (`milestones.test.js`) failed when `dayStreak` became required | Proven: the contract change was caught by a test that builds a Progress, not by luck. Fixed the helper | `milestones.test.js` |
 | Sentence wording says "at least twice" and "at least three times", and "misses most keys" when over about two thirds | No action: approved; a test pins the ratios 2 and 3 the wording assumes | `diagnose.js` |
 | Plural groups ("shift keys", "digits", "symbols") use "miss", singular ones "misses" | No action | `diagnose.js` |
@@ -250,9 +250,68 @@ Built: `progressConfig`, `keystats`, `heatmap`, `diagnose`, `milestones`, `daySt
 | Reviewer 2: key groups had no independent test; `diagnose.test.js` looked groups up through the code under test | Fixed and Proven: a hand-written table of 43 keys (left vs right hand, digits, symbols, capitals and shifted keys counting toward their base key's row and hand, space in no group), plus letter and digit invariants. A throwaway mutation (adding `y` to the left hand) failed two tests; the file was hashed first and the restored hash matched | `progressConfig.test.js` |
 | Reviewer 3: the spec's example sentence said "twice"; the code writes "at least twice" | Fixed: Req 3.4 and design decision 3 now give the real wording, and note "at least three times" and "misses most keys" | `requirements.md`, `design.md` |
 | Reviewer 4: `structure.md` and `current-block.md` edited outside the allowlist | No action: those edits were approved | n/a |
-| Reviewer 5: saved data is only partly validated at the engine boundary (`mergeRound` does not check `misses <= attempts` or key length; `updateBests` throws a raw TypeError on a malformed `bests[mode]`) | Deferred to Block 4: storage validates saved data on load | Block 4 |
+| Reviewer 5: saved data is only partly validated at the engine boundary (`mergeRound` does not check `misses <= attempts` or key length; `updateBests` throws a raw TypeError on a malformed `bests[mode]`) | Fixed in Block 4 for saved data: `load`, `importText` and `save` all run the contract and `vet` checks, so `record` and the engine functions only ever get vetted input. The engine functions still throw on malformed input they are handed directly, as designed (decision 6) | `store.js`, `exportImport.js`, `saveClear.js` |
 | Reviewer 6: one missed `Q` can flag top row, left hand and shift, giving three overlapping sentences | Deferred to Block 11: check how the overlap reads when the results screen renders it | Block 11 |
 | Reviewer 7: `fixture-check` was meant to retire when the contract freezes | Fixed: Block 3 passes and the contract is frozen, so the hook is switched off with `"enabled": false` (a documented field at kiro.dev/docs/hooks). The file stays for the record, and its description says it is retired. The checker script stays and `npm test` still runs it. Not re-proven by a save: hooks load at session start, so the switch takes effect from the next session | `.kiro/hooks/fixture-check.json` |
 | Reviewer 8: the milestone tone regex left out "bad" | Fixed: `/bad\|slow\|dip\|worse\|decline/i` | `milestonesAward.test.js` |
 
 Contract frozen at the end of Block 3 (tag `block-3`): the eleven shapes, `keyDeltas`, `continued`, `Diagnosis.severity`, `Milestone.kind`, `Progress.bests` and `Progress.dayStreak`. Any change from here is a new decision, not a drive-by edit.
+
+## Nov 11 2026: Block 4, storage, flags and decisions (tasks 1 to 8)
+
+Built: `schemas.js` without `node:fs`, then `notices`, `vet`, `migrate`, `store`, `saveClear`, `exportImport` in `src/storage/` and `record` in `src/engine/`. At task 8: `npm test` 273 of 273, `npm run lint` clean (107 files), checker 42 of 42, nothing over 250. Every source file is under 150 lines (largest: `store.js`, 105). No shapes were added; the contract stayed frozen.
+
+| Flag | Status | Where |
+|---|---|---|
+| The spike: could the schema files load in the browser build? | Proven: `import x from "./x.json" with { type: "json" }` passed all three criteria (suite green; a throwaway Vite 8.3.5 build of 18 modules, 22.5 kB; the built file validated a real fixture and held no `node:` code). The throwaway files were deleted. Plan B was not needed | `contract/schemas.js` |
+| The `FILES` list in `schemas.js` is hand-kept, so a new schema file could be silently missing | Fixed: a test in `contract.test.js` fails if the list and the directory differ (proven with a stray file) | `contract.test.js` |
+| Import attributes need Node 22 or newer | Fixed: `engines.node >= 22` in `package.json`; `npm ci --dry-run` still passes | `package.json` |
+| `store.js` reached 173 lines, over the 150 soft cap | Fixed: `save` and `clear` moved to `saveClear.js`; `store.js` is 105. Allowlist, `structure.md` and the design file table updated | `src/storage/` |
+| `load` writes only data that `migrate` or `freshProgress` just produced, so it needs no `save` | No action: this is what keeps `saveClear.js` importing `store.js` without a cycle (design 15) | `store.js` |
+| `store.test.js` is 249 lines, one under the hard cap | No action: approved; the second half is `storeHelpers.test.js` (renamed from `storeActions.test.js`) | `src/storage/` |
+| The corrupt copy cannot be written | Fixed: nothing is touched, the game runs in memory with `persist` false, and the notice is `blocked`, so a notice never promises a copy that does not exist. Req 2.3 and design 10 updated | `store.js` |
+| Fresh progress is written right after a good copy | No action: approved, so the corrupt notice does not repeat on every load | `store.js` |
+| `save` refusing invalid progress looked like a full disk | Fixed: it returns `reason: "invalid"` or `"storage"`, and a test shows a bug cannot pass as a full disk. Req 5.2 and design 11 updated | `saveClear.js` |
+| An upgraded save that cannot be written | Fixed: it still loads and returns `saveFailed`. Req 2.4 and design 12 updated | `store.js` |
+| `migrate(value, now)` takes the clock; `clear` returns `persist` | No action: approved, design 13 and 14 | `migrate.js`, `saveClear.js` |
+| The fresh shape was written twice (`migrate.js` and `store.js`) | Fixed: `freshProgress` lives in `migrate.js` only and `store.js` re-exports it; tests check it is the same function and that an upgrade starts from it | `migrate.js` |
+| A version 0 upgrade keeps only rounds that pass the contract | No action on the design (no real player has a v0 save). But it was lossy with no copy; see the reviewer rows below, where `load` now keeps the original text first | `migrate.js` |
+| `window.localStorage` itself can throw when a browser blocks storage | Deferred to Block 6: the caller wraps the lookup and passes `null`, which `load` already treats as blocked | Block 6 |
+| `vet` imports `dayStreak` and the contract's mode list | No action: approved, so the leap-year logic and the mode list each exist once | `vet.js` |
+| Deeply nested JSON would make path strings cost quadratic time | Fixed: paths are linked and turned to text only when a problem is reported; a 100,000-level test passes | `vet.js` |
+| My `__proto__` test used `Object.assign`, which sets the prototype instead of creating the key, so it never built what it meant to | Proven: the property test caught it. Tests now use `defineProperty` for own `__proto__` keys | `vet.test.js` |
+| fast-check made null-prototype objects and `-0`, so round-trip equality failed on test data, not on code | No action: the settings generator now passes through a JSON round trip, as real settings do | `exportImport.test.js` |
+| While splitting `store.js` I briefly dropped the integer check on `schemaVersion`, so `"9" > 1` would call a damaged save "newer" | Fixed and Proven: restored before the tests ran, then a test added for `"9"`, `"2"` and `[9]`; removing the check makes it fail, and the restored file's hash matched | `store.js`, `storeHelpers.test.js` |
+| `exportText` throws on invalid or oversize progress | No action: approved. A backup that cannot be restored is worse than none | `exportImport.js` |
+| The Settings click must handle that throw | Deferred to Block 6: wrap the click | Block 6 |
+| The 2 MB import limit is checked against a compact export (my estimate: a save with ghosts for 14 mode and pack pairs is about 1.3 MB; not measured) | Deferred to Block 13: recheck the limit when ghosts are saved | Block 13 |
+| `importText` accepts a leading byte order mark | No action: approved; Notepad adds one | `exportImport.js` |
+| `record` first threw on a round it had already recorded | Fixed: it ignores a duplicate (same id) and returns the same progress, so a double-fired results screen cannot crash or double count. Req 4.4 and design 16 updated. A round with no id is a TypeError, so it cannot be mistaken for a duplicate | `record.js` |
+| `record` only sees ids still among the last 200 rounds | No action: documented; a double-fire cannot reach an id that old | `record.js` |
+| `record` stored the caller's result object | Fixed: it stores a `structuredClone`, with a no-shared-object test. Req 4.5 | `record.js` |
+| The results screen needs "new best" and the new milestones | Deferred to Block 11: `record` returns only the progress. Today they can be derived (`after.bests !== before.bests`, and the milestone list's growth), documented in the function | Block 11 |
+| `record.test.js` imports `vet` from storage | No action: approved; only the test does, the engine source imports no storage | `record.test.js` |
+| `record.test.js` is 247 lines and `migrate.test.js` 226 | No action: each tests one file and both are under 250 | n/a |
+| Earlier Deferred-to-Block-4 rows: Block 1 "validate.js is Node only", Block 2 `keyDeltas` key length, Block 3 `bests` keys, `lastDay` format, "nothing calls `updateDayStreak`", reviewer finding 5, and the old-schema fixture note | Fixed: each row above now says Fixed in Block 4 and names what fixed it | earlier entries |
+| Block 1 row "No check that `packId` points at a real pack" | No action: still outside the contract. `vet` does not check it either | n/a |
+| Import failure reasons shown on the screen could leak text from inside a hostile file | Proven: a test feeds hostile files and checks no braces, `__proto__` or field names leak into the reason | `exportImport.test.js` |
+
+### Block 4 reviewer findings and decisions (Nov 11 2026)
+
+| Flag | Status | Where |
+|---|---|---|
+| Reviewer 1 (Medium): a version 0 upgrade overwrote the original save with no copy and no notice | Fixed: before `load` writes an upgraded save it copies the raw text to `deadkeys:v1:corrupt`. If that copy cannot be written, nothing is touched, the upgraded progress runs in memory and the notice is `blocked` (as Req 2.3). A good upgrade shows no notice. Req 2.4 and design 17 updated; tests: copy comes first (call order), copy failure leaves the original, a current-version save is not copied | `store.js`, `storeHelpers.test.js` |
+| The upgrade copy shares the one corrupt slot, so it replaces an earlier damaged copy the player never downloaded | Known limit: same one-slot limit as below | `store.js` |
+| `importText` with an older backup also drops data | No action: the backup file is still on the player's disk | `exportImport.js` |
+| Reviewer 2: `save` cannot refuse to write when `persist` is false; the rule lives in the caller | Deferred to Block 6: the caller must not call `save` when `persist` is false, and Block 6 adds a test for it | Block 6 |
+| Reviewer 3: design decision 4 says the one-slot corrupt copy is a known limit, but the notes had no row | Known limit: one slot. A second damaged save replaces the first copy, so a player who ignores the notice twice loses the first copy. Tested (`store.test.js`) | `store.js` |
+| Reviewer 4: the import failure reasons are new copy that Shara has not approved word for word | Deferred to Block 6: all five reason strings are listed in `requirements.md` under "Reasons (Shara to approve)", to approve when the screen shows them | `requirements.md` |
+| Reviewer 5: `importText` found the "newer version" case by matching the start of a message | Fixed: `migrate` failures carry a `code` (`notASave`, `newer`, `noPath`, `badStep`, `stepFailed`, `format`, `unsafe`) and `importText` reads it. Test: every failure has its code. Proven: with the newer-version message reworded, all 14 import tests still passed, and the restored file's hash matched. Req 6.4 and design 18 | `migrate.js`, `exportImport.js` |
+| Reviewer 6: `load` called `migrate` outside a try/catch | Fixed: a throw means a damaged save and takes the corrupt path. `load` has an optional third argument (the migrate function) that only tests pass, to prove it. Design 19 | `store.js` |
+| Reviewer 7: `record` returns a shallow copy, so `settings`, `ghosts` and `lessonsPassed` are shared with the input | No action: nothing mutates progress, and the engine is pure | `record.js` |
+| Reviewer 8: two tabs both save the whole Progress, so the last writer wins | Deferred to Block 6: consider listening for the `storage` event | Block 6 |
+| The spike (Req 1.1 and 1.2) rested on the notes, with no automated test | Fixed and Proven: a test reads every import specifier in `schemas.js`, `validate.js`, `rules.js` and `types.js` and fails on any `node:` or bare Node module name. Two throwaway mutations (`import ... from "node:fs"` and `from "fs"` added to `schemas.js`) both failed it, and the restored file's hash matched. It also covers the three files besides `schemas.js` that the browser build loads | `contract.test.js` |
+| `migrate.test.js` is now 247 lines, `storeHelpers.test.js` 165 | No action: under 250. `store.test.js` stays at 249 (one assertion changed in place) | n/a |
+| When the upgrade copy fails, `load` returns the upgraded progress in memory (not fresh) | No action: Req 2.3 returns fresh progress because the damaged text is unreadable, but here the upgraded data is good and the player can still see it. `persist` is false, so nothing is written over the original | `store.js` |
+
+Block 4 ends with 279 tests, lint clean (107 files), checker 42 of 42, nothing over 250. Tagged `block-4`.
