@@ -6,8 +6,8 @@ const whole = (n) => Number.isInteger(n) && n >= 0;
  * Add each key's attempts and misses from `result.keyDeltas`, and set `lastSeen` to the round's
  * date for the keys in it. Other keys are copied unchanged. Existing keys keep their place; new
  * keys come after them in key order, so the same input always gives the same output.
- * Totals are the same however rounds are grouped or ordered; `lastSeen` is simply the date of the
- * latest merge, so merge rounds oldest first.
+ * Totals and `lastSeen` (the later of the saved date and the round's) come out the same however
+ * rounds are grouped or ordered.
  * @param {import("../../contract/types.js").KeyStat[]} keys Saved stats, one per key.
  * @param {import("../../contract/types.js").RoundResult} result A finished round.
  * @returns {import("../../contract/types.js").KeyStat[]}
@@ -35,7 +35,7 @@ export function mergeRound(keys, result) {
       key,
       attempts: (old?.attempts ?? 0) + d.attempts,
       misses: (old?.misses ?? 0) + d.misses,
-      lastSeen: result.date,
+      lastSeen: Math.max(old?.lastSeen ?? 0, result.date),
     });
   }
   return [...merged.values()];

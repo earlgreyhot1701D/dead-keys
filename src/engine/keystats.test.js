@@ -13,11 +13,19 @@ const hits = fc
 /** Saved stats: unique keys, valid counts. */
 const savedKeys = fc
   .uniqueArray(fc.constantFrom(...alphabet), { maxLength: 6 })
-  .chain((ks) => fc.tuple(...ks.map((key) => hits.map((h) => ({ key, ...h, lastSeen: 1000 })))));
+  .chain((ks) =>
+    fc.tuple(
+      ...ks.map((key) =>
+        fc
+          .tuple(hits, fc.integer({ min: 0, max: 5_000_000 }))
+          .map(([h, lastSeen]) => ({ key, ...h, lastSeen })),
+      ),
+    ),
+  );
 
 /** A round: just the parts the merge reads. */
 const round = fc.record({
-  date: fc.integer({ min: 1000, max: 5_000_000 }),
+  date: fc.integer({ min: 0, max: 5_000_000 }),
   keyDeltas: fc
     .uniqueArray(fc.constantFrom(...alphabet), { maxLength: 6 })
     .chain((ks) => fc.tuple(...ks.map((k) => hits.map((h) => [k, h]))))
@@ -30,9 +38,13 @@ function freeze(o) {
   return Object.freeze(o);
 }
 
-const totals = (keys) => Object.fromEntries(keys.map((k) => [k.key, [k.attempts, k.misses]]));
+const totals = (keys) =>
+  Object.fromEntries(keys.map((k) => [k.key, [k.attempts, k.misses, k.lastSeen]]));
 
-test("order does not change the totals", () => {
+// One round has one date, so lastSeen is only compared across orderings, not across groupings.
+const counts = (keys) => Object.fromEntries(keys.map((k) => [k.key, [k.attempts, k.misses]]));
+
+test("order does not change the totals or lastSeen", () => {
   fc.assert(
     fc.property(savedKeys, round, round, (keys, a, b) => {
       assert.deepEqual(
@@ -52,8 +64,8 @@ test("merging one at a time or all at once gives the same totals", () => {
         sum[k] = { attempts: o.attempts + d.attempts, misses: o.misses + d.misses };
       }
       assert.deepEqual(
-        totals(mergeRound(mergeRound(keys, a), b)),
-        totals(mergeRound(keys, { date: b.date, keyDeltas: sum })),
+        counts(mergeRound(mergeRound(keys, a), b)),
+        counts(mergeRound(keys, { date: Math.max(a.date, b.date), keyDeltas: sum })),
       );
     }),
   );
@@ -79,7 +91,7 @@ test("keys not in the round are unchanged; keys in it get the round's date", () 
         const got = out.find((o) => o.key === key);
         const old = keys.find((k) => k.key === key);
         const d = r.keyDeltas[key];
-        assert.equal(got.lastSeen, r.date);
+        assert.equal(got.lastSeen, Math.max(old?.lastSeen ?? 0, r.date));
         assert.equal(got.attempts, (old?.attempts ?? 0) + d.attempts);
         assert.equal(got.misses, (old?.misses ?? 0) + d.misses);
       }
@@ -113,6 +125,13 @@ test("the same input gives the same output, with new keys in key order after the
     ["s", "a", "z"],
   );
   assert.deepEqual(out, mergeRound(keys, r));
+});
+
+test("an older round never moves lastSeen back", () => {
+  const keys = [{ key: "a", attempts: 3, misses: 1, lastSeen: 500 }];
+  const old = { date: 100, keyDeltas: { a: { attempts: 1, misses: 0 } } };
+  assert.equal(mergeRound(keys, old)[0].lastSeen, 500);
+  assert.equal(mergeRound(keys, { ...old, date: 900 })[0].lastSeen, 900);
 });
 
 test("an empty round changes nothing; an empty history starts fresh", () => {
