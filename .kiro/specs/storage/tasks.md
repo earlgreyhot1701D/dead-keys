@@ -3,7 +3,7 @@
 **Spec:** `storage`. Requirements and design approved Nov 11. **Rigor:** Full.
 One task at a time. Never "run all." Touch only the files a task names. Tick each task when done. Flag anything that looks off instead of guessing; keep a running flag list for task 9. DO NOT refactor other code.
 
-- [ ] 1. Spike (15 min): the `schemas.js` browser switch per design decision 1. Report PASS or FAIL against the three criteria and stop. Don't start task 2 until Shara says go. _Req 1._
+- [x] 1. Spike (15 min): the `schemas.js` browser switch per design decision 1. Report PASS or FAIL against the three criteria and stop. Don't start task 2 until Shara says go. _Req 1._
 - [ ] 2. `src/storage/notices.js`: the five approved notices exactly as written in requirements.md. Test that every id has a line and a button. _Notice wording._
 - [ ] 3. `src/storage/vet.js` + test: the four Req 3 checks. _Req 3, design decision 7._
 - [ ] 4. `src/storage/migrate.js` + test: the step table and the 0 to 1 step, using `fixtures/ugly/progress.old-schema.json`. Property: output passes contract and vet. _Req 2.4, design decision 3._

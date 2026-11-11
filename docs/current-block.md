@@ -6,8 +6,9 @@ Blocks 1 to 3 passed Nov 11 (tags `block-1`, `block-2`, `block-3`). The contract
 
 ## Files this block may touch
 
-- `contract/schemas.js` (browser switch only, design decision 1)
-- If the spike fails: `scripts/bundle-schemas.js`, `contract/schemas.bundle.js` and its test
+- `contract/schemas.js` (browser switch only, design decision 1; spike passed Nov 11, so plan B is not needed)
+- `contract/contract.test.js` (one test that the `FILES` list matches `contract/schemas/`, added Nov 11)
+- `package.json` (the `engines` field only, added Nov 11)
 - `src/storage/notices.js`, `vet.js`, `migrate.js`, `store.js`, `exportImport.js`, and their `*.test.js`
 - `src/engine/record.js`, `src/engine/record.test.js`
 - `.kiro/specs/storage/*`

@@ -1,11 +1,20 @@
 // PASS line for Block 1: every fixture matches its expectation, and no out-of-charset
 // character gets through a DrillResponse (PRD G12).
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { test } from "node:test";
 import * as fc from "fast-check";
 import { checkAll } from "../scripts/check-fixtures.js";
+import { loadSchemas } from "./schemas.js";
 import { validate } from "./validate.js";
+
+test("schemas.js lists exactly the files in contract/schemas/", () => {
+  // schemas.js imports each file by name (no node:fs), so a new file must be added there too.
+  const onDisk = readdirSync(new URL("./schemas/", import.meta.url))
+    .filter((f) => f.endsWith(".json"))
+    .sort();
+  assert.deepEqual([...loadSchemas().keys()].sort(), onDisk);
+});
 
 test("every fixture matches its expectation", () => {
   const { ok, results } = checkAll();

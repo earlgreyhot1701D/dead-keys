@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "description": "A typing game, back from the dead.",
   "license": "MIT",
   "scripts": {

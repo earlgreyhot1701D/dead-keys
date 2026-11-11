@@ -1,9 +1,33 @@
-// Loads and vets contract/schemas/*.json. The only file that reads the schema files, so the
-// Block 4 swap to static JSON imports (browser support) touches this file alone.
+// Loads and vets contract/schemas/*.json. The only file that names the schema files. They are
+// imported statically (no node:fs), so the same code runs in the browser build and in node --test.
 // Throws on any keyword outside the supported subset, so a rule is never silently ignored.
-import { readdirSync, readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import diagnosis from "./schemas/diagnosis.json" with { type: "json" };
+import drillRequest from "./schemas/drillRequest.json" with { type: "json" };
+import drillResponse from "./schemas/drillResponse.json" with { type: "json" };
+import ghostRun from "./schemas/ghostRun.json" with { type: "json" };
+import item from "./schemas/item.json" with { type: "json" };
+import keyStat from "./schemas/keyStat.json" with { type: "json" };
+import keystroke from "./schemas/keystroke.json" with { type: "json" };
+import milestone from "./schemas/milestone.json" with { type: "json" };
+import pack from "./schemas/pack.json" with { type: "json" };
+import progress from "./schemas/progress.json" with { type: "json" };
+import roundResult from "./schemas/roundResult.json" with { type: "json" };
+
+// One entry per file in contract/schemas/, keyed by file name (which `validate` derives from the
+// shape name). A new schema file must be added here as well as imported above.
+const FILES = {
+  "diagnosis.json": diagnosis,
+  "drillRequest.json": drillRequest,
+  "drillResponse.json": drillResponse,
+  "ghostRun.json": ghostRun,
+  "item.json": item,
+  "keyStat.json": keyStat,
+  "keystroke.json": keystroke,
+  "milestone.json": milestone,
+  "pack.json": pack,
+  "progress.json": progress,
+  "roundResult.json": roundResult,
+};
 
 const KEYWORDS = new Set([
   "type",
@@ -23,7 +47,6 @@ const KEYWORDS = new Set([
   "description",
 ]);
 const TYPES = new Set(["string", "number", "integer", "boolean", "object", "array", "null"]);
-const DIR = join(dirname(fileURLToPath(import.meta.url)), "schemas");
 
 const isObj = (v) => typeof v === "object" && v !== null && !Array.isArray(v);
 
@@ -53,21 +76,13 @@ let cache = null;
 
 /**
  * Load and vet every schema once, keyed by file name ("item.json").
- * Throws if a file is unreadable, is not JSON, or uses anything outside the subset.
+ * Throws if a schema uses anything outside the subset.
  * @returns {Map<string, object>}
  */
 export function loadSchemas() {
   if (cache) return cache;
-  const files = readdirSync(DIR).filter((f) => f.endsWith(".json"));
-  const names = new Set(files);
-  const loaded = new Map();
-  for (const f of files) {
-    try {
-      loaded.set(f, JSON.parse(readFileSync(join(DIR, f), "utf8")));
-    } catch (e) {
-      throw new Error(`${f}: cannot read schema (${e.message})`);
-    }
-  }
+  const loaded = new Map(Object.entries(FILES));
+  const names = new Set(loaded.keys());
   for (const [f, s] of loaded) vet(s, f, "(root)", names);
   cache = loaded;
   return cache;
