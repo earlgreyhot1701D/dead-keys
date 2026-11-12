@@ -21,6 +21,9 @@ import {
   CLEAR_LINE,
   CLEAR_TITLE,
   chooseFile,
+  IMPORT_CANCEL,
+  IMPORT_CONFIRM,
+  IMPORT_TITLE,
   importLines,
   renderDataSection,
 } from "./settingsData.js";
@@ -179,6 +182,18 @@ test("a good file shows what changes and waits for yes; Keep cancels it", async 
     button(dialog(doc), "Replace my progress").click();
     assert.deepEqual(ctx.log.slice(-2), [["confirmImport"], ["say", "Backup imported."]]);
   });
+});
+
+test("the import confirm and announcements match the design table, word for word", () => {
+  const lines = importLines({ incoming: SUMMARY(12, 3), current: SUMMARY(5, 1) });
+  const want = [IMPORT_TITLE, ...lines, `Buttons: ${IMPORT_CONFIRM}, ${IMPORT_CANCEL}`];
+  assert.equal(cell("| Import confirm").split(" / ").join("|"), want.join("|"));
+  assert.deepEqual(want[0], "Replace your progress?");
+  assert.deepEqual(cell("| Announcements").split(" / "), [
+    "Backup downloaded.",
+    "Backup imported.",
+    "Progress cleared.",
+  ]);
 });
 
 test("importLines says both sides in numbers", () => {

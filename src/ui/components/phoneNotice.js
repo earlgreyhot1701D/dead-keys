@@ -33,7 +33,18 @@ export function isHardwareKey(e) {
   );
 }
 
-/** @param {Function} mk The `el` function. */
-export function renderPhoneNotice(mk) {
-  return mk("p", { class: "phone-notice panel", "data-phone-notice": true }, PHONE_NOTICE);
+/** The button that hides the notice for this visit (approved copy). */
+export const GOT_IT = "Got it";
+
+/**
+ * @param {Function} mk The `el` function.
+ * @param {() => void} [onGotIt] Hides the notice. With no handler there is no button.
+ */
+export function renderPhoneNotice(mk, onGotIt) {
+  return mk("div", { class: "phone-notice panel", "data-phone-notice": true }, [
+    mk("p", {}, PHONE_NOTICE),
+    onGotIt
+      ? mk("button", { type: "button", class: "btn btn-quiet", onClick: onGotIt }, GOT_IT)
+      : null,
+  ]);
 }

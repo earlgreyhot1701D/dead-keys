@@ -27,7 +27,7 @@ export const ABOUT_PARAGRAPHS = Object.freeze([
   "A dead key types nothing until you press the next one. Yours have been asleep. Let's wake them up.",
   "Built with Kiro for Kiroween 2026. Dead Keys is open source under the MIT license.",
   "The typing games that taught a generation are what this one grew from: MasterType (1981) and Type Attack (1982).",
-  "Dead Keys also grew from Office Keys, my first Lovable build (August 2025), a typing practice app for court staff. This game carries over its ideas, not its code.",
+  "Dead Keys also grew from Office Keys, my first Lovable build (August 2025), a typing practice app. This game carries over its ideas, not its code.",
   "The English word list comes from top-english-wordlists (github.com/david47k/top-english-wordlists), built from Google Books Ngrams, 1950 to 2012, under CC BY 3.0.",
   "Dead Keys uses JetBrains Mono and Roboto Condensed, both under the SIL Open Font License.",
   "Dead Keys is for a QWERTY keyboard in this version.",

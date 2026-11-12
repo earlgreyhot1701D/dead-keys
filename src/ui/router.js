@@ -29,6 +29,7 @@ export function mountRouter({ root, live, screens, app, start = "title", doc = d
   let shown = null; // the state last drawn, so a change only redraws what it affects
   let lastNotice = null;
   let keyboardSeen = false;
+  let phoneHidden = false;
   let timer = null;
 
   function announce(text) {
@@ -44,6 +45,11 @@ export function mountRouter({ root, live, screens, app, start = "title", doc = d
       width: win?.innerWidth,
       keyboardSeen,
     });
+  // "Got it" hides the phone notice until the page is reloaded; focus goes to the heading.
+  function dismissPhone() {
+    phoneHidden = true;
+    draw({ focusHeading: true });
+  }
   const has = (id) => Object.hasOwn(screens, id);
   const ctx = () => ({
     state: app.state,
@@ -54,7 +60,8 @@ export function mountRouter({ root, live, screens, app, start = "title", doc = d
     refresh,
     announce,
     has,
-    phone: phone(),
+    phone: phone() && !phoneHidden,
+    dismissPhone,
   });
 
   const noticeHandlers = {

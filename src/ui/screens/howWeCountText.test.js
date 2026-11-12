@@ -1,6 +1,7 @@
 // "How we count" text: every number is read from the config, so changing the config changes the
 // page. Proven by changing each number and looking for the old and new values.
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import { buildSections, CONFIG } from "./howWeCountText.js";
 import { PRIVACY_PARAGRAPHS } from "./privacy.js";
@@ -39,10 +40,11 @@ test("the page says what the config says today", () => {
     "3 rounds in a row at 95%",
     "7 days in a row",
     "last 200 rounds",
-    "Focus here (!): a miss rate 15% or more.",
-    "Practicing (~): a miss rate 8% or more.",
-    "Almost there (?): a miss rate 3% or more.",
-    "Steady (✓): a miss rate under 3%.",
+    "Focus here (!): a miss rate of 15% or more.",
+    "Practicing (~): 8% up to 15%.",
+    "Almost there (?): 3% up to 8%.",
+    "Steady (✓): under 3%.",
+    "Escape drops the lock. If nothing is locked, Escape pauses.",
   ]) {
     assert.ok(t.includes(phrase), phrase);
   }
@@ -76,10 +78,10 @@ test("the band cutoffs and labels come from BANDS", () => {
   const change = { missed: { min: 0.4, label: "Zed" }, uneven: { min: 0.05 } };
   const bands = CONFIG.BANDS.map((b) => ({ ...b, ...change[b.name] }));
   const t = textOf({ ...CONFIG, BANDS: bands });
-  assert.ok(t.includes("Zed (!): a miss rate 40% or more."));
-  assert.ok(t.includes("Practicing (~): a miss rate 8% or more."));
-  assert.ok(t.includes("Almost there (?): a miss rate 5% or more."));
-  assert.ok(t.includes("Steady (✓): a miss rate under 5%.")); // follows the band above it
+  assert.ok(t.includes("Zed (!): a miss rate of 40% or more."));
+  assert.ok(t.includes("Practicing (~): 8% up to 40%."));
+  assert.ok(t.includes("Almost there (?): 5% up to 8%."));
+  assert.ok(t.includes("Steady (✓): under 5%.")); // follows the band above it
 });
 
 test("every number in the text is a config number; nothing is typed in twice", () => {
@@ -94,6 +96,23 @@ test("every number in the text is a config number; nothing is typed in twice", (
   }
   const found = textOf(CONFIG).match(/\d+/g) ?? [];
   for (const n of found) assert.ok(allowed.has(n), `${n} is not from the config`);
+});
+
+test("the band lines and the lock rule are the design table's approved copy", () => {
+  const table = readFileSync(
+    new URL("../../../.kiro/specs/shell/design.md", import.meta.url),
+    "utf8",
+  );
+  const cell = (prefix) =>
+    table
+      .split("\n")
+      .find((l) => l.startsWith(prefix))
+      .split("|")[2]
+      .trim();
+  const paragraphs = buildSections().find((s) => s.id === "heat").paragraphs;
+  assert.equal(paragraphs.slice(1, 5).join(" / "), cell("| How we count, band lines"));
+  const misses = buildSections().find((s) => s.id === "misses").paragraphs;
+  assert.equal(misses[1], cell("| How we count, lock"));
 });
 
 test("it names the key groups the diagnosis uses", () => {

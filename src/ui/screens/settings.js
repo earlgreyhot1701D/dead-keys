@@ -5,9 +5,9 @@ import { isValidSetting, SOUND_SETS } from "../../storage/settings.js";
 import { el } from "../dom.js";
 import { renderDataSection } from "./settingsData.js";
 
-// Draft wording, waiting for Shara (shell design copy table).
+// Approved wording (shell design copy table).
 export const AI_HINT =
-  "When on, we send which keys you miss and your recent speed so the AI can write practice lines. Nothing you type is sent.";
+  "When on, we send which keys you miss and your recent speed so the AI can write practice lines. The words you type are never sent.";
 export const SOUND_LABELS = Object.freeze({
   off: "Off",
   typewriter: "Typewriter",

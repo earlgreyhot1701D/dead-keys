@@ -55,7 +55,7 @@ export const menuScreen = {
     });
     return el("main", { id: "main", class: "menu-main" }, [
       el("h1", {}, "Main menu"),
-      ctx.phone ? renderPhoneNotice(el) : null,
+      ctx.phone ? renderPhoneNotice(el, ctx.dismissPhone) : null,
       el("nav", { "aria-label": "Main menu" }, el("ul", { class: "menu-list" }, items)),
       el("p", { class: "hint" }, "Arrow keys move. Enter opens. Escape goes back."),
     ]);

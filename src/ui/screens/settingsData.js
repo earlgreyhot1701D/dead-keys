@@ -11,7 +11,7 @@ export const CLEAR_LINE =
   "This deletes your rounds, heat map, personal bests and milestones from this browser. It can't be undone, so download a backup first if you might want them back.";
 export const CLEAR_CONFIRM = "Clear everything";
 export const CLEAR_CANCEL = "Keep my progress";
-// Draft wording, waiting for Shara (shell design copy table).
+// Approved wording (shell design copy table).
 export const IMPORT_TITLE = "Replace your progress?";
 export const IMPORT_CONFIRM = "Replace my progress";
 export const IMPORT_CANCEL = "Keep what I have";

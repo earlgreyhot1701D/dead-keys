@@ -4,8 +4,9 @@ import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import * as fc from "fast-check";
 import { createEl } from "../dom.js";
-import { makeFakeDoc, textOf } from "../fakeDom.js";
+import { findAll, makeFakeDoc, textOf } from "../fakeDom.js";
 import {
+  GOT_IT,
   isHardwareKey,
   MIN_WIDTH,
   PHONE_NOTICE,
@@ -80,9 +81,28 @@ test("the wording is the shell design's approved copy, one sentence per idea, an
   assert.doesNotMatch(PHONE_NOTICE, /\bglass\b|\bage\b|\bold\b|\byoung\b/i);
 });
 
-test("it renders as one marked paragraph of text", () => {
-  const node = renderPhoneNotice(createEl(makeFakeDoc()));
-  assert.equal(node.tag, "p");
-  assert.equal(textOf(node), PHONE_NOTICE);
-  assert.ok("data-phone-notice" in node.attrs);
+test("it renders as one marked paragraph of text, with a Got it button when given a handler", () => {
+  const mk = createEl(makeFakeDoc());
+  const plain = renderPhoneNotice(mk);
+  assert.equal(textOf(plain), PHONE_NOTICE);
+  assert.ok("data-phone-notice" in plain.attrs);
+  assert.equal(findAll(plain, (n) => n.tag === "button").length, 0);
+  let hidden = 0;
+  const node = renderPhoneNotice(mk, () => hidden++);
+  const [button] = findAll(node, (n) => n.tag === "button");
+  assert.equal(textOf(button), "Got it");
+  assert.equal(button.attrs.type, "button");
+  assert.equal(findAll(node, (n) => n.tag === "p").map(textOf)[0], PHONE_NOTICE);
+  button.click();
+  assert.equal(hidden, 1);
+});
+
+test("the Got it label is the design table's approved copy", () => {
+  const design = readFileSync(
+    new URL("../../../.kiro/specs/shell/design.md", import.meta.url),
+    "utf8",
+  );
+  const row = design.split("\n").find((l) => l.startsWith("| Phone notice, button"));
+  assert.equal(row.split("|")[2].trim(), GOT_IT);
+  assert.equal(GOT_IT, "Got it");
 });

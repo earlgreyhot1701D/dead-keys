@@ -63,7 +63,7 @@ export const titleScreen = {
     return el("main", { id: "main", class: "title-main" }, [
       el("h1", {}, "Dead Keys"),
       el("p", { class: "tagline" }, TAGLINE),
-      ctx.phone ? renderPhoneNotice(el) : null,
+      ctx.phone ? renderPhoneNotice(el, ctx.dismissPhone) : null,
       stillFrame(),
       el("p", { class: "press" }, "Press any key to start."),
       el("button", { type: "button", class: "btn", onClick: () => begin(ctx) }, "Start"),

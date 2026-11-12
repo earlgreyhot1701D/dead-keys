@@ -1,5 +1,6 @@
 // About and How we count screens: the PRD's About list, safe links, and a way back.
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import { findAll, textOf, withFakeDocument } from "../fakeDom.js";
 import { ABOUT_PARAGRAPHS, aboutScreen, FONT_LICENSES, LINKS } from "./about.js";
@@ -68,6 +69,20 @@ test("How we count links to the source and has every section", () => {
   assert.equal(a.attrs.href, SOURCE_URL);
   assert.equal(a.attrs.rel, "noopener noreferrer");
   assert.equal(findAll(node, (n) => n.tag === "h2").length, 8);
+});
+
+test("the Office Keys line is the approved copy, word for word", () => {
+  const table = readFileSync(
+    new URL("../../../.kiro/specs/shell/design.md", import.meta.url),
+    "utf8",
+  );
+  const row = table.split("\n").find((l) => l.startsWith("| About, Office Keys line"));
+  const want = row.split("|")[2].trim();
+  assert.equal(
+    want,
+    "Dead Keys also grew from Office Keys, my first Lovable build (August 2025), a typing practice app. This game carries over its ideas, not its code.",
+  );
+  assert.ok(ABOUT_PARAGRAPHS.includes(want));
 });
 
 test("both screens go back", () => {

@@ -1,10 +1,11 @@
 // The settings controls: they show what is saved, offer only valid choices, and save each change.
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import { SPEED_MAX, SPEED_MIN } from "../../engine/config.js";
 import { DEFAULTS } from "../../storage/settings.js";
 import { findAll, textOf, withFakeDocument } from "../fakeDom.js";
-import { settingsScreen } from "./settings.js";
+import { AI_HINT, settingsScreen } from "./settings.js";
 
 function ctxFor(settings = {}, extra = {}) {
   const log = [];
@@ -81,6 +82,19 @@ test("dragging the slider shows the number without saving", () => {
     assert.equal(byId(node, "st-speed-out").textContent, "1.7×"); // the fake has no live text
     assert.deepEqual(ctx.log, []);
   });
+});
+
+test("the AI hint is the approved copy, word for word", () => {
+  const table = readFileSync(
+    new URL("../../../.kiro/specs/shell/design.md", import.meta.url),
+    "utf8",
+  );
+  const row = table.split("\n").find((l) => l.startsWith("| Settings, AI hint"));
+  assert.equal(row.split("|")[2].trim(), AI_HINT);
+  assert.equal(
+    AI_HINT,
+    "When on, we send which keys you miss and your recent speed so the AI can write practice lines. The words you type are never sent.",
+  );
 });
 
 test("the AI switch says what leaves the browser, and Back goes back", () => {

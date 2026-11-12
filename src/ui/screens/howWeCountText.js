@@ -49,8 +49,11 @@ const pct = (x) => `${Math.round(x * 100)}%`;
 function bandLines(bands) {
   const real = bands.filter((b) => b.min !== null);
   return real.map((b, i) => {
-    const how = b.min === 0 ? `under ${pct(real[i - 1].min)}` : `${pct(b.min)} or more`;
-    return `${b.label} (${b.glyph}): a miss rate ${how}.`;
+    const above = i > 0 ? pct(real[i - 1].min) : null;
+    let how = `${pct(b.min)} up to ${above}`;
+    if (above === null) how = `a miss rate of ${pct(b.min)} or more`;
+    else if (b.min === 0) how = `under ${above}`;
+    return `${b.label} (${b.glyph}): ${how}.`;
   });
 }
 
@@ -81,7 +84,7 @@ export function buildSections(c = CONFIG) {
       heading: "What counts as a miss",
       paragraphs: [
         "A miss is a typed character that doesn't match the character the game expected next. It is counted against the key you should have pressed, not the one you hit. Case and punctuation count, so A is not a.",
-        "In a round, the first character you type locks the target closest to danger that starts with it. If two are equally close, the one that appeared first is locked.",
+        "In a round, the first character you type locks the target closest to danger that starts with it. If two are equally close, the one that appeared first is locked. Escape drops the lock. If nothing is locked, Escape pauses.",
       ],
     },
     {

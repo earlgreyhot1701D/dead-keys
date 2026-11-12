@@ -50,7 +50,7 @@ main.js -> app.js (state + storage actions + tab sync)
 7. **Preview deploys.** Vercel CLI pinned in devDependencies and run through npm scripts. Shara runs `vercel login` herself. Kiro links the project and deploys previews only. Every deploy is logged in `KIRO-NOTES.md`.
 8. **Build check** runs after every build at the gate: `npm run build && node scripts/check-build.js`.
 
-## Copy (approved rows are marked; new rows need Shara's approval)
+## Copy (every row here is approved by Shara; tests read this table word for word)
 
 | Where | Text |
 |---|---|
@@ -69,11 +69,15 @@ main.js -> app.js (state + storage actions + tab sync)
 | Clear confirm title (approved) | Clear all progress? |
 | Clear confirm line (approved) | This deletes your rounds, heat map, personal bests and milestones from this browser. It can't be undone, so download a backup first if you might want them back. |
 | Clear confirm buttons (approved) | Clear everything (confirm) / Keep my progress (cancel) |
-| Settings, AI hint (DRAFT) | When on, we send which keys you miss and your recent speed so the AI can write practice lines. Nothing you type is sent. |
-| Settings, labels (DRAFT) | Settings / AI drills / Sound (Off, Typewriter, Arcade) / Speed (shown as 1×) / Finger colors / Your data / Download backup / Download old data / Clear all progress / Import a backup / Read the privacy card / Back |
-| Import confirm (DRAFT) | Replace your progress? / This backup has 12 rounds and 3 lessons passed. / You have 5 rounds and 1 lesson passed now. / Importing replaces what you have in this browser. / Buttons: Replace my progress, Keep what I have |
-| Announcements (DRAFT) | Backup downloaded. / Backup imported. / Progress cleared. |
-| How we count and About (DRAFT) | The words live in `src/ui/screens/howWeCountText.js` (numbers read from config) and `about.js` (paragraphs and links). Shara reads them there; the plain-text list is in the Block 6 report. |
+| Settings, AI hint (approved) | When on, we send which keys you miss and your recent speed so the AI can write practice lines. The words you type are never sent. |
+| Phone notice, button (approved) | Got it |
+| Settings, labels (approved) | Settings / AI drills / Sound (Off, Typewriter, Arcade) / Speed (shown as 1×) / Finger colors / Your data / Download backup / Download old data / Clear all progress / Import a backup / Read the privacy card / Back |
+| Import confirm (approved) | Replace your progress? / This backup has 12 rounds and 3 lessons passed. / You have 5 rounds and 1 lesson passed now. / Importing replaces what you have in this browser. / Buttons: Replace my progress, Keep what I have |
+| Announcements (approved) | Backup downloaded. / Backup imported. / Progress cleared. |
+| How we count, band lines (approved) | Focus here (!): a miss rate of 15% or more. / Practicing (~): 8% up to 15%. / Almost there (?): 3% up to 8%. / Steady (✓): under 3%. |
+| How we count, lock (approved) | In a round, the first character you type locks the target closest to danger that starts with it. If two are equally close, the one that appeared first is locked. Escape drops the lock. If nothing is locked, Escape pauses. |
+| About, Office Keys line (approved) | Dead Keys also grew from Office Keys, my first Lovable build (August 2025), a typing practice app. This game carries over its ideas, not its code. |
+| How we count and About, the rest (approved) | The other paragraphs live in `src/ui/screens/howWeCountText.js` (numbers read from config) and `about.js`, approved as written in the Block 6 report. |
 | Reason: not text | That isn't a backup file. |
 | Reason: over 2 MB | That file is too big to be a Dead Keys backup. The limit is 2 MB. |
 | Reason: not JSON | That file isn't a Dead Keys backup. It can't be read. |
