@@ -1,0 +1,46 @@
+/* The locked look (docs/design-brief.md, Nov 11 2026): phosphor terminal, restrained, no glow.
+   Values are re-entered here, not copied from another project. Every text color is checked against
+   every ground by src/styles/contrast.test.js, so changing one here can fail the build. */
+:root {
+  /* Grounds */
+  --bg: #0a1214;
+  --bg-deep: #071518;
+  --panel: #0e1c1f;
+  --panel-hi: #14282c;
+
+  /* Text, brightest to quietest */
+  --text: #4fe3d1;
+  --soft: #bbcac6;
+  --label: #79c7c5;
+  --muted: #9bb0ad;
+  --dim: #859490;
+
+  /* Lines and focus. Never the only signal for anything. */
+  --rule: #3ca89c;
+
+  /* Status. Warm colors are for status only. */
+  --missed: #ff7a6b;
+  --shaky: #f2c14e;
+
+  --head: "Roboto Condensed", "Arial Narrow", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  --rule-double: 3px double var(--rule);
+  --rule-thin: 1px solid var(--rule);
+  --focus: 3px solid var(--text);
+
+  /* Faint static scanlines, painted as a background so they sit behind every letter. */
+  --scanlines: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 2px,
+    rgba(7, 21, 24, 0.32) 2px,
+    rgba(7, 21, 24, 0.32) 4px
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --scanlines: none;
+  }
+}

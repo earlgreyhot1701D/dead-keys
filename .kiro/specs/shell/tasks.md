@@ -4,10 +4,10 @@
 One task at a time. Never "run all." Touch only the files a task names. Tick each when done. Flag anything that looks off; keep a running list for task 15. DO NOT refactor other code.
 
 - [x] 1. Longevity check and pin: `@fontsource/jetbrains-mono`, `@fontsource/roboto-condensed`, `@playwright/test`, `@axe-core/playwright`, `vercel`. Newest release at least two weeks old, active, no deprecations. Report a table and stop for Shara's OK before installing. _Design 1, 2, 7._
-- [ ] 2. Copy: update `src/storage/notices.js` with the approved `otherTab` notice, and `src/storage/exportImport.js` reason strings with the approved wording. Tests updated. _Req 3.4, Block 4 deferral._
-- [ ] 3. `index.html`, `src/main.js`, `src/ui/dom.js`, `src/styles/*.css` with fonts and tokens. Contrast test for every text token pair. `npm run dev` shows a blank styled page. _Req 1.1, 1.3, 2._
-- [ ] 4. `src/storage/settings.js` + test: defaults and check. _Req 5.1, 5.2._
-- [ ] 5. `src/ui/app.js` + test: storage lookup wrapped, `load`, save never when `persist` is false, export, import, clear, old data, tab sync. _Req 3, 5.3, 5.4._
+- [x] 2. Copy: update `src/storage/notices.js` with the approved `otherTab` notice, and `src/storage/exportImport.js` reason strings with the approved wording. Tests updated. _Req 3.4, Block 4 deferral._
+- [x] 3. `index.html`, `src/main.js`, `src/ui/dom.js`, `src/styles/*.css` with fonts and tokens. Contrast test for every text token pair. `npm run dev` shows a blank styled page. _Req 1.1, 1.3, 2._
+- [x] 4. `src/storage/settings.js` + test: defaults and check. _Req 5.1, 5.2._
+- [x] 5. `src/ui/app.js` + test: storage lookup wrapped, `load`, save never when `persist` is false, export, import, clear, old data, tab sync. _Req 3, 5.3, 5.4._
 - [ ] 6. `src/ui/router.js`, `components/noticeBar.js`, `components/confirmDialog.js`, `download.js`. _Req 1.2, 3.3._
 - [ ] 7. Screens: `title.js`, `menu.js`, `privacy.js`, plus the phone notice. _Req 1.4, 1.5, 4._
 - [ ] 8. `components/keyboard.js`, `keyboardLayout.js` + layout test. _Req 6.1._

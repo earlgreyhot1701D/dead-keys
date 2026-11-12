@@ -3,7 +3,7 @@
 // id; the screen looks up the line and button here and draws them with textContent.
 
 /**
- * @typedef {"blocked"|"corrupt"|"newer"|"saveFailed"|"importFailed"} NoticeId
+ * @typedef {"blocked"|"corrupt"|"newer"|"saveFailed"|"importFailed"|"otherTab"} NoticeId
  * @typedef {{ id: NoticeId, line: string, button: string }} Notice
  */
 
@@ -35,5 +35,11 @@ export const NOTICES = Object.freeze({
     "importFailed",
     "That file couldn't be loaded, so nothing changed. Your current progress is safe. Try a backup downloaded from Dead Keys.",
     "Choose another file",
+  ),
+  // Added in Block 6; the wording is the copy table in .kiro/specs/shell/design.md.
+  otherTab: notice(
+    "otherTab",
+    "Your progress changed in another Dead Keys tab. To keep both tabs from overwriting each other, this one has stopped saving. Reload to pick up the latest.",
+    "Reload",
   ),
 });

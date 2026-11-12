@@ -153,7 +153,7 @@ test("files that are not a good backup are refused with a plain reason, and noth
 
 test("things that are not text are refused", () => {
   for (const x of [null, undefined, 5, {}, [], true, new Uint8Array(4)]) {
-    assert.deepEqual(importText(x, NOW), { ok: false, reason: "That isn't a text file." });
+    assert.deepEqual(importText(x, NOW), { ok: false, reason: "That isn't a backup file." });
   }
 });
 
@@ -185,4 +185,33 @@ test("a bad clock is a programmer error", () => {
   for (const now of [-1, 1.5, Number.NaN, "5", null, undefined]) {
     assert.throws(() => importText("{}", now), TypeError);
   }
+});
+
+test("every reason matches the shell design's copy table, word for word", () => {
+  const doc = readFileSync(new URL("../../.kiro/specs/shell/design.md", import.meta.url), "utf8");
+  const want = Object.fromEntries(
+    doc
+      .split("\n")
+      .filter((l) => l.startsWith("| Reason:"))
+      .map((l) => {
+        const [label, text] = l
+          .split("|")
+          .slice(1, -1)
+          .map((c) => c.trim());
+        return [label.replace("Reason: ", ""), text];
+      }),
+  );
+  assert.deepEqual(Object.keys(want), [
+    "not text",
+    "over 2 MB",
+    "not JSON",
+    "newer version",
+    "anything else",
+  ]);
+  assert.equal(importText(null, NOW).reason, want["not text"]);
+  assert.equal(importText("x".repeat(MAX_IMPORT_BYTES + 1), NOW).reason, want["over 2 MB"]);
+  assert.equal(importText("not json", NOW).reason, want["not JSON"]);
+  const newer = JSON.stringify({ ...basic(), schemaVersion: 2 });
+  assert.equal(importText(newer, NOW).reason, want["newer version"]);
+  assert.equal(importText("{}", NOW).reason, want["anything else"]);
 });

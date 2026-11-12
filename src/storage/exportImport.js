@@ -40,7 +40,7 @@ export function exportText(progress) {
 export function importText(text, now) {
   if (!Number.isInteger(now) || now < 0) throw new TypeError("now must be a whole number");
   const fail = (reason) => ({ ok: false, reason });
-  if (typeof text !== "string") return fail("That isn't a text file.");
+  if (typeof text !== "string") return fail("That isn't a backup file.");
   // A UTF-8 byte count is never below the string's length, so a long string is refused unmeasured.
   if (text.length > MAX_IMPORT_BYTES || bytes(text) > MAX_IMPORT_BYTES) {
     return fail("That file is too big to be a Dead Keys backup. The limit is 2 MB.");
@@ -49,7 +49,7 @@ export function importText(text, now) {
   try {
     value = JSON.parse(text.charCodeAt(0) === 0xfeff ? text.slice(1) : text); // allow a BOM
   } catch {
-    return fail("That file isn't a Dead Keys backup. It isn't valid JSON.");
+    return fail("That file isn't a Dead Keys backup. It can't be read.");
   }
   const result = migrate(value, now);
   if (result.ok) return result;
@@ -58,5 +58,5 @@ export function importText(text, now) {
       "That backup was made by a newer version of Dead Keys. Refresh to get the latest version, then try again.",
     );
   }
-  return fail("That file isn't a valid Dead Keys backup, or it is damaged.");
+  return fail("That file isn't a Dead Keys backup, or it's damaged.");
 }

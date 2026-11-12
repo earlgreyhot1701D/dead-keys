@@ -1,11 +1,25 @@
-// Notice wording: the five notices exist, each has a line and a button, and the wording is exactly
-// what requirements.md approved (the test reads the table there, so the two cannot drift apart).
+// Notice wording: the six notices exist, each has a line and a button, and the wording is exactly
+// what was approved. The first five are in the storage requirements table; `otherTab` is in the
+// shell design's copy table. The test reads both, so the code and the docs cannot drift apart.
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import { NOTICES } from "./notices.js";
 
-const IDS = ["blocked", "corrupt", "newer", "saveFailed", "importFailed"];
+const FROM_STORAGE = ["blocked", "corrupt", "newer", "saveFailed", "importFailed"];
+const IDS = [...FROM_STORAGE, "otherTab"];
+
+/** The `otherTab` row of the shell design's copy table: its line and its button. */
+function otherTabApproved() {
+  const text = readFileSync(new URL("../../.kiro/specs/shell/design.md", import.meta.url), "utf8");
+  const row = text.split("\n").find((l) => l.startsWith("| `otherTab` notice |"));
+  const cell = row
+    .split("|")
+    .slice(1, -1)
+    .map((c) => c.trim())[1];
+  const [line, button] = cell.split(" Button: ");
+  return { line, button };
+}
 
 /** The approved table: id -> { line, button }, read from the requirements file. */
 function approved() {
@@ -26,7 +40,7 @@ function approved() {
   );
 }
 
-test("there are exactly the five approved notice ids", () => {
+test("there are exactly the six approved notice ids", () => {
   assert.deepEqual(Object.keys(NOTICES).sort(), [...IDS].sort());
 });
 
@@ -39,13 +53,20 @@ test("every id has a line and a button, and the id on the notice matches its key
   }
 });
 
-test("the wording matches the approved table in requirements.md, word for word", () => {
+test("the first five match the approved table in the storage requirements, word for word", () => {
   const want = approved();
-  assert.deepEqual(Object.keys(want).sort(), [...IDS].sort());
-  for (const id of IDS) {
+  assert.deepEqual(Object.keys(want).sort(), [...FROM_STORAGE].sort());
+  for (const id of FROM_STORAGE) {
     assert.equal(NOTICES[id].line, want[id].line, `${id} line`);
     assert.equal(NOTICES[id].button, want[id].button, `${id} button`);
   }
+});
+
+test("otherTab matches the shell design's copy table, word for word", () => {
+  const want = otherTabApproved();
+  assert.equal(NOTICES.otherTab.line, want.line);
+  assert.equal(NOTICES.otherTab.button, want.button);
+  assert.match(want.line, /^Your progress changed in another Dead Keys tab\./);
 });
 
 test("the lines are plain text: no markup characters, no blame words", () => {

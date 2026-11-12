@@ -1,0 +1,20 @@
+/* Screen layout. Task 3 only needs the page frame; each screen adds its own block here as it is
+   built (tasks 7 to 11). */
+#app {
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+main {
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+main > h1 {
+  font-size: 2.5rem;
+  line-height: 1.1;
+  border-top: var(--rule-double);
+  border-bottom: var(--rule-double);
+  padding: 0.5rem 0;
+  text-align: center;
+}

@@ -1,0 +1,85 @@
+/* Reset, page, focus and the few helpers every screen uses. Tokens come from tokens.css. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  border-radius: 0; /* zero radius everywhere */
+}
+
+html {
+  background: var(--bg);
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg) var(--scanlines);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: var(--head);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: var(--label);
+}
+
+/* Visible focus on every control (WCAG 2.4.7, 2.4.13). Drawn outside the box so it never
+   changes the layout. */
+:focus-visible {
+  outline: var(--focus);
+  outline-offset: 2px;
+}
+
+/* Present to a screen reader, invisible to the eye. Used by the live region. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* A panel: raised ground with a double rule, like the locked mock. */
+.panel {
+  background: var(--panel) var(--scanlines);
+  border: var(--rule-double);
+  padding: 1rem 1.5rem;
+}
+
+/* The one place !important is right: this reset must beat any animation a later screen rule sets. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    /* biome-ignore lint/complexity/noImportantStyles: reduced motion must always win */
+    animation: none !important;
+    /* biome-ignore lint/complexity/noImportantStyles: reduced motion must always win */
+    transition: none !important;
+    /* biome-ignore lint/complexity/noImportantStyles: reduced motion must always win */
+    scroll-behavior: auto !important;
+  }
+}
