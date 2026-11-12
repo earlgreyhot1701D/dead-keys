@@ -13,6 +13,8 @@ const TAGS = new Set(
 /** Attributes that turn text into markup or code. */
 const BANNED = new Set(["innerhtml", "outerhtml", "srcdoc", "style"]);
 const URL_ATTRS = new Set(["href", "src", "action", "formaction"]);
+/** Added to every link that opens a new tab, for a screen reader. */
+export const NEW_TAB = " (opens in a new tab)";
 /** Set as properties so a value stays live; everything else is an attribute. */
 const PROPS = new Set(["value", "checked", "selected", "disabled"]);
 
@@ -75,7 +77,8 @@ export function createEl(doc) {
       }
     }
     // A link that opens a new tab must not hand that tab our window or our address.
-    if (tag === "a" && attrs?.target === "_blank") node.setAttribute("rel", "noopener noreferrer");
+    const newTab = tag === "a" && attrs?.target === "_blank";
+    if (newTab) node.setAttribute("rel", "noopener noreferrer");
     const add = (child) => {
       if (Array.isArray(child)) return child.forEach(add);
       if (child === null || child === undefined || typeof child === "boolean") return;
@@ -88,6 +91,11 @@ export function createEl(doc) {
       }
     };
     add(children);
+    // ...and says so: a visible arrow, and the words for a screen reader (WCAG 3.2.5 advice).
+    if (newTab) {
+      add(el("span", { class: "new-tab", "aria-hidden": "true" }, " ↗"));
+      add(el("span", { class: "sr-only" }, NEW_TAB));
+    }
     return node;
   };
 }

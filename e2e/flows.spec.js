@@ -60,11 +60,14 @@ test("settings are saved and come back after a reload", async ({ page }) => {
   await expect(page.getByLabel("Finger colors")).not.toBeChecked();
 });
 
-test("Escape in the menu goes back to the title, and the live region speaks the screen", async ({
+test("a screen change is announced once: the heading takes focus, the live region stays quiet", async ({
   page,
 }) => {
   await toMenu(page);
-  await expect(page.locator("#live")).toHaveText("Main menu");
+  await expect(page.getByRole("heading", { level: 1, name: "Main menu" })).toBeFocused();
+  await page.waitForTimeout(200); // longer than the live region's own delay
+  await expect(page.locator("#live")).toHaveText("");
   await page.keyboard.press("Escape");
-  await expect(page.getByRole("heading", { level: 1, name: "Dead Keys" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "Dead Keys" })).toBeFocused();
+  await expect(page.locator("#live")).toHaveText("");
 });

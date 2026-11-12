@@ -67,8 +67,8 @@ export async function chooseFile(ctx, input, status) {
   const r = ctx.app.previewImport(await readFile(file));
   input.value = ""; // so choosing the same file again still fires
   if (!r.ok) {
+    // Shown here; the importFailed notice is what a screen reader hears, so it is said once.
     status.textContent = r.reason;
-    ctx.announce(r.reason);
     return;
   }
   status.textContent = "";

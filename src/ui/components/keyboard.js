@@ -4,6 +4,9 @@
 import { BANDS } from "../../engine/progressConfig.js";
 import { keyboardModel } from "./keyboardLayout.js";
 
+/** The scroll frame's name for a screen reader (new copy, for Shara). */
+export const KB_REGION = "Keyboard heat map picture. The same facts are in words below.";
+
 /**
  * @param {typeof import("../dom.js").el} el
  * @param {{ key: string, attempts: number, misses: number }[]} keys Saved stats.
@@ -17,10 +20,8 @@ export function renderKeyboard(el, keys) {
       row.map((c) =>
         el(
           "span",
-          {
-            class: `kb-key band-${c.band}${c.key === " " ? " kb-space" : ""}`,
-            title: `${c.key === " " ? "space" : c.key}: ${c.label}`,
-          },
+          // No hover tooltip: the glyph, the legend and the text summary carry the same facts.
+          { class: `kb-key band-${c.band}${c.key === " " ? " kb-space" : ""}` },
           [
             el("span", { class: "kb-char" }, c.key === " " ? "space" : c.key),
             el("span", { class: "kb-glyph" }, c.glyph),
@@ -36,7 +37,13 @@ export function renderKeyboard(el, keys) {
     ]),
   );
   return el("div", { class: "kb" }, [
-    el("div", { class: "kb-grid", "aria-hidden": "true" }, rows),
+    // On a narrow window the keyboard scrolls sideways, so its frame takes keyboard focus (arrow
+    // keys scroll it). The keys inside are hidden from a screen reader; the summary reads them.
+    el(
+      "div",
+      { class: "kb-scroll", tabindex: "0", role: "region", "aria-label": KB_REGION },
+      el("div", { class: "kb-grid", "aria-hidden": "true" }, rows),
+    ),
     el("ul", { class: "kb-legend", "aria-label": "Key legend" }, legend),
   ]);
 }

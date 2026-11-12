@@ -409,3 +409,15 @@ Built: router and notice bar, confirm dialog, title, menu, privacy card, keyboar
 | Import failure reasons need Shara's word-for-word approval | Fixed | The five reasons are in the shell design copy table, approved, and tested word for word; the old table carries a "Superseded" pointer |
 
 Block 6 pattern worth writing up: the tests that mattered most were the ones that looked at the real browser. Unit tests had passed for the focus loss, the Escape path and the dot contrast, and the e2e run and a contrast calculation found all three.
+
+## Nov 12 2026: Block 6 gate FAIL, and why the screens didn't match the mock
+
+Both reviewers recommended FAIL (title-screen keyboard bug and a set of a11y and test gaps), and Shara failed the block. The bigger finding was hers: the built screens do not look like the locked design.
+
+| Finding | Status | Where |
+|---|---|---|
+| **Spec gap (Claude's):** `mock/index.html` was listed in the spec only as a reference. No task said to match it, and the PASS line had no visual check, so Kiro built a plainer version of each screen and every check still passed | Fixed in the process: `mock/index.html` and `docs/design-brief.md` are now the spec for how every screen looks. The PASS line adds "Each screen's 1440x900 screenshot matches its mock screen, side by side, approved by Shara." Screenshots of both are saved to `docs/screens/` | `docs/current-block.md` |
+| `https://dead-keys.vercel.app` went live when Vercel made the project's first deployment production | **Production live by Shara's decision, Nov 11.** Left as it is | Vercel project |
+| How to stop it happening again | Fixed: every deploy uses `--environment=preview` (CLI 65.5.0; `--prod` is shorthand for `--environment=production`) through `npm run deploy:preview`, which runs `check:build` first. Vercel's community forum notes the first-deploy rule applies even with a preview target, so the flag alone would not have saved the first one; now that a production deployment exists, previews stay previews. Nothing goes to production without Shara's word | `package.json` |
+
+Lesson for the write-up: a green test suite can only check what the spec asked for. "Looks like the mock" was never written down, so nothing tested it, and two reviewers who read the spec didn't raise it either.

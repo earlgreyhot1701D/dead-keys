@@ -57,9 +57,12 @@ test("a file that is not a backup shows its reason and changes nothing", async (
   await expect(page.locator("#import-status")).toContainText("Dead Keys backup");
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await expect(page.locator("#notice")).toContainText("That file couldn't be loaded");
+  // Said once: the notice is the live region; the reason is on the page but not spoken again.
+  await expect(page.locator("#live")).not.toContainText("backup");
+  await expect(page.locator("#import-status")).not.toHaveAttribute("aria-live", /.+/);
 });
 
-test("damaged saved data: the notice shows, Got it hides it, old data can be downloaded", async ({
+test("damaged saved data: the notice shows inside a landmark, Got it hides it, and focus is kept", async ({
   page,
 }) => {
   await seed(page, '{"schemaVersion":1,"rounds":[');
@@ -67,8 +70,27 @@ test("damaged saved data: the notice shows, Got it hides it, old data can be dow
   const notice = page.locator("#notice");
   await expect(notice).toContainText("We couldn't read your saved progress");
   await expect(notice).toHaveAttribute("role", "status");
+  await expect(page.getByRole("region", { name: "Notices" })).toContainText("couldn't read");
   await notice.getByRole("button", { name: "Got it" }).click();
   await expect(notice).toBeEmpty();
+  await expect(page.getByRole("heading", { level: 1, name: "Dead Keys" })).toBeFocused();
+});
+
+test("old data can be downloaded from Settings, as the file it was (Req 5.4)", async ({ page }) => {
+  const damaged = '{"schemaVersion":1,"rounds":[';
+  await seed(page, damaged);
+  await page.goto("/");
+  await page.keyboard.press("a");
+  await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByRole("button", { name: "Settings", exact: true }).click();
+  const [download] = await Promise.all([
+    page.waitForEvent("download"),
+    page.locator("#main").getByRole("button", { name: "Download old data" }).click(),
+  ]);
+  expect(download.suggestedFilename()).toBe("dead-keys-old-data.json");
+  const path = await download.path();
+  const { readFileSync } = await import("node:fs");
+  expect(readFileSync(path, "utf8")).toBe(damaged);
 });
 
 test("a save from another tab stops this tab from saving and offers a reload", async ({

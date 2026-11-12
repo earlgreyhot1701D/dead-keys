@@ -75,6 +75,20 @@ test("a key that does not start the game is left alone (so Tab and Escape still 
   assert.deepEqual(ctx.went, []);
 });
 
+test("Enter and Space on a focused button press that button; they do not start the game", () => {
+  const ctx = ctxFor();
+  const button = { tagName: "BUTTON" };
+  for (const key of ["Enter", " "]) {
+    assert.equal(titleScreen.onKey(ctx, { key, target: button }), false, JSON.stringify(key));
+  }
+  assert.deepEqual(ctx.went, []);
+  // Any other key still starts, even with a button focused ("press any key")
+  assert.equal(titleScreen.onKey(ctx, { key: "a", target: button }), true);
+  // and Enter with nothing in particular focused (the heading) starts too
+  assert.equal(titleScreen.onKey(ctx, { key: "Enter", target: { tagName: "H1" } }), true);
+  assert.deepEqual(ctx.went, ["privacy", "privacy"]);
+});
+
 test("it has the wordmark, the tagline, the still frame and a Start button", () => {
   withFakeDocument(() => {
     const node = titleScreen.render(ctxFor());

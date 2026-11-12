@@ -3,11 +3,16 @@
 
 const NAME = /^[A-Za-z0-9][A-Za-z0-9._-]{0,80}\.(json|txt)$/;
 
+/** How long the file's address stays alive after the click. Firefox and Safari can cancel a
+ *  download whose address is released in the same moment it starts. */
+export const REVOKE_DELAY_MS = 10_000;
+
 /** What the browser provides. */
 export const browserApi = () => ({
   Blob,
   createObjectURL: (blob) => URL.createObjectURL(blob),
   revokeObjectURL: (url) => URL.revokeObjectURL(url),
+  later: (fn, ms) => setTimeout(fn, ms),
   doc: document,
 });
 
@@ -35,7 +40,9 @@ export function downloadText(name, text, api = browserApi()) {
     } finally {
       link.remove();
     }
-  } finally {
-    api.revokeObjectURL(url); // always release the file, even if the click threw
+  } catch (err) {
+    api.revokeObjectURL(url); // nothing is downloading, so release the file now
+    throw err;
   }
+  api.later(() => api.revokeObjectURL(url), REVOKE_DELAY_MS); // release once the download has it
 }

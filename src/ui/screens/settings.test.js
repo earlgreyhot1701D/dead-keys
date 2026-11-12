@@ -74,6 +74,27 @@ test("a value the screen never offers is not saved; the control is put back", ()
   });
 });
 
+test("the slider says its value with the unit, once: the visible readout is hidden from a reader", () => {
+  withFakeDocument(() => {
+    const node = settingsScreen.render(ctxFor({ speed: 1.2 }));
+    const range = byId(node, "st-speed");
+    assert.equal(range.attrs["aria-valuetext"], "1.2×");
+    const out = byId(node, "st-speed-out");
+    assert.equal(out.tag, "span"); // not <output>, which would be a second live region
+    assert.equal(out.attrs["aria-hidden"], "true");
+    const target = { value: "1.7", setAttribute: (k, v) => range.setAttribute(k, v) };
+    fire(range, "input", target);
+    assert.equal(range.attrs["aria-valuetext"], "1.7×");
+  });
+});
+
+test("a settings change does not rebuild the controls (only a data change does)", () => {
+  assert.ok(!settingsScreen.redrawOn.includes("settings"));
+  for (const k of ["progress", "persist", "oldData", "newerSave"]) {
+    assert.ok(settingsScreen.redrawOn.includes(k), k);
+  }
+});
+
 test("dragging the slider shows the number without saving", () => {
   withFakeDocument(() => {
     const ctx = ctxFor();

@@ -2,13 +2,13 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import * as fc from "fast-check";
-import { downloadText } from "./download.js";
+import { downloadText, REVOKE_DELAY_MS } from "./download.js";
 import { makeFakeDoc } from "./fakeDom.js";
 
 /** A fake browser that records what was made, linked and released. */
 function fakeApi({ clickThrows = false, urlThrows = false } = {}) {
   const doc = makeFakeDoc();
-  const log = { blobs: [], urls: [], revoked: [], links: [] };
+  const log = { blobs: [], urls: [], revoked: [], links: [], later: [] };
   class FakeBlob {
     constructor(parts, opts) {
       this.text = parts.join("");
@@ -38,10 +38,15 @@ function fakeApi({ clickThrows = false, urlThrows = false } = {}) {
         return `blob:fake/${log.urls.length}`;
       },
       revokeObjectURL: (url) => log.revoked.push(url),
+      later: (fn, ms) => log.later.push({ fn, ms }),
       doc,
     },
   };
 }
+/** Run the delayed releases, as time passing would. */
+const passTime = (log) => {
+  for (const { fn } of log.later.splice(0)) fn();
+};
 
 test("it makes a file with the text, links it, clicks it, and releases it", () => {
   const { api, log } = fakeApi();
@@ -53,6 +58,12 @@ test("it makes a file with the text, links it, clicks it, and releases it", () =
   assert.equal(link.download, "dead-keys-backup.json");
   assert.equal(link.rel, "noopener");
   assert.equal(link.clicked, true);
+  // Not released in the same moment (Firefox and Safari can cancel the download), but later.
+  assert.deepEqual(log.revoked, []);
+  assert.equal(log.later.length, 1);
+  assert.equal(log.later[0].ms, REVOKE_DELAY_MS);
+  assert.ok(REVOKE_DELAY_MS >= 1000);
+  passTime(log);
   assert.deepEqual(log.revoked, ["blob:fake/1"]);
 });
 
@@ -73,7 +84,8 @@ test("a failing click still removes the link and releases the file, then the err
   const { api, log } = fakeApi({ clickThrows: true });
   assert.throws(() => downloadText("a.json", "x", api), /click blocked/);
   assert.equal(api.doc.body.children.length, 0);
-  assert.deepEqual(log.revoked, ["blob:fake/1"]);
+  assert.deepEqual(log.revoked, ["blob:fake/1"]); // released at once: nothing is downloading
+  assert.equal(log.later.length, 0);
 });
 
 test("a browser that cannot make the file raises, with nothing left behind", () => {

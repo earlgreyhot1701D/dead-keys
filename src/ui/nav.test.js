@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import * as fc from "fast-check";
-import { createNav, escapeAction } from "./nav.js";
+import { createNav, escapeAction, isControl } from "./nav.js";
 
 test("it starts on the first screen, which has nothing to go back to", () => {
   const nav = createNav("title");
@@ -110,4 +110,21 @@ test("replace on the first screen adds rather than loses it, and a repeat return
   nav.go("settings");
   nav.replace("menu");
   assert.deepEqual(nav.stack, ["title", "menu"]);
+});
+
+test("isControl: buttons, links and fields use keys themselves; headings and the page do not", () => {
+  for (const tagName of ["BUTTON", "button", "A", "INPUT", "SELECT", "TEXTAREA", "SUMMARY"]) {
+    assert.equal(isControl({ tagName }), true, tagName);
+  }
+  assert.equal(isControl({ tagName: "DIV", isContentEditable: true }), true);
+  for (const t of [
+    { tagName: "H1" },
+    { tagName: "BODY" },
+    { tagName: "DIV" },
+    null,
+    undefined,
+    {},
+  ]) {
+    assert.equal(isControl(t), false, JSON.stringify(t));
+  }
 });

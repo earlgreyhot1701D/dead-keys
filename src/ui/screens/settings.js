@@ -14,6 +14,9 @@ export const SOUND_LABELS = Object.freeze({
   arcade: "Arcade",
 });
 
+/** The speed as the player reads it, and as the slider announces it: "1.2×". */
+export const speedText = (v) => `${v}×`;
+
 /** Change a setting only if the value is allowed; the screen never offers anything else. */
 function change(ctx, key, value) {
   if (isValidSetting(key, value)) ctx.app.setSetting(key, value);
@@ -40,9 +43,13 @@ function checkbox(ctx, key, label, hint) {
 export const settingsScreen = {
   id: "settings",
   title: "Settings",
+  // The controls already show a settings change, so only a change to the data redraws the screen.
+  redrawOn: ["progress", "persist", "oldData", "newerSave"],
   render(ctx) {
     const s = ctx.state.settings;
-    const shown = el("output", { id: "st-speed-out", for: "st-speed" }, `${s.speed}×`);
+    // The slider speaks its own value ("1.2×"), so the visible readout is hidden from a screen
+    // reader rather than being a second live region.
+    const shown = el("span", { id: "st-speed-out", "aria-hidden": "true" }, speedText(s.speed));
     return el("main", { id: "main", class: "settings-main" }, [
       el("h1", {}, "Settings"),
       checkbox(ctx, "ai", "AI drills", AI_HINT),
@@ -70,8 +77,11 @@ export const settingsScreen = {
           max: SPEED_MAX,
           step: 0.1,
           value: s.speed,
+          "aria-valuetext": speedText(s.speed),
           onInput: (e) => {
-            shown.textContent = `${Number(e.target.value)}×`;
+            const text = speedText(Number(e.target.value));
+            shown.textContent = text;
+            e.target.setAttribute?.("aria-valuetext", text);
           },
           onChange: (e) => change(ctx, "speed", Number(e.target.value)),
         }),

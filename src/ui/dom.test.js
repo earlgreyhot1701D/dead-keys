@@ -2,7 +2,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import * as fc from "fast-check";
-import { checkAttr, checkTag, createEl } from "./dom.js";
+import { checkAttr, checkTag, createEl, NEW_TAB } from "./dom.js";
 
 /** Just enough of a document for `el`: elements, text nodes, attributes, listeners. */
 const doc = {
@@ -126,6 +126,18 @@ test("a link that opens a new tab gets rel noopener noreferrer", () => {
   const a = el("a", { href: "https://clewlabs.org", target: "_blank", rel: "author" }, "Clew Labs");
   assert.equal(a.attrs.rel, "noopener noreferrer");
   assert.equal(el("a", { href: "/x" }, "x").attrs.rel, undefined);
+});
+
+test("a new-tab link says so: a visible arrow, and words for a screen reader", () => {
+  const a = el("a", { href: "https://clewlabs.org", target: "_blank" }, "Clew Labs");
+  const [label, arrow, words] = a.children;
+  assert.equal(label.text, "Clew Labs");
+  assert.equal(arrow.attrs["aria-hidden"], "true");
+  assert.equal(arrow.children[0].text, " ↗");
+  assert.equal(words.attrs.class, "sr-only");
+  assert.equal(words.children[0].text, NEW_TAB);
+  assert.equal(NEW_TAB, " (opens in a new tab)");
+  assert.equal(el("a", { href: "/x" }, "x").children.length, 1); // same-tab links are unchanged
 });
 
 test("attributes: true is a bare attribute; false, null and undefined are skipped; others are text", () => {

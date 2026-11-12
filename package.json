@@ -14,7 +14,9 @@
     "preview": "vite preview",
     "lint": "biome check .",
     "test": "node --test",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "check:build": "vite build && node scripts/check-build.js",
+    "deploy:preview": "npm run check:build && vercel deploy --environment=preview"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",

@@ -151,3 +151,20 @@ test("onKey moves focus between the buttons and says it used the key", () => {
   assert.equal(focused.at(-1), 0);
   assert.equal(menuScreen.onKey(ctx, { key: "Enter" }), false); // Enter is the button's own
 });
+
+test("arrows, Home and End are left alone when focus is on a control outside the menu", () => {
+  const focused = [];
+  const ctx = {
+    root: {
+      querySelectorAll: () => [{ focus: () => focused.push(0) }],
+      ownerDocument: { activeElement: null },
+    },
+  };
+  const noticeButton = { tagName: "BUTTON", closest: () => null };
+  for (const key of ["ArrowDown", "ArrowUp", "Home", "End"]) {
+    assert.equal(menuScreen.onKey(ctx, { key, target: noticeButton }), false, key);
+  }
+  const menuButton = { tagName: "BUTTON", closest: (sel) => (sel === ".menu-list" ? {} : null) };
+  assert.equal(menuScreen.onKey(ctx, { key: "Home", target: menuButton }), true);
+  assert.deepEqual(focused, [0]);
+});

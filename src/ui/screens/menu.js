@@ -2,6 +2,7 @@
 // "Not built yet" and stays focusable but does nothing, so the menu reads the same in every build.
 import { renderPhoneNotice } from "../components/phoneNotice.js";
 import { el } from "../dom.js";
+import { isControl } from "../nav.js";
 
 /** The PRD G2 main menu, in order. `screen` is the id the router opens. */
 export const MENU_ITEMS = Object.freeze([
@@ -61,6 +62,9 @@ export const menuScreen = {
     ]);
   },
   onKey(ctx, e) {
+    // Only when focus is in the menu (or on nothing that uses keys, such as the heading), so a
+    // notice button or the page's own scrolling keeps its arrows, Home and End.
+    if (isControl(e.target) && !e.target.closest?.(".menu-list")) return false;
     const list = [...ctx.root.querySelectorAll(".menu-item")];
     const i = nextIndex(list.length, list.indexOf(ctx.root.ownerDocument.activeElement), e.key);
     if (i === null) return false;

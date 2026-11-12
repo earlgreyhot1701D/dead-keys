@@ -95,8 +95,8 @@
   list-style: none;
   font-family: var(--mono);
 }
-@media (max-width: 700px) {
-  .kb-grid {
-    overflow-x: auto;
-  }
+/* The frame scrolls sideways when the window is narrower than the keyboard; it takes focus. */
+.kb-scroll {
+  max-width: 100%;
+  overflow-x: auto;
 }

@@ -45,3 +45,15 @@ export function escapeAction(event, { dialogOpen }) {
   if (event.key !== "Escape" || event.defaultPrevented || dialogOpen) return "ignore";
   return "back";
 }
+
+const CONTROL_TAGS = new Set(["A", "BUTTON", "INPUT", "SELECT", "TEXTAREA", "SUMMARY"]);
+
+/**
+ * Is this element a control that uses keys itself (a button, link, form field)? A screen's own
+ * key handling steps aside for these, so Enter and Space press the focused button.
+ * @param {{ tagName?: string, isContentEditable?: boolean } | null | undefined} target
+ */
+export function isControl(target) {
+  const tag = typeof target?.tagName === "string" ? target.tagName.toUpperCase() : "";
+  return CONTROL_TAGS.has(tag) || target?.isContentEditable === true;
+}

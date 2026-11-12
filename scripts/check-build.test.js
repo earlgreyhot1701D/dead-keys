@@ -55,3 +55,14 @@ test("a clean build has no hits, and the word 'mini' alone is fine", () => {
 test("unreadable or odd fixture values do not crash it", () => {
   assert.deepEqual(collectNeedles([null, 5, "x", [], {}]).ids.size, 0);
 });
+
+test("the build check is wired in: check:build runs it, and deploy:preview runs check:build first", async () => {
+  const { readFileSync } = await import("node:fs");
+  const pkg = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
+  const { "check:build": check, "deploy:preview": deploy } = pkg.scripts;
+  assert.match(check, /vite build && node scripts\/check-build\.js/);
+  assert.match(deploy, /^npm run check:build && vercel deploy /);
+  // Preview only. Nothing goes to production without Shara's word.
+  assert.match(deploy, /--environment=preview/);
+  assert.doesNotMatch(deploy, /--prod|production/);
+});

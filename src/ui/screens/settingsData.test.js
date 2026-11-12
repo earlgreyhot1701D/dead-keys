@@ -141,10 +141,8 @@ test("a bad file shows its reason in words and changes nothing", async () => {
     const status = { textContent: "" };
     await chooseFile(ctx, inputFor(fileOf("nope")), status);
     assert.equal(status.textContent, "That isn't a backup file.");
-    assert.deepEqual(ctx.log, [
-      ["preview", "nope"],
-      ["say", "That isn't a backup file."],
-    ]);
+    // Shown on the page, not spoken here: the app's importFailed notice is the one announcement.
+    assert.deepEqual(ctx.log, [["preview", "nope"]]);
     assert.equal(dialog(doc), undefined);
   });
 });

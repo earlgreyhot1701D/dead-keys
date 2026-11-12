@@ -35,3 +35,8 @@
   padding-left: 1.2rem;
   font-family: var(--mono);
 }
+
+/* The arrow on links that open a new tab. */
+.new-tab {
+  font-size: 0.85em;
+}

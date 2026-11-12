@@ -3,6 +3,7 @@
 // under reduced motion, so a still frame is also what a reduced-motion player will always see.
 import { renderPhoneNotice } from "../components/phoneNotice.js";
 import { el } from "../dom.js";
+import { isControl } from "../nav.js";
 
 export const TAGLINE = "a typing game, back from the dead.";
 
@@ -70,6 +71,8 @@ export const titleScreen = {
     ]);
   },
   onKey(ctx, e) {
+    // Enter and Space on a focused button (a notice, "Got it", Start) press that button.
+    if (isControl(e.target) && (e.key === "Enter" || e.key === " ")) return false;
     if (!startKey(e)) return false;
     begin(ctx);
     return true;
