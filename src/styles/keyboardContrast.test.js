@@ -1,19 +1,13 @@
-// axe cannot judge text over a gradient, so check the keycap patterns here: the key's letter and
-// glyph must keep 4.5:1 against the brightest part of its own pattern (the pattern color at full
-// strength laid over the key's panel color). Reads the real CSS, so a change to it is checked.
+// axe cannot judge text over a pattern, so check the keycaps here: each band's letter must keep
+// 4.5:1 against its own fill and against the brightest part of its pattern (the pattern color at
+// full strength laid over the fill). Reads the real CSS, so a change to it is checked.
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 
-const read = (p) => readFileSync(new URL(p, import.meta.url), "utf8");
-const tokens = read("./tokens.css");
-const css = read("./keyboard.css");
+const css = readFileSync(new URL("./heatBands.css", import.meta.url), "utf8");
 
-const token = (name) => {
-  const m = tokens.match(new RegExp(`--${name}:\\s*#([0-9a-f]{6})`, "i"));
-  assert.ok(m, `token --${name}`);
-  return [0, 2, 4].map((i) => Number.parseInt(m[1].slice(i, i + 2), 16));
-};
+const hex = (h) => [1, 3, 5].map((i) => Number.parseInt(h.slice(i, i + 2), 16));
 const lum = ([r, g, b]) => {
   const f = (v) => {
     const s = v / 255;
@@ -33,34 +27,40 @@ const block = (sel) => {
   assert.ok(m, sel);
   return m[1];
 };
+const prop = (text, name) => {
+  const m = text.match(new RegExp(`(?:^|;|\\s)${name}:\\s*(#[0-9a-f]{6})`, "i"));
+  assert.ok(m, name);
+  return hex(m[1]);
+};
 const overlays = (text) =>
   [...text.matchAll(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)/g)].map((m) => ({
     rgb: [Number(m[1]), Number(m[2]), Number(m[3])],
     a: Number(m[4]),
   }));
 
-const PANEL = token("panel");
-const TEXT = { soft: token("soft"), muted: token("muted") };
+const BANDS = ["missed", "shaky", "uneven", "steady", "noData"];
 
-for (const [band, text] of [
-  ["missed", "soft"],
-  ["shaky", "soft"],
-  ["uneven", "soft"],
-  ["steady", "soft"],
-  ["noData", "muted"],
-]) {
-  test(`band-${band}: the letter keeps 4.5:1 on its pattern`, () => {
-    for (const { rgb, a } of overlays(block(`.band-${band}`))) {
-      const worst = over(rgb, a, PANEL);
-      const r = ratio(TEXT[text], worst);
+for (const band of BANDS) {
+  test(`band-${band}: the letter keeps 4.5:1 on its fill and on its pattern`, () => {
+    const b = block(`.band-${band}`);
+    const fill = prop(b, "background-color");
+    const text = prop(b, "color");
+    assert.ok(ratio(text, fill) >= 4.5, `${band} on its fill: ${ratio(text, fill).toFixed(2)}:1`);
+    for (const { rgb, a } of overlays(b)) {
+      const r = ratio(text, over(rgb, a, fill));
       assert.ok(r >= 4.5, `${band}: ${r.toFixed(2)}:1 on the pattern`);
     }
   });
 }
 
+test("the check can fail: the mock's 55% shaky dots would be under 4.5:1", () => {
+  const r = ratio(hex("#fef3c7"), over([242, 193, 78], 0.55, hex("#261f0d")));
+  assert.ok(r < 4.5, r.toFixed(2));
+});
+
 test("the five bands have different borders or patterns in the CSS itself", () => {
-  const looks = ["missed", "shaky", "uneven", "steady", "noData"].map((b) =>
-    block(`.band-${b}`).replace(/\s+/g, " ").trim(),
-  );
+  const looks = BANDS.map((b) => block(`.band-${b}`).replace(/\s+/g, " ").trim());
   assert.equal(new Set(looks).size, 5);
+  const borders = BANDS.map((b) => block(`.band-${b}`).match(/border:\s*([^;]+);/)[1]);
+  assert.equal(new Set(borders).size, 5, "each band has its own border");
 });

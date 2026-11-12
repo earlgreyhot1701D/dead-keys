@@ -71,17 +71,41 @@ test("when everything is built, no item is marked", () => {
   withFakeDocument(() => {
     const all = new Set(MENU_ITEMS.map((i) => i.screen));
     const node = menuScreen.render(ctxFor({ built: all }));
-    assert.equal(findAll(node, (n) => n.attrs?.["aria-disabled"]).length, 0);
-    assert.doesNotMatch(textOf(node), /Not built yet/);
+    const nav = findAll(node, (n) => n.tag === "nav")[0];
+    assert.equal(findAll(nav, (n) => n.attrs?.["aria-disabled"]).length, 0);
+    assert.doesNotMatch(textOf(nav), /Not built yet/);
   });
 });
 
-test("the hint only names keys that work", () => {
+test("the hint only names keys that work: the approved line, in the mock's three cells", () => {
   withFakeDocument(() => {
-    assert.match(
-      textOf(menuScreen.render(ctxFor())),
-      /Arrow keys move\. Enter opens\. Escape goes back\./,
+    const hint = findAll(menuScreen.render(ctxFor()), (n) =>
+      n.attrs?.class?.includes("selector-hint"),
+    )[0];
+    assert.equal(
+      hint.children.map(textOf).join(" "),
+      "Arrow keys move. Enter opens. Escape goes back.",
     );
+  });
+});
+
+test("the right column: future features say Not built yet; nothing made up is shown", () => {
+  withFakeDocument(() => {
+    const text = textOf(menuScreen.render(ctxFor()));
+    assert.match(text, /Recommended next lessonNot built yet/);
+    assert.match(text, /Daily drillNot built yet/);
+    for (const gone of [
+      "+4 THIS WEEK",
+      "LAST: 34",
+      "BEST: 7",
+      "SESSION",
+      "ROOT_OP",
+      "KEY_0",
+      "PACK:",
+    ]) {
+      assert.ok(!text.includes(gone), gone);
+    }
+    assert.match(text, /CRT-SCAN (ON|OFF)/);
   });
 });
 

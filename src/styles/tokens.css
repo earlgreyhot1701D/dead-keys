@@ -29,6 +29,18 @@
   --rule-thin: 1px solid var(--rule);
   --focus: 3px solid var(--text);
 
+  /* From the locked mock (mock/index.html), re-entered. Contrast-tested like the rest. */
+  --ink: #031013; /* darkest wells: the keyboard tray, word boxes */
+  --ground: #071013; /* the menu's page ground */
+  --bar: #101e21; /* header bars and raised panels */
+  --card: #142225; /* cards, tiles, legend cells */
+  --panel-2: #1e2c2f; /* the diagnosis panel, inert keys */
+  --accent: #71d8ca; /* panel titles and labels */
+  --bright: #d6e5e9; /* diagnosis sentences */
+  --line: #3c4947; /* quiet borders and dashed lanes, never text */
+  --teal-fill: #32a095; /* filled badges */
+  --on-teal: #00201d; /* text on a teal badge */
+
   /* Faint static scanlines, painted as a background so they sit behind every letter. */
   --scanlines: repeating-linear-gradient(
     to bottom,
@@ -37,10 +49,19 @@
     rgba(7, 21, 24, 0.32) 2px,
     rgba(7, 21, 24, 0.32) 4px
   );
+  /* The menu's finer scanlines (1px on, 1px off). */
+  --scanlines-fine: repeating-linear-gradient(
+    to bottom,
+    rgba(7, 21, 24, 0.3) 0,
+    rgba(7, 21, 24, 0.3) 1px,
+    transparent 1px,
+    transparent 2px
+  );
 }
 
 @media (prefers-reduced-motion: reduce) {
   :root {
     --scanlines: none;
+    --scanlines-fine: none;
   }
 }

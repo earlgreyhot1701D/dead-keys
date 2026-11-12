@@ -1,11 +1,18 @@
-// The title screen (shell Req 1.1, 1.5; design 6). STUB: the live attract demo arrives in Block 13
-// and the `kiro` easter egg in Block 14. Today it shows the still frame the demo will fall back to
-// under reduced motion, so a still frame is also what a reduced-motion player will always see.
+// The title screen (shell Req 1.1, 1.5; design 6), laid out as the locked mock's screen 1. STUB:
+// the live attract demo arrives in Block 13 and the `kiro` easter egg in Block 14. Today the scene
+// is a still frame, which is also what a reduced-motion player will always see. The demo
+// controls, sound button and "first run" labels come back in the blocks that make them true.
+import { ghostIcon, hints, scanlines, TERMINAL } from "../components/chrome.js";
 import { renderPhoneNotice } from "../components/phoneNotice.js";
+import { titleScene } from "../components/titleScene.js";
 import { el } from "../dom.js";
 import { isControl } from "../nav.js";
 
 export const TAGLINE = "a typing game, back from the dead.";
+export const SUBLINE = "1980s typing games // rebuilt as a real trainer";
+export const INTERCEPT = "PARANORMAL INTERCEPT // PID 0xDEAD";
+export const PRESS = "Press any key to start.";
+export const FOOTER_LINE = "Keyboard required. No account. Your progress stays in this browser.";
 
 /** Keys that never start the game: the ones you use to move around, and browser shortcuts. */
 const NOT_A_START = new Set([
@@ -42,32 +49,53 @@ export function startKey(e) {
 /** Where "start" goes: the privacy card the first time, the menu after. */
 const begin = (ctx) => ctx.go(ctx.state.settings.privacySeen ? "menu" : "privacy");
 
-/** A static drawing of the locked title scene: words falling, one locked, a station below. */
-function stillFrame() {
-  const word = (text, cls) => el("span", { class: `card ${cls}` }, text);
-  return el("div", { class: "frame", "aria-hidden": "true" }, [
-    word("mist", "card-1"),
-    word("lantern", "card-2"),
-    word("fern", "card-3"),
-    word("quill", "card-4"),
-    el("span", { class: "card card-5 locked" }, [el("strong", {}, "gh"), "ost"]),
-    el("div", { class: "danger-band" }, "[!] danger line"),
-    el("div", { class: "station" }, "▄▄█▄▄"),
-  ]);
-}
+const corner = (c, cls) => el("span", { class: `corner ${cls}`, "aria-hidden": "true" }, c);
 
 /** @type {import("../router.js").Screen} */
 export const titleScreen = {
   id: "title",
   title: "Dead Keys",
   render(ctx) {
-    return el("main", { id: "main", class: "title-main" }, [
-      el("h1", {}, "Dead Keys"),
-      el("p", { class: "tagline" }, TAGLINE),
-      ctx.phone ? renderPhoneNotice(el, ctx.dismissPhone) : null,
-      stillFrame(),
-      el("p", { class: "press" }, "Press any key to start."),
-      el("button", { type: "button", class: "btn", onClick: () => begin(ctx) }, "Start"),
+    return el("div", { class: "screen-frame title-frame" }, [
+      titleScene(),
+      scanlines(),
+      el("header", { class: "title-header" }, el("span", { class: "term-name" }, TERMINAL)),
+      el("main", { id: "main", class: "title-panel" }, [
+        el("div", { class: "intercept" }, [ghostIcon(28, 31), el("span", {}, INTERCEPT)]),
+        el("div", { class: "wordmark" }, el("h1", {}, "Dead Keys")),
+        el("div", { class: "title-lines" }, [
+          el("p", { class: "tagline" }, TAGLINE),
+          el("p", { class: "title-sub" }, SUBLINE),
+        ]),
+        ctx.phone ? renderPhoneNotice(el, ctx.dismissPhone) : null,
+        el("div", { class: "press-box" }, [
+          corner("╔", "c-tl"),
+          corner("╗", "c-tr"),
+          corner("╚", "c-bl"),
+          corner("╝", "c-br"),
+          el("div", { class: "press-row" }, [
+            el("p", { class: "press" }, PRESS),
+            el("span", { class: "press-cursor", "aria-hidden": "true" }),
+          ]),
+          el("div", { class: "press-foot" }, [
+            el(
+              "button",
+              { type: "button", class: "btn btn-term btn-primary", onClick: () => begin(ctx) },
+              "Start",
+            ),
+          ]),
+        ]),
+        el("div", { class: "title-tiles" }, [
+          el("div", { class: "stat-tile" }, [
+            el("span", { class: "stat-label" }, "Accounts needed"),
+            el("span", { class: "stat-value" }, "0"),
+          ]),
+        ]),
+      ]),
+      el("footer", { class: "title-footer" }, [
+        el("span", {}, FOOTER_LINE),
+        hints(["[ANY KEY] START", "[TAB] MOVE"]),
+      ]),
     ]);
   },
   onKey(ctx, e) {

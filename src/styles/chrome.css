@@ -1,0 +1,120 @@
+/* The locked mock's frame, shared by every screen (mock/index.html): bars, panels, badges,
+   pills and the bracket buttons. Values are the mock's. */
+.screen-frame {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg-deep);
+  color: var(--text);
+  font-family: var(--mono);
+}
+/* The scanline layer over everything (the mock's overlay). Off under reduced motion. */
+.scan {
+  position: absolute;
+  z-index: 5;
+  inset: 0;
+  pointer-events: none;
+  background: var(--scanlines);
+}
+.scan-fine {
+  background: var(--scanlines-fine);
+}
+.term-name {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-family: var(--head);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+/* Header bar (the progress screen's, used by every page with no mock of its own). */
+.term-header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+  padding: 0 24px;
+  border-bottom: 2px solid var(--line);
+  background: var(--bar);
+}
+.term-header-right {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-size: 14px;
+  color: var(--accent);
+}
+/* The strip under the header: a badge, a flavor label, the h1, and true numbers on the right. */
+.title-strip {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 40px;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--line);
+  background: var(--ink);
+  font-size: 13px;
+}
+.title-strip-left {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.title-strip h1 {
+  font-size: 18px;
+  letter-spacing: 0.12em;
+}
+.title-strip-meta {
+  color: var(--muted);
+}
+.flavor {
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  color: var(--label);
+}
+.badge {
+  position: relative;
+  z-index: 6;
+  padding: 2px 8px;
+  background: var(--teal-fill);
+  color: var(--on-teal);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+.pill {
+  padding: 2px 8px;
+  border: 1px solid var(--rule);
+  background: var(--bg);
+  font-size: 13px;
+  color: var(--label);
+}
+.pill-dim {
+  border-color: var(--line);
+  background: transparent;
+  color: var(--soft);
+}
+.term-footer {
+  display: flex;
+  flex-shrink: 0;
+  gap: 18px;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 40px;
+  padding: 0 24px;
+  border-top: 2px solid var(--line);
+  background: var(--ink);
+  font-size: 13px;
+}
+.sys-line {
+  font-weight: 700;
+}
+.hints {
+  display: flex;
+  gap: 18px;
+  color: var(--soft);
+}

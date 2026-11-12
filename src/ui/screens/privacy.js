@@ -1,5 +1,7 @@
 // The privacy card (shell Req 4; PRD G9). Shown before the menu on first launch, and again from
 // Settings. The text is the PRD's, word for word, and a test reads the PRD to keep it that way.
+// Drawn in the locked mock's panel system (no mock screen of its own).
+import { panelHead, termPage } from "../components/chrome.js";
 import { el } from "../dom.js";
 
 export const PRIVACY_PARAGRAPHS = Object.freeze([
@@ -13,29 +15,31 @@ export const privacyScreen = {
   title: "Privacy",
   render(ctx) {
     const first = !ctx.state.settings.privacySeen;
-    return el("main", { id: "main", class: "privacy-main" }, [
-      el("h1", {}, "Privacy"),
-      el(
-        "div",
-        { class: "panel prose" },
-        PRIVACY_PARAGRAPHS.map((p) => el("p", {}, p)),
-      ),
-      el("div", { class: "actions" }, [
-        first
-          ? el(
-              "button",
-              {
-                type: "button",
-                class: "btn",
-                onClick: () => {
-                  ctx.app.dismissPrivacy(); // remembered in settings (Req 4.2)
-                  ctx.replace("menu"); // Escape from the menu skips the card
-                },
-              },
-              "Continue",
-            )
-          : el("button", { type: "button", class: "btn", onClick: () => ctx.back() }, "Back"),
+    const action = first
+      ? el(
+          "button",
+          {
+            type: "button",
+            class: "btn btn-term btn-primary",
+            onClick: () => {
+              ctx.app.dismissPrivacy(); // remembered in settings (Req 4.2)
+              ctx.replace("menu"); // Escape from the menu skips the card
+            },
+          },
+          "Continue",
+        )
+      : null; // from Settings, the header's Back is the way out
+    return termPage(ctx, {
+      badgeText: "PRIVACY",
+      flavor: "DEAD KEYS // WHAT STAYS, WHAT LEAVES",
+      title: "Privacy",
+      body: el("main", { id: "main", class: "term-main page-narrow" }, [
+        el("section", { class: "term-panel prose-panel", "aria-label": "Privacy card" }, [
+          panelHead(el("span", { class: "panel-title" }, "FIRST-LAUNCH CARD"), null),
+          ...PRIVACY_PARAGRAPHS.map((p) => el("p", {}, p)),
+          action ? el("div", { class: "actions" }, [action]) : null,
+        ]),
       ]),
-    ]);
+    });
   },
 };

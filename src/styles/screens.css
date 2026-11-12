@@ -1,22 +1,8 @@
 /* Screen layout shared by every screen: page frame, buttons, notice bar, confirm dialog.
    Title, menu and keyboard styles have their own files. */
+/* Every screen draws the mock's full frame itself, edge to edge. */
 #app {
   min-height: 100vh;
-  padding: 2rem;
-}
-
-main {
-  max-width: 72rem;
-  margin: 0 auto;
-}
-
-main > h1 {
-  font-size: 2.5rem;
-  line-height: 1.1;
-  border-top: var(--rule-double);
-  border-bottom: var(--rule-double);
-  padding: 0.5rem 0;
-  text-align: center;
 }
 
 /* Buttons: double rule, uppercase condensed. The label always says what it does; color is never
@@ -51,13 +37,10 @@ main > h1 {
 }
 
 /* The notice bar: one plain line and its buttons, above the screen. */
-.notice-slot {
-  max-width: 72rem;
-  margin: 0 auto;
-}
-
 .notice-slot:not(:empty) {
-  margin-bottom: 1rem;
+  padding: 10px 24px;
+  border-bottom: 2px solid var(--line);
+  background: var(--bar);
 }
 
 .notice {

@@ -52,20 +52,24 @@ test("it says the two things that leave the browser, and that typing is never pa
   assert.match(all, /Your typing is never part of it\./);
 });
 
-test("it shows a heading, the paragraphs as text, and one button", () => {
+test("it shows a heading, the paragraphs as text, the header's Back, and Continue the first time", () => {
   withFakeDocument(() => {
+    const buttons = (seen) =>
+      findAll(privacyScreen.render(ctxFor(seen)), (n) => n.tag === "button").map(textOf);
     const node = privacyScreen.render(ctxFor(false));
     assert.equal(textOf(findAll(node, (n) => n.tag === "h1")[0]), "Privacy");
     assert.deepEqual(findAll(node, (n) => n.tag === "p").map(textOf), [...PRIVACY_PARAGRAPHS]);
-    assert.equal(findAll(node, (n) => n.tag === "button").length, 1);
+    assert.deepEqual(buttons(false), ["Back", "Continue"]);
+    assert.deepEqual(buttons(true), ["Back"]); // one way out, not two
   });
 });
 
 test("the first time, Continue remembers it was seen and opens the menu", () => {
   withFakeDocument(() => {
     const ctx = ctxFor(false);
-    const [b] = findAll(privacyScreen.render(ctx), (n) => n.tag === "button");
-    assert.equal(textOf(b), "Continue");
+    const node = privacyScreen.render(ctx);
+    const b = findAll(node, (n) => n.tag === "button" && textOf(n) === "Continue")[0];
+    assert.ok(b, "a Continue button");
     b.click();
     assert.deepEqual(ctx.log, [["dismiss"], ["replace", "menu"]]);
   });

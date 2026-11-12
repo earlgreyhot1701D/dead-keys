@@ -44,7 +44,11 @@ for (const { name, mock } of PAIRS) {
     await OPEN[name](page);
     await page.getByRole("heading", { level: 1 }).waitFor();
     await page.evaluate(() => document.fonts.ready);
-    await page.evaluate(() => document.activeElement?.blur?.()); // no focus ring in the picture
+    if (name === "menu") {
+      await page.keyboard.press("ArrowDown"); // the mock shows Play focused
+    } else {
+      await page.evaluate(() => document.activeElement?.blur?.()); // no focus ring in the picture
+    }
     await page.screenshot({ path: `${OUT}built-${name}.png` });
   });
   if (mock === null) continue;

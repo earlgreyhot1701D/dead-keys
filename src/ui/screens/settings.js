@@ -2,6 +2,7 @@
 // change is saved at once through app.js. The data half (backup, import, clear) is settingsData.js.
 import { SPEED_MAX, SPEED_MIN } from "../../engine/config.js";
 import { isValidSetting, SOUND_SETS } from "../../storage/settings.js";
+import { panelHead, termPage } from "../components/chrome.js";
 import { el } from "../dom.js";
 import { renderDataSection } from "./settingsData.js";
 
@@ -25,7 +26,7 @@ function change(ctx, key, value) {
 
 function checkbox(ctx, key, label, hint) {
   const id = `st-${key}`;
-  return el("p", {}, [
+  return el("p", { class: "set-row" }, [
     el("input", {
       type: "checkbox",
       id,
@@ -50,10 +51,13 @@ export const settingsScreen = {
     // The slider speaks its own value ("1.2×"), so the visible readout is hidden from a screen
     // reader rather than being a second live region.
     const shown = el("span", { id: "st-speed-out", "aria-hidden": "true" }, speedText(s.speed));
-    return el("main", { id: "main", class: "settings-main" }, [
-      el("h1", {}, "Settings"),
+    const prefs = el("section", { class: "term-panel", "aria-labelledby": "st-prefs" }, [
+      panelHead(
+        el("h2", { id: "st-prefs" }, "Preferences"),
+        el("span", { class: "flavor" }, "CH-84"),
+      ),
       checkbox(ctx, "ai", "AI drills", AI_HINT),
-      el("p", {}, [
+      el("p", { class: "set-row" }, [
         el("label", { for: "st-sound" }, "Sound "),
         el(
           "select",
@@ -67,7 +71,7 @@ export const settingsScreen = {
           ),
         ),
       ]),
-      el("p", {}, [
+      el("p", { class: "set-row" }, [
         el("label", { for: "st-speed" }, "Speed "),
         el("input", {
           type: "range",
@@ -89,10 +93,15 @@ export const settingsScreen = {
         shown,
       ]),
       checkbox(ctx, "fingerColors", "Finger colors"),
-      renderDataSection(ctx),
-      el("div", { class: "actions" }, [
-        el("button", { type: "button", class: "btn", onClick: () => ctx.back() }, "Back"),
-      ]),
     ]);
+    return termPage(ctx, {
+      badgeText: "CONFIG",
+      flavor: "DEAD KEYS // SETTINGS",
+      title: "Settings",
+      body: el("main", { id: "main", class: "term-main page-grid" }, [
+        prefs,
+        renderDataSection(ctx),
+      ]),
+    });
   },
 };

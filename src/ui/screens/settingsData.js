@@ -2,6 +2,7 @@
 // download and the privacy card. Split from settings.js at the line cap. Every action goes through
 // app.js, which wraps it; a failure is a notice, never a crash. Clear and Import ask first.
 import { MAX_IMPORT_BYTES } from "../../storage/exportImport.js";
+import { panelHead } from "../components/chrome.js";
 import { confirmLines, openConfirm } from "../components/confirmDialog.js";
 import { el } from "../dom.js";
 
@@ -32,7 +33,7 @@ export function importLines({ incoming, current }) {
 const button = (label, onClick, extra = "") =>
   el(
     "button",
-    { type: "button", class: `btn ${extra}`.trim(), "data-focus-id": label, onClick },
+    { type: "button", class: `btn btn-term ${extra}`.trim(), "data-focus-id": label, onClick },
     label,
   );
 
@@ -95,8 +96,11 @@ export function renderDataSection(ctx) {
     accept: ".json,application/json",
     onChange: () => chooseFile(ctx, input, status),
   });
-  return el("section", { "aria-labelledby": "st-data" }, [
-    el("h2", { id: "st-data" }, "Your data"),
+  return el("section", { class: "term-panel", "aria-labelledby": "st-data" }, [
+    panelHead(
+      el("h2", { id: "st-data" }, "Your data"),
+      el("span", { class: "flavor" }, "THIS BROWSER"),
+    ),
     el("div", { class: "actions" }, [
       button("Download backup", () => {
         if (ctx.app.exportBackup().ok) ctx.announce("Backup downloaded.");
@@ -104,8 +108,10 @@ export function renderDataSection(ctx) {
       ctx.state.oldData ? button("Download old data", () => ctx.app.downloadOldData()) : null,
       button("Clear all progress", () => askClear(ctx), "btn-danger"),
     ]),
-    el("p", {}, el("label", { for: "import-file" }, "Import a backup")),
-    input,
+    el("div", { class: "set-row" }, [
+      el("label", { for: "import-file" }, "Import a backup"),
+      input,
+    ]),
     status,
     el("div", { class: "actions" }, [button("Read the privacy card", () => ctx.go("privacy"))]),
   ]);

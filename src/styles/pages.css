@@ -1,0 +1,78 @@
+/* Settings, Privacy, How we count and About: no mock screen of their own, so they use the
+   progress screen's page system (header, title strip, double-rule panels, footer). */
+.page-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 20px;
+  align-content: start;
+}
+.page-narrow {
+  display: flex;
+  justify-content: center;
+}
+.page-narrow .term-panel {
+  width: 100%;
+  max-width: 760px;
+}
+.prose-panel p {
+  max-width: 68ch;
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--soft);
+}
+.source-line {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+.set-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  align-items: center;
+  margin: 0;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--line);
+  font-size: 15px;
+}
+.set-row .hint {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.set-row select,
+.set-row input[type="file"] {
+  min-height: 36px;
+  padding: 0 8px;
+  border: 1px solid var(--accent);
+  background: var(--ink);
+  color: var(--text);
+}
+.set-row input[type="file"]::file-selector-button {
+  min-height: 32px;
+  margin-right: 10px;
+  padding: 0 12px;
+  border: 1px solid var(--accent);
+  background: var(--bar);
+  color: var(--accent);
+  font-family: var(--mono);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.set-row input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--text);
+}
+.set-row input[type="range"] {
+  accent-color: var(--text);
+}
+.link-list a {
+  color: var(--text);
+}
+@media (max-width: 1000px) {
+  .page-grid {
+    grid-template-columns: 1fr;
+  }
+}

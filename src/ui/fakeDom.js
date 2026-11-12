@@ -58,6 +58,7 @@ export function makeFakeDoc() {
   }
 
   doc.createElement = element;
+  doc.createElementNS = (ns, tag) => Object.assign(element(tag), { ns, namespaceURI: ns });
   doc.createTextNode = text;
   doc.body = element("body");
   doc.querySelector = (selector) => {

@@ -1,110 +1,100 @@
-/* Title */
-.title-main {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
+/* Title screen: the locked mock's screen 1, value for value (mock/index.html). The scene is a
+   still frame; positions are the mock's at 1440 wide, left-half items from the left edge and
+   right-half items from the right edge, so wider windows keep the same look. */
+.title-frame {
+  position: relative;
+  min-height: max(100vh, 900px);
+  overflow: hidden;
+  background: var(--bg-deep);
+}
+.title-scene {
+  position: absolute;
+  top: 72px;
+  right: 0;
+  left: 0;
+  height: 772px;
+  overflow: hidden;
+}
+.lanes {
+  position: absolute;
+  inset: 0;
+  opacity: 0.6;
+}
+.lane {
+  position: absolute;
+  top: 0;
+  height: 700px;
+  border-left: 1px dashed var(--line);
+}
+.lane-1 {
+  left: 75px;
+}
+.lane-2 {
+  left: 225px;
+}
+.lane-3 {
+  left: 375px;
+}
+.lane-4 {
+  right: 375px;
+}
+.lane-5 {
+  right: 225px;
+}
+.lane-6 {
+  right: 75px;
+}
+.fall-card {
+  position: absolute;
+  width: 130px;
+}
+.fc-1 {
+  top: 60px;
+  left: 247px;
+}
+.fc-2 {
+  top: 330px;
+  left: 247px;
+}
+.fc-3 {
+  top: 120px;
+  right: 235px;
+}
+.fc-4 {
+  top: 420px;
+  right: 235px;
+}
+.fc-5 {
+  top: 170px;
+  right: 85px;
+}
+.card-box {
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  background: var(--card);
   text-align: center;
 }
-
-.title-main > h1 {
-  align-self: stretch;
-  font-size: clamp(2.5rem, 8vw, 5rem);
+.card-tag {
+  font-size: 12px;
+  color: var(--muted);
 }
-
-.tagline {
-  margin: 0;
-  font-family: var(--head);
-  font-size: 1.4rem;
+.card-word {
+  font-size: 22px;
   font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--label);
+  letter-spacing: 0.06em;
 }
-
-.press {
-  margin: 0;
-  font-family: var(--head);
-  font-size: 1.6rem;
-  font-weight: 700;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
+.card-trail {
+  width: 0;
+  height: 50px;
+  margin: 3px auto 0;
+  border-left: 1px dashed var(--line);
 }
-
-/* The still frame of the title scene: falling words, one locked, a station below. Decoration only. */
-.frame {
-  position: relative;
-  width: 100%;
-  max-width: 44rem;
-  height: 18rem;
-  overflow: hidden;
-  background: var(--bg-deep) var(--scanlines);
-  border: var(--rule-thin);
-  text-align: left;
+.fc-2 .card-trail {
+  height: 40px;
 }
-
-.card {
-  position: absolute;
-  padding: 0.15rem 0.6rem;
-  background: var(--panel);
-  border: var(--rule-thin);
-  color: var(--label);
+.fc-3 .card-trail {
+  height: 60px;
 }
-
-.card-1 {
-  left: 6%;
-  top: 8%;
-}
-
-.card-2 {
-  left: 30%;
-  top: 28%;
-}
-
-.card-3 {
-  left: 68%;
-  top: 12%;
-}
-
-.card-4 {
-  left: 12%;
-  top: 52%;
-}
-
-.card-5 {
-  left: 50%;
-  top: 46%;
-}
-
-/* The locked word: heavier outline, bold typed letters. Shape and weight, not just color. */
-.locked {
-  border: var(--rule-double);
-  background: var(--panel-hi);
-  color: var(--text);
-}
-
-.danger-band {
-  position: absolute;
-  right: 0;
-  bottom: 2.6rem;
-  left: 0;
-  padding: 0.2rem 0.6rem;
-  border-top: 1px dashed var(--shaky);
-  background: repeating-linear-gradient(
-    135deg,
-    rgba(242, 193, 78, 0.1) 0,
-    rgba(242, 193, 78, 0.1) 2px,
-    transparent 2px,
-    transparent 10px
-  );
-  color: var(--shaky);
-  font-size: 0.85rem;
-}
-
-.station {
-  position: absolute;
-  bottom: 0.4rem;
-  left: 50%;
-  transform: translateX(-50%);
-  color: var(--text);
+.fc-4 .card-trail {
+  height: 30px;
 }

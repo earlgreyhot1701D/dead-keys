@@ -11,7 +11,7 @@ const screensCss = read("./screens.css");
 
 /** Every `--name: #rrggbb;` in tokens.css. */
 const TOKENS = Object.fromEntries(
-  [...tokensCss.matchAll(/--([a-z-]+):\s*(#[0-9a-fA-F]{6})\s*;/g)].map((m) => [
+  [...tokensCss.matchAll(/--([a-z0-9-]+):\s*(#[0-9a-fA-F]{6})\s*;/g)].map((m) => [
     m[1],
     m[2].toLowerCase(),
   ]),
@@ -33,8 +33,8 @@ const contrast = (a, b) => {
   return (x + 0.05) / (y + 0.05);
 };
 
-const GROUNDS = ["bg", "bg-deep", "panel", "panel-hi"];
-const TEXT = ["text", "soft", "label", "muted", "dim", "missed", "shaky"];
+const GROUNDS = ["bg", "bg-deep", "panel", "panel-hi", "ink", "ground", "bar", "card", "panel-2"];
+const TEXT = ["text", "soft", "label", "muted", "dim", "missed", "shaky", "accent", "bright"];
 
 test("the locked token values match the design brief", () => {
   const locked = {
@@ -72,6 +72,15 @@ test("dark text on the solid status and text fills (badges) is at least 4.5:1", 
   for (const fill of ["text", "missed", "shaky"]) {
     const ratio = contrast("bg", fill);
     assert.ok(ratio >= 4.5, `bg on ${fill} is ${ratio.toFixed(2)}:1`);
+  }
+  // the mock's badges: ink on teal and accent fills, dark teal on the teal fill
+  for (const [fg, fill] of [
+    ["ink", "text"],
+    ["ink", "accent"],
+    ["on-teal", "teal-fill"],
+  ]) {
+    const ratio = contrast(fg, fill);
+    assert.ok(ratio >= 4.5, `${fg} on ${fill} is ${ratio.toFixed(2)}:1`);
   }
 });
 

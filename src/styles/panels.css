@@ -1,0 +1,94 @@
+/* Panels, the Not built yet panel and the mock's bracket buttons (split from chrome.css at the line cap). */
+/* Panels: a double rule, a head bar with a rule under it. */
+.term-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px;
+  border: var(--rule-double);
+  background: var(--bar);
+}
+.panel-head {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+}
+.panel-head h2,
+.panel-title {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.panel-head-dashed {
+  border-bottom: 1px dashed var(--rule);
+}
+.not-built-body p {
+  margin: 0;
+  font-family: var(--head);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--dim);
+}
+.not-built-body {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+/* The mock's bracket buttons. The brackets are drawn, not spoken (empty alt text). */
+.btn-term {
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid var(--accent);
+  background: var(--bar);
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 15px;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.btn-term::before {
+  content: "[\00a0" / "";
+}
+.btn-term::after {
+  content: "\00a0]" / "";
+}
+.btn-primary {
+  background: var(--teal-fill);
+  color: var(--on-teal);
+  font-weight: 700;
+}
+.btn-term.btn-danger {
+  border-color: var(--missed);
+  color: var(--missed);
+}
+.btn-term[aria-disabled="true"] {
+  border-color: var(--line);
+  color: var(--dim);
+  cursor: default;
+}
+.term-header .btn-term {
+  min-height: 36px;
+  padding: 0 12px;
+  border-color: var(--line);
+  background: transparent;
+  font-size: 14px;
+}
+/* A button that reads as a link, as the mock's footer links do. */
+.link-btn {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}

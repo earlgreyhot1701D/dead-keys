@@ -33,7 +33,11 @@ test("Progress with nothing saved says so and shows 'Not enough yet' on every ke
   await reach(page, "Progress");
   await expect(page.getByText("Play a round and your keys will show up here.")).toBeVisible();
   await expect(page.getByText("No personal bests yet. Play a round to set one.")).toBeVisible();
-  const bands = await page.$$eval(".kb-grid .kb-key", (n) => n.map((k) => k.className));
+  // the stat caps only; TAB, SHIFT and the other inert keys carry no band
+  const bands = await page.$$eval(".kb-grid .kb-cap, .kb-grid .kb-space", (n) =>
+    n.map((k) => k.className),
+  );
+  expect(bands.length).toBe(47);
   expect(bands.every((c) => c.includes("band-noData"))).toBe(true);
 });
 

@@ -1,6 +1,7 @@
 // About (shell Req 7.2): the PRD G2 About list. Links open in a new tab with rel="noopener"
 // (dom.js adds it). The Tally feedback link is missing on purpose: the form has no URL yet, and
 // a link with no target would be worse than none. Add it to LINKS when Shara has the address.
+import { panelHead, termPage } from "../components/chrome.js";
 import { el } from "../dom.js";
 
 /** Where to find the maker and the code. */
@@ -41,18 +42,20 @@ export const aboutScreen = {
   id: "about",
   title: "About",
   render(ctx) {
-    return el("main", { id: "main", class: "prose-main" }, [
-      el("h1", {}, "About"),
-      el(
-        "div",
-        { class: "prose" },
-        ABOUT_PARAGRAPHS.map((p) => el("p", {}, p)),
-      ),
-      el("h2", {}, "Links"),
-      el("ul", { class: "plain-list" }, [...LINKS, ...FONT_LICENSES].map(link)),
-      el("div", { class: "actions" }, [
-        el("button", { type: "button", class: "btn", onClick: () => ctx.back() }, "Back"),
+    return termPage(ctx, {
+      badgeText: "CREDITS",
+      flavor: "DEAD KEYS // WHO MADE THIS, AND WITH WHAT",
+      title: "About",
+      body: el("main", { id: "main", class: "term-main page-grid" }, [
+        el("section", { class: "term-panel prose-panel", "aria-label": "About Dead Keys" }, [
+          panelHead(el("span", { class: "panel-title" }, "DEAD KEYS // BUILD v1"), null),
+          ...ABOUT_PARAGRAPHS.map((p) => el("p", {}, p)),
+        ]),
+        el("section", { class: "term-panel prose-panel", "aria-labelledby": "ab-links" }, [
+          panelHead(el("h2", { id: "ab-links" }, "Links"), null),
+          el("ul", { class: "plain-list link-list" }, [...LINKS, ...FONT_LICENSES].map(link)),
+        ]),
       ]),
-    ]);
+    });
   },
 };

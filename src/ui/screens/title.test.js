@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { PHONE_NOTICE } from "../components/phoneNotice.js";
 import { findAll, textOf, withFakeDocument } from "../fakeDom.js";
-import { startKey, TAGLINE, titleScreen } from "./title.js";
+import { FOOTER_LINE, INTERCEPT, PRESS, SUBLINE, startKey, TAGLINE, titleScreen } from "./title.js";
 
 /** A ctx that records where the screen goes. */
 function ctxFor({ privacySeen = false, phone = false } = {}) {
@@ -92,7 +92,7 @@ test("Enter and Space on a focused button press that button; they do not start t
 test("it has the wordmark, the tagline, the still frame and a Start button", () => {
   withFakeDocument(() => {
     const node = titleScreen.render(ctxFor());
-    assert.equal(node.tag, "main");
+    assert.equal(findAll(node, (n) => n.tag === "main").length, 1);
     assert.equal(textOf(findAll(node, (n) => n.tag === "h1")[0]), "Dead Keys");
     assert.equal(TAGLINE, "a typing game, back from the dead.");
     assert.ok(
@@ -116,15 +116,39 @@ test("the Start button does what the key does", () => {
 
 test("the still frame is decoration: hidden from a screen reader and nothing in it takes focus", () => {
   withFakeDocument(() => {
-    const frame = findAll(titleScreen.render(ctxFor()), (n) => n.attrs?.class === "frame")[0];
+    const node = titleScreen.render(ctxFor());
+    const frame = findAll(node, (n) => n.attrs?.class === "title-scene")[0];
     assert.equal(frame.attrs["aria-hidden"], "true");
     assert.deepEqual(
       findAll(frame, (n) => ["button", "a", "input", "select", "textarea"].includes(n.tag)),
       [],
     );
     assert.equal(findAll(frame, (n) => n.attrs?.tabindex !== undefined).length, 0);
-    assert.match(textOf(frame), /ghost/); // the locked word
-    assert.equal(findAll(frame, (n) => n.attrs?.class?.includes("locked")).length, 1);
+    assert.match(textOf(frame), /harbor|bor/); // the locked word, as in the mock
+    assert.equal(findAll(frame, (n) => n.attrs?.class === "locked-box").length, 1);
+    // Shara's Nov 12 calls: none of the labels that read as data, or as a live demo
+    for (const gone of ["SHIELD", "CAPACITOR", "LANT_", "Pause demo", "Demo playing", "ATTRACT"]) {
+      assert.doesNotMatch(textOf(node), new RegExp(gone), gone);
+    }
+  });
+});
+
+test("the mock's lines are the approved copy, and only true tiles show", () => {
+  withFakeDocument(() => {
+    const text = textOf(titleScreen.render(ctxFor()));
+    for (const line of [SUBLINE, INTERCEPT, FOOTER_LINE, PRESS, "[ANY KEY] START", "[TAB] MOVE"]) {
+      assert.ok(text.includes(line), line);
+    }
+    assert.equal(SUBLINE, "1980s typing games // rebuilt as a real trainer");
+    assert.equal(INTERCEPT, "PARANORMAL INTERCEPT // PID 0xDEAD");
+    assert.equal(
+      FOOTER_LINE,
+      "Keyboard required. No account. Your progress stays in this browser.",
+    );
+    assert.match(text, /Accounts needed0/);
+    for (const gone of ["LESSONS", "GAME MODES", "60-SEC", "[ESC] PAUSE", "KEYBOARD READY"]) {
+      assert.ok(!text.includes(gone), gone);
+    }
   });
 });
 

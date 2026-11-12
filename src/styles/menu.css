@@ -1,42 +1,80 @@
-/* Menu */
-.menu-list {
-  display: grid;
-  gap: 0.5rem;
-  max-width: 32rem;
-  margin: 1.5rem 0 0;
-  padding: 0;
-  list-style: none;
+/* Main menu: the locked mock's screen 2, value for value (mock/index.html). */
+.menu-frame {
+  min-height: max(100vh, 900px);
+  background: var(--ground);
 }
-
-.menu-item {
+.menu-header {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
-  text-align: left;
+  height: 64px;
+  padding: 0 32px;
+  border-bottom: var(--rule-double);
+  background: var(--panel);
 }
-
-.menu-item[aria-disabled="true"] {
-  border-style: dashed;
-  color: var(--dim);
-  font-weight: 400;
+.menu-header .term-name {
+  gap: 14px;
 }
-
-.menu-note {
-  font-family: var(--mono);
-  font-size: 0.85rem;
-  letter-spacing: 0;
-  text-transform: none;
+.clock {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 4px 10px;
+  font-size: 14px;
 }
-
-/* Progress */
-.plain-list {
-  margin: 0.5rem 0 1rem;
-  padding-left: 1.2rem;
-  font-family: var(--mono);
+.clock-dot {
+  position: relative;
+  z-index: 6;
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  background: var(--text);
 }
-
-/* The arrow on links that open a new tab. */
-.new-tab {
-  font-size: 0.85em;
+.menu-main {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 16px;
+  min-height: 0;
+  padding: 20px 32px;
+}
+.menu-title-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--rule);
+}
+.menu-title-left {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.pill-text {
+  border-color: var(--text);
+  background: var(--panel);
+  color: var(--text);
+}
+.menu-title-left .flavor {
+  display: block;
+  font-size: 12px;
+}
+.menu-title-left h1 {
+  font-size: 26px;
+  letter-spacing: 0.14em;
+}
+.menu-title-meta {
+  font-size: 14px;
+  color: var(--muted);
+}
+.menu-title-meta strong {
+  color: var(--text);
+}
+.menu-grid {
+  display: grid;
+  flex-grow: 1;
+  grid-template-columns: 5fr 7fr;
+  gap: 16px;
+  min-height: 0;
 }

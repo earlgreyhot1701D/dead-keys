@@ -1,46 +1,22 @@
-// The progress screen (shell Req 6): keyboard heat map, up to three diagnosis sentences, weak
-// keys and personal bests, with a text summary for screen readers. Reads only; never saves.
+// The progress screen (shell Req 6), laid out as the locked mock's screen 6: the keyboard heat
+// map with its legend and words on the left, the diagnosis below it; the speed line, personal
+// bests and weak keys on the right. Reads only; never saves (the footer's backup link exports).
 import { diagnose } from "../../engine/diagnose.js";
-import { renderKeyboard } from "../components/keyboard.js";
-import { keyboardModel, summarizeKeyboard } from "../components/keyboardLayout.js";
+import { heatmap } from "../../engine/heatmap.js";
+import { MIN_KEY_ATTEMPTS } from "../../engine/progressConfig.js";
+import { termPage } from "../components/chrome.js";
+import { bestsBlock, diagnosisPanel, keysPanel, weakPanel } from "../components/progressPanels.js";
+import { renderSpeedPanel } from "../components/speedChart.js";
 import { el } from "../dom.js";
 
-// Approved wording (shell design copy table).
-export const EMPTY_LINE = "Play a round and your keys will show up here.";
-export const FEW_LINE = "Not enough typing yet to say anything about your keys. Keep playing.";
-export const EVEN_LINE = "Nothing stands out. Your keys look even.";
-export const NO_BESTS_LINE = "No personal bests yet. Play a round to set one.";
-
-/** Player names for the modes that can hold a personal best. */
-export const MODE_NAMES = Object.freeze({
-  corners: "Four corners",
-  falling: "Falling words",
-  lesson: "Lessons",
-  testout: "Test outs",
-  daily: "Daily drill",
-  specwave: "Spec Wave",
-});
-const MONTHS = "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ");
-
-/**
- * "set Nov 11" for a time in ms, in the player's local time. Empty when the time is unusable.
- * @param {unknown} ms
- */
-export function setOn(ms) {
-  const d = new Date(typeof ms === "number" ? ms : Number.NaN);
-  return Number.isNaN(d.getTime()) ? "" : `set ${MONTHS[d.getMonth()]} ${d.getDate()}`;
-}
-
-const list = (items) =>
-  el(
-    "ul",
-    { class: "plain-list" },
-    items.map((t) => el("li", {}, t)),
-  );
-const bestLine = ([mode, b]) => {
-  const name = Object.hasOwn(MODE_NAMES, mode) ? MODE_NAMES[mode] : mode;
-  return [`${name}: ${b.wpm} WPM`, setOn(b.date)].filter(Boolean).join(", ");
-};
+export {
+  EMPTY_LINE,
+  EVEN_LINE,
+  FEW_LINE,
+  MODE_NAMES,
+  NO_BESTS_LINE,
+  setOn,
+} from "../components/progressText.js";
 
 /** @type {import("../router.js").Screen} */
 export const progressScreen = {
@@ -49,31 +25,31 @@ export const progressScreen = {
   render(ctx) {
     const { keys = [], bests = {}, rounds = [] } = ctx.state.progress ?? {};
     const d = diagnose(keys);
-    const summary = summarizeKeyboard(keyboardModel(keys));
-    const bestList = Object.entries(bests);
-    return el("main", { id: "main", class: "progress-main" }, [
-      el("h1", {}, "Progress"),
-      rounds.length === 0 ? el("p", { class: "hint" }, EMPTY_LINE) : null,
-      el("section", { "aria-labelledby": "pg-map" }, [
-        el("h2", { id: "pg-map" }, "Your keys"),
-        renderKeyboard(el, keys),
-        el("h3", {}, "Heat map in words"),
-        list(summary),
+    const exportBackup = () => {
+      if (ctx.app?.exportBackup?.().ok) ctx.announce?.("Backup downloaded.");
+    };
+    return termPage(ctx, {
+      badgeText: "DIAGNOSTIC LOG",
+      flavor: "DEAD KEYS // DIAGNOSTICS & KEYBOARD HEAT MAP",
+      title: "Progress",
+      meta: `ROUNDS: ${rounds.length} \u00a0•\u00a0 A KEY IS COLORED AFTER ${MIN_KEY_ATTEMPTS} TRIES`,
+      body: el("main", { id: "main", class: "term-main progress-main" }, [
+        el("div", { class: "progress-left" }, [
+          keysPanel(keys, rounds.length),
+          diagnosisPanel(d, () => ctx.go("howWeCount")),
+        ]),
+        el("div", { class: "progress-right" }, [
+          renderSpeedPanel(rounds, [bestsBlock(bests)]),
+          weakPanel(d.weakKeys, heatmap(keys)),
+        ]),
       ]),
-      el("section", { "aria-labelledby": "pg-diag" }, [
-        el("h2", { id: "pg-diag" }, "What we notice"),
-        d.sentences.length
-          ? list(d.sentences.map((s) => s.text))
-          : el("p", {}, d.sufficientData ? EVEN_LINE : FEW_LINE),
-        d.weakKeys.length ? el("p", {}, `Keys to practice: ${d.weakKeys.join(", ")}`) : null,
-      ]),
-      el("section", { "aria-labelledby": "pg-best" }, [
-        el("h2", { id: "pg-best" }, "Personal bests"),
-        bestList.length ? list(bestList.map(bestLine)) : el("p", {}, NO_BESTS_LINE),
-      ]),
-      el("div", { class: "actions" }, [
-        el("button", { type: "button", class: "btn", onClick: () => ctx.back() }, "Back"),
-      ]),
-    ]);
+      footerExtra: [
+        el(
+          "button",
+          { type: "button", class: "link-btn", onClick: exportBackup },
+          "Download backup",
+        ),
+      ],
+    });
   },
 };

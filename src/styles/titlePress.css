@@ -1,0 +1,135 @@
+/* Title, part 4: the press box, the tile, the footer and narrow windows (split from titlePanel.css at the line cap). */
+.press-box {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  align-self: stretch;
+  padding: 18px 24px 12px;
+  border: 3px double var(--text);
+  background: var(--panel);
+}
+.corner {
+  position: absolute;
+  font-size: 13px;
+  color: var(--rule);
+}
+.c-tl {
+  top: 2px;
+  left: 6px;
+}
+.c-tr {
+  top: 2px;
+  right: 6px;
+}
+.c-bl {
+  bottom: 2px;
+  left: 6px;
+}
+.c-br {
+  right: 6px;
+  bottom: 2px;
+}
+.press-row {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.press {
+  margin: 0;
+  font-family: var(--head);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+.press-cursor {
+  display: inline-block;
+  width: 14px;
+  height: 26px;
+  background: var(--text);
+}
+.press-foot {
+  display: flex;
+  justify-content: center;
+  align-self: stretch;
+  padding-top: 8px;
+  border-top: 1px dashed var(--rule);
+}
+.title-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  align-self: stretch;
+}
+.stat-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 12px;
+  border: 1px solid var(--rule);
+  background: var(--bg);
+}
+.title-tiles .stat-tile {
+  grid-column: 3;
+}
+.stat-label {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.stat-value {
+  font-size: 22px;
+  font-weight: 700;
+}
+.title-footer {
+  position: absolute;
+  z-index: 7;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  padding: 0 40px;
+  border-top: var(--rule-double);
+  background: var(--bg);
+  font-size: 15px;
+  color: var(--muted);
+}
+.title-footer .hints {
+  gap: 20px;
+  color: var(--label);
+}
+@media (max-width: 760px) {
+  .title-scene {
+    display: none;
+  }
+  .title-frame {
+    min-height: 100vh;
+  }
+  .title-panel {
+    position: relative;
+    left: 0;
+    width: auto;
+    margin: 88px 16px 96px;
+    padding: 20px 16px;
+    transform: none;
+  }
+  .wordmark h1 {
+    font-size: 48px;
+    white-space: normal;
+  }
+  .title-header,
+  .title-footer {
+    padding: 0 16px;
+  }
+  .title-footer {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 8px 16px;
+  }
+}

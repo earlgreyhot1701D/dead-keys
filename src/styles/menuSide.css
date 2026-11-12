@@ -1,0 +1,114 @@
+/* Main menu: the right column and the footer (split from menu.css at the line cap). */
+.menu-side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+}
+.menu-side .term-panel {
+  padding: 16px 18px;
+  border: 3px double var(--accent);
+  background: var(--panel);
+}
+.menu-side .panel-head {
+  margin-bottom: 2px;
+  border-bottom: 1px dashed var(--rule);
+}
+.menu-side .panel-title {
+  letter-spacing: 0.12em;
+  color: var(--accent);
+}
+.ghost-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--accent);
+  background: var(--card);
+}
+.menu-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.menu-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  border: 3px double var(--accent);
+  background: var(--panel);
+}
+.menu-stat-label {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.menu-stat-value {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+.menu-stat-num {
+  font-size: 36px;
+  font-weight: 700;
+}
+.menu-stat-unit {
+  font-size: 14px;
+  color: var(--accent);
+}
+.menu-stat-foot {
+  padding-top: 6px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--muted);
+}
+.menu-status {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  background: var(--ground);
+  font-size: 13px;
+  color: var(--soft);
+}
+.menu-status .prompt {
+  color: var(--text);
+}
+.menu-status .mem {
+  color: var(--accent);
+}
+.menu-footer {
+  min-height: 48px;
+  padding: 0 32px;
+  background: var(--ground);
+}
+.menu-footer .hints span:first-child {
+  color: var(--text);
+}
+.footer-note {
+  color: var(--muted);
+}
+.new-tab {
+  font-size: 0.85em;
+}
+@media (max-width: 1000px) {
+  .menu-grid {
+    grid-template-columns: 1fr;
+  }
+  .menu-frame {
+    min-height: 100vh;
+  }
+  .menu-header,
+  .menu-main,
+  .menu-footer {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+  .menu-footer {
+    flex-wrap: wrap;
+  }
+}

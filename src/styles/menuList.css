@@ -1,0 +1,115 @@
+/* Main menu: the command selector and its items (split from menu.css at the line cap). */
+.menu-selector {
+  display: flex;
+  flex-direction: column;
+  padding: 18px;
+  border: 3px double var(--accent);
+  background: var(--panel);
+}
+.selector-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--rule);
+  font-size: 14px;
+}
+.selector-title {
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+.selector-ch {
+  color: var(--muted);
+}
+.menu-selector nav {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: center;
+}
+.menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* An item at rest, and the focused item in the mock's raised look (that is its focus mark). */
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 46px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--soft);
+  font-family: var(--mono);
+  font-size: 18px;
+  letter-spacing: 0.08em;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.mi-label::before {
+  content: "\00a0\00a0[\00a0" / "";
+}
+.mi-label::after {
+  content: "\00a0]" / "";
+}
+.menu-item:focus {
+  min-height: 56px;
+  border: 3px double var(--text);
+  background: var(--panel-hi);
+  box-shadow: inset 0 0 12px rgba(79, 227, 209, 0.15);
+  color: var(--text);
+  font-family: var(--head);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+.menu-item:focus .mi-label::before {
+  content: ">\00a0[\00a0" / "";
+}
+.menu-item:focus::after {
+  content: "ACTV" / "";
+  position: relative;
+  z-index: 6;
+  padding: 2px 8px;
+  background: var(--text);
+  color: var(--bg);
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+}
+.menu-note {
+  margin-left: auto;
+  padding-right: 10px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--dim);
+}
+.term-name .pill {
+  font-family: var(--mono);
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.selector-hint {
+  display: flex;
+  justify-content: space-between;
+  margin: 12px 0 0;
+  padding: 10px;
+  border-top: 1px dashed var(--rule);
+  background: var(--ground);
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
