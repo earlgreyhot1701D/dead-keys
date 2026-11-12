@@ -1,0 +1,133 @@
+/* Results: the frame, header, title strip, the two columns, the actions and the footer
+   (mock screen 5, value for value). The panels are in resultsPanels.css. */
+/* A fixed height, so a long milestone list scrolls in its panel and the page never does. */
+.rs-frame {
+  display: flex;
+  flex-direction: column;
+  height: max(100vh, 900px);
+  background: var(--bg-deep);
+}
+.rs-head {
+  display: flex;
+  flex-shrink: 0;
+  gap: 14px;
+  align-items: center;
+  box-sizing: border-box;
+  height: 56px;
+  padding: 0 28px;
+  border-bottom: 2px solid var(--line);
+  background: var(--bar);
+}
+.rs-brand {
+  font-family: var(--head);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+.rs-head .pill {
+  padding: 2px 8px;
+  border: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--muted);
+}
+.rs-body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 14px;
+  box-sizing: border-box;
+  min-height: 0;
+  padding: 18px 28px 0;
+}
+.rs-title {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+.rs-over {
+  margin: 0 0 4px;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+.rs-over strong {
+  color: var(--text);
+}
+.rs-title h1 {
+  margin: 0;
+  font-family: var(--head);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+.rs-mode {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+}
+.rs-main {
+  display: grid;
+  flex-grow: 1;
+  grid-template-columns: 8fr 4fr;
+  grid-template-rows: minmax(0, 1fr);
+  gap: 20px;
+  min-height: 0;
+}
+.rs-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;
+}
+.rs-col > .rs-ms {
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+/* "How we count every number": a text link under the stats, not a big button. */
+.rs-how {
+  align-self: flex-start;
+  min-height: 24px;
+  margin: -6px 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--text);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.rs-actions .later {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+/* Filled pieces sit above the scanlines, as in the mock. */
+.rs-btn.btn-primary,
+.rs-bar-title {
+  position: relative;
+  z-index: 6;
+}
+.rs-actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 14px 0;
+  border-top: 2px solid var(--line);
+}
+.rs-btn {
+  min-height: 52px;
+  padding: 0 22px;
+  font-family: var(--head);
+  font-size: 20px;
+  letter-spacing: 0.12em;
+}
+.rs-foot {
+  min-height: 40px;
+  font-size: 13px;
+}

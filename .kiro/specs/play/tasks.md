@@ -9,10 +9,10 @@ One task at a time. Never "run all." Touch only the files a task names. Tick eac
 - [x] 4. `src/render/loop.js` with tests (fake frame and clock): dt clamp, NaN guard, auto-pause on hidden or blur, stops on close. _Req 4._
 - [x] 5. `src/ui/screens/play.js` (mode picker) and router entries. _Req 2._
 - [x] 6. `src/render/falling.js` + falling styles + `round.js` (falling only). Match mock screen 3 per the map. _Req 3, 5._
-- [ ] 7. `src/render/corners.js` + corners styles. Match mock screen 4 per the map. _Req 3._
-- [ ] 8. `src/render/moments.js` and reduced-motion versions. _Req 6._
-- [ ] 9. Practice. _Req 2.2._
-- [ ] 10. `app.finishRound`, results screen and panels. Match mock screen 5 per the map. _Req 7._
+- [x] 7. `src/render/corners.js` + corners styles. Match mock screen 4 per the map. _Req 3._
+- [x] 8. `src/render/moments.js` and reduced-motion versions. _Req 6._
+- [x] 9. Practice. _Req 2.2._
+- [x] 10. `app.finishRound`, results screen and panels. Match mock screen 5 per the map. _Req 7._
 - [ ] 11. e2e: `e2e/play.spec.js` keyboard-only flows, axe on every new screen and dialog, no-scroll at three sizes, screenshot pairs. _Req 9._
 - [ ] 12. Run every check, refresh screenshots, compare each pair with its mock against the map yourself, and list any difference you can still see. `npm run deploy:preview`.
 - [ ] 13. `KIRO-NOTES.md`: Block 7 entry, every flag with a status; close the Block 7 deferrals.

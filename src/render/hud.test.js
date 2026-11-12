@@ -12,8 +12,10 @@ import {
   counts,
   dangerMark,
   dist,
+  heartsText,
   hostilesText,
   inDanger,
+  LOG_WORDS,
   leftText,
   liveAccuracy,
   livesLabel,
@@ -21,6 +23,7 @@ import {
   liveWpm,
   lockColumn,
   lockParts,
+  logWords,
   quadrantText,
   speedText,
   timeText,
@@ -38,6 +41,7 @@ test("lives: one heart per life, five at most, filled for lives left", () => {
   assert.equal(livesText(2), "[ ♥ ♥ ♡ ♡ ♡ ]");
   assert.equal(livesText(0), "[ ♡ ♡ ♡ ♡ ♡ ]");
   assert.equal(livesText(9), "[ ♥ ♥ ♥ ♥ ♥ ]");
+  assert.equal(heartsText(2), "♥ ♥ ♡ ♡ ♡"); // corners: no brackets, as the mock draws
   assert.equal(livesLabel(2), "2 of 5 lives left");
 });
 
@@ -117,4 +121,27 @@ test("corners: distance, hostiles, quadrant names and the locked vector", () => 
   assert.equal(quadrantText(t.slot, s).endsWith(" [LOCKED]"), true);
   assert.equal(vectorText(s), `VECTOR ${CORNERS[t.slot]} // CHAR BUFFER: 1/6`);
   assert.deepEqual(CORNERS, ["NW", "NE", "SW", "SE"]);
+});
+
+test("word log: cleared and breached words, the last 8, and every breach counted", () => {
+  const before = {
+    targets: [
+      { id: 1, text: "lantern" },
+      { id: 2, text: "quiet" },
+    ],
+  };
+  let log = { words: [], breaches: 0 };
+  log = logWords(log, [{ type: "cleared", targetId: 1 }, { type: "miss" }], before);
+  log = logWords(log, [{ type: "lifeLost", targetId: 2 }], before);
+  assert.deepEqual(log, {
+    words: [
+      { text: "lantern", cleared: true },
+      { text: "quiet", cleared: false },
+    ],
+    breaches: 1,
+  });
+  assert.equal(logWords(log, [{ type: "paused" }], before), log, "no words: the same log");
+  for (let i = 0; i < 10; i++) log = logWords(log, [{ type: "lifeLost", targetId: 2 }], before);
+  assert.equal(log.words.length, LOG_WORDS);
+  assert.equal(log.breaches, 11);
 });

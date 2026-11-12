@@ -1,0 +1,119 @@
+/* Results panels: stat tiles, milestones and the panel frames (mock screen 5, value for value;
+   rows, accuracy and the word log in resultsLog.css). Explanations are always visible. */
+.rs-tiles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+.rs-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  border: var(--rule-double);
+  background: var(--bar);
+}
+.rs-tile-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--accent);
+}
+.rs-tile-label {
+  font-weight: 700;
+  color: var(--text);
+}
+.rs-tile-value {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: baseline;
+  font-family: var(--head);
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 1;
+}
+.rs-unit {
+  font-size: 30px;
+}
+.rs-faster {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--accent);
+}
+.rs-explain {
+  margin: 0;
+  padding-top: 4px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.rs-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border: var(--rule-double);
+  background: var(--bar);
+}
+.rs-quiet {
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid var(--line);
+}
+.rs-panel-title,
+.rs-bar-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+.rs-bar-title {
+  padding: 4px 8px;
+  background: var(--teal-fill);
+  color: var(--on-teal);
+}
+.rs-saved {
+  font-size: 14px;
+  color: var(--accent);
+}
+.rs-record,
+.rs-milestone {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin: 0;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--bright);
+  text-transform: uppercase;
+}
+.rs-record {
+  border: var(--rule-double);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+}
+.rs-chip {
+  position: relative;
+  z-index: 6;
+  padding: 1px 8px;
+  background: var(--text);
+  color: var(--ink);
+  font-size: 13px;
+}
+.rs-star {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+}
+.rs-none,
+.rs-more {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+}

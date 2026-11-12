@@ -4,7 +4,8 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { createEl } from "../ui/dom.js";
 import { makeFakeDoc } from "../ui/fakeDom.js";
-import { cardX, cardY, createFalling, FIELD, LANES, LOCK_W, laneX, nearness } from "./falling.js";
+import { cardX, cardY, createFalling, FIELD, LANES, LOCK_W, laneX } from "./falling.js";
+import { nearness } from "./hud.js";
 
 const target = (id, text, slot, progress, typed = 0) => ({ id, text, slot, progress, typed });
 

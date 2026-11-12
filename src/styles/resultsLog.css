@@ -1,0 +1,91 @@
+/* Results: the breakdown rows, the accuracy bar and the word log (mock screen 5, value for value). */
+.rs-row {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  margin: 0;
+  padding-bottom: 6px;
+  border-bottom: 1px dashed var(--line);
+  font-size: 14px;
+}
+.rs-row-label {
+  color: var(--muted);
+}
+.rs-row-label small {
+  font-size: 12px;
+  color: var(--dim);
+}
+.rs-row-value {
+  font-weight: 700;
+  color: var(--bright);
+  white-space: nowrap;
+}
+.rs-row-value.is-missed {
+  color: var(--missed);
+}
+.rs-row-value.is-accent {
+  color: var(--accent);
+}
+.rs-acc-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--accent);
+}
+.rs-acc-head strong {
+  color: var(--text);
+}
+.rs-acc-bar {
+  position: relative;
+  z-index: 6;
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+.rs-log {
+  flex-grow: 1;
+  min-height: 0;
+}
+.rs-log .panel-head {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--accent);
+}
+.rs-words {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.rs-word {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: var(--soft);
+}
+.rs-word-how {
+  color: var(--accent);
+}
+.rs-word.is-breach,
+.rs-word.is-breach .rs-word-how {
+  color: var(--missed);
+}
+.rs-status {
+  display: flex;
+  justify-content: space-between;
+  margin: auto 0 0;
+  padding-top: 6px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--muted);
+}
+.rs-block {
+  position: relative;
+  z-index: 6;
+  color: var(--text);
+}

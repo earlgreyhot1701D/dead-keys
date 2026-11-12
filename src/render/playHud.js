@@ -18,16 +18,37 @@ import {
   waveText,
 } from "./hud.js";
 
+/** The practice HUD note (play copy table). */
+export const PRACTICE_NOTE = "No lives, no clock pressure. End the round from the pause menu.";
+
 const setText = (node, text) => {
   if (node.textContent !== text) node.textContent = text;
 };
 
 /**
+ * The footer both play screens share (mocks 3 and 4): speed, save, the pause button, CRT-SCAN.
  * @param {Function} el
  * @param {{ onPause: () => void, persist: boolean, speed: number }} o
+ */
+export function playFooter(el, { onPause, persist, speed }) {
+  return el("footer", { class: "term-footer play-footer" }, [
+    el("span", { class: "foot-left" }, [
+      el("span", { class: "foot-speed" }, `SPEED: ${speedText(speed)}`),
+      el("span", { class: "foot-sep", "aria-hidden": "true" }, "|"),
+      el("span", { class: "foot-save" }, `SYS.84 // SAVE: ${persist ? "THIS BROWSER" : "OFF"}`),
+    ]),
+    el("button", { type: "button", class: "play-pause", onClick: onPause }, "[ESC] PAUSE"),
+    el("span", { class: "foot-crt" }, `CRT-SCAN ${crtOn() ? "ON" : "OFF"}`),
+  ]);
+}
+
+/**
+ * @param {Function} el
+ * @param {{ onPause: () => void, persist: boolean, speed: number, practice?: boolean }} o
+ *   Practice has no lives and no waves, so the note takes their place (play copy table).
  * @returns {{ header: HTMLElement, station: HTMLElement, footer: HTMLElement, update: (state: object) => void }}
  */
-export function createPlayHud(el, { onPause, persist, speed }) {
+export function createPlayHud(el, { onPause, persist, speed, practice = false }) {
   const span = (cls) => el("span", { class: cls });
   const box = (label, nodes) =>
     el("div", { class: "hud-box" }, [el("span", { class: "hud-label" }, label), ...nodes]);
@@ -46,8 +67,9 @@ export function createPlayHud(el, { onPause, persist, speed }) {
   const header = el("header", { class: "play-hud" }, [
     el("div", { class: "hud-group" }, [
       el("span", { class: "hud-term" }, "TERMINAL 84"),
-      box("LIVES:", [v.lives]),
-      box("SECTOR:", [v.wave, v.left]),
+      ...(practice
+        ? [el("p", { class: "hud-box hud-note" }, PRACTICE_NOTE)]
+        : [box("LIVES:", [v.lives]), box("SECTOR:", [v.wave, v.left])]),
     ]),
     el("div", { class: "hud-group" }, [
       box("SPEED:", [v.wpm, el("span", { class: "hud-unit" }, "WPM")]),
@@ -71,15 +93,7 @@ export function createPlayHud(el, { onPause, persist, speed }) {
       ]),
     ]),
   ]);
-  const footer = el("footer", { class: "term-footer play-footer" }, [
-    el("span", { class: "foot-left" }, [
-      el("span", { class: "foot-speed" }, `SPEED: ${speedText(speed)}`),
-      el("span", { class: "foot-sep", "aria-hidden": "true" }, "|"),
-      el("span", { class: "foot-save" }, `SYS.84 // SAVE: ${persist ? "THIS BROWSER" : "OFF"}`),
-    ]),
-    el("button", { type: "button", class: "play-pause", onClick: onPause }, "[ESC] PAUSE"),
-    el("span", { class: "foot-crt" }, `CRT-SCAN ${crtOn() ? "ON" : "OFF"}`),
-  ]);
+  const footer = playFooter(el, { onPause, persist, speed });
   function update(state) {
     setText(v.lives, livesText(state.lives));
     v.lives.setAttribute("aria-label", livesLabel(state.lives));

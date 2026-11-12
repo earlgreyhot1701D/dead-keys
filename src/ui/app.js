@@ -10,6 +10,7 @@ import { clear as clearSaved, save } from "../storage/saveClear.js";
 import { normalizeSettings, withSetting } from "../storage/settings.js";
 import { KEY, load, readCorrupt } from "../storage/store.js";
 import { createBackup } from "./backup.js";
+import { createRoundRecord } from "./roundRecord.js";
 
 export { summarize } from "./backup.js";
 
@@ -115,6 +116,7 @@ export function createApp(env) {
       set({ notice: null });
     },
     ...backup,
+    ...createRoundRecord({ getState: () => state, adopt, persistNow, set }),
     /** Remove the save and the old-data copy. The screen asks first. */
     clear() {
       backup.dropPreview();

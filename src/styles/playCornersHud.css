@@ -1,0 +1,57 @@
+/* Four corners: the HUD header (mock screen 4, value for value). The footer is playStation.css. */
+.cn-hud {
+  box-sizing: border-box;
+  height: 72px;
+  padding: 0 24px;
+  gap: 12px;
+}
+.cn-hud-mid {
+  display: flex;
+  gap: 22px;
+  align-items: center;
+}
+.cn-hud-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: center;
+}
+.cn-hud-label {
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+.cn-hud-val {
+  font-size: 18px;
+  font-weight: 700;
+}
+.cn-hud-wave {
+  color: var(--bright);
+}
+.cn-hud-left {
+  font-size: 14px;
+  font-weight: 400;
+}
+.cn-hud-lives {
+  font-size: 18px;
+  letter-spacing: 0.2em;
+  color: var(--missed);
+}
+.cn-hud-rule {
+  width: 1px;
+  height: 28px;
+  background: var(--line);
+}
+.cn-hud-right {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-end;
+  font-size: 13px;
+}
+.cn-hud-hostiles {
+  color: var(--accent);
+}
+.cn-hud-time {
+  color: var(--soft);
+}

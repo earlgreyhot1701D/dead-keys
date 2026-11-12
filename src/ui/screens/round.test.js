@@ -4,9 +4,10 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
+import { PRACTICE_NOTE } from "../../render/playHud.js";
 import { findAll, makeFakeDoc, textOf } from "../fakeDom.js";
 import { chooseRound } from "./play.js";
-import { isTyping, outOfLivesLines, PAUSE, roundScreen } from "./round.js";
+import { isTyping, outOfLivesLines, PAUSE, practiceScreen, roundScreen } from "./round.js";
 
 const design = readFileSync(
   new URL("../../../.kiro/specs/play/design.md", import.meta.url),
@@ -43,8 +44,8 @@ test("only single characters without a shortcut key are typing", () => {
   assert.ok(!isTyping(undefined));
 });
 
-/** Start a falling round on a fake page; `frame(dt)` runs one animation frame. */
-function start() {
+/** Start a round on a fake page (falling by default); `frame(dt)` runs one animation frame. */
+function start(kind = "falling", screen = roundScreen) {
   const frames = [];
   const listeners = {};
   let now = 0;
@@ -60,12 +61,19 @@ function start() {
   doc.addEventListener = () => {};
   doc.removeEventListener = () => {};
   globalThis.document = doc; // the round's dialogs are built later, on key presses
-  const log = { go: [], said: [] };
-  chooseRound("falling");
-  const node = roundScreen.render({
+  const log = { go: [], said: [], finished: [] };
+  chooseRound(kind);
+  const node = screen.render({
     state: { settings: { speed: 1 }, persist: true },
     go: (id) => log.go.push(id),
+    replace: (id) => log.go.push(id),
     announce: (t) => log.said.push(t),
+    app: {
+      finishRound: (result, day) => {
+        log.finished.push({ result, day });
+        return { recorded: true, saved: true, newBest: null, milestones: [], previous: null };
+      },
+    },
   });
   doc.body.append(node);
   const frame = (dt) => {
@@ -118,7 +126,7 @@ test("a typed key locks a word; Escape drops the lock, then pauses", () => {
   }
 });
 
-test("keys under an open dialog never reach the engine, and End round leaves", () => {
+test("keys under an open dialog never reach the engine; End round records it and shows results", () => {
   const r = start();
   try {
     assert.equal(r.press("Shift"), false, "Shift and Tab pass through to the page");
@@ -128,7 +136,13 @@ test("keys under an open dialog never reach the engine, and End round leaves", (
     assert.equal(r.press("Escape"), false);
     const end = findAll(r.doc.body, (n) => n.tag === "button" && textOf(n) === PAUSE.end)[0];
     end.click();
-    assert.deepEqual(r.log.go, ["play"]);
+    assert.deepEqual(r.log.go, ["results"]);
+    assert.equal(r.log.finished.length, 1);
+    const { result, day } = r.log.finished[0];
+    assert.equal(result.mode, "falling");
+    assert.equal(result.packId, "general");
+    assert.match(result.id, /^round-\d+$/);
+    assert.match(day, /^\d{4}-\d{2}-\d{2}$/);
     assert.equal(r.frames.length, 0, "the loop stopped");
   } finally {
     cleanup();
@@ -140,6 +154,42 @@ test("losing focus pauses the round", () => {
   try {
     r.listeners.blur();
     assert.ok(r.doc.querySelector("dialog[open]"));
+  } finally {
+    cleanup();
+  }
+});
+
+test("four corners draws its own HUD and field", () => {
+  const { node } = start("corners");
+  try {
+    assert.equal(textOf(findAll(node, (n) => n.tag === "h1")[0]), "Four corners");
+    for (const s of [
+      "WAVE_REGISTER",
+      "LIVES",
+      "ACCURACY",
+      "ACTIVE_BUFFER >",
+      "CORE 84",
+      "DANGER RING",
+    ])
+      assert.ok(textOf(node).includes(s), s);
+  } finally {
+    cleanup();
+  }
+});
+
+test("Practice opens a practice round: the note in place of lives and waves, ended from pause", () => {
+  const r = start("falling", practiceScreen); // the screen itself chooses practice
+  try {
+    assert.equal(practiceScreen.id, "practice");
+    assert.equal(textOf(findAll(r.node, (n) => n.tag === "h1")[0]), "Practice");
+    const t = textOf(r.node);
+    assert.ok(t.includes(PRACTICE_NOTE));
+    assert.equal(PRACTICE_NOTE, "No lives, no clock pressure. End the round from the pause menu.");
+    assert.ok(!t.includes("LIVES:") && !t.includes("SECTOR:"));
+    r.press("Escape");
+    findAll(r.doc.body, (n) => n.tag === "button" && textOf(n) === PAUSE.end)[0].click();
+    assert.equal(r.log.finished[0].result.mode, "practice");
+    assert.equal(r.log.finished[0].result.wave, 0);
   } finally {
     cleanup();
   }

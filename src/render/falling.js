@@ -5,7 +5,7 @@
 // danger), never every frame.
 import { SLOTS } from "../engine/config.js";
 import { svg } from "../ui/svg.js";
-import { DANGER_FROM, dangerMark, inDanger, lockParts } from "./hud.js";
+import { dangerMark, inDanger, lockParts, nearness } from "./hud.js";
 
 /** The field in design pixels (the page is fitted to 1440x900, Block 6 fit.js). */
 export const FIELD = Object.freeze({ w: 1376, h: 680, cardH: 64 });
@@ -17,11 +17,6 @@ export const LOCK_W = 220;
 export const laneX = (slot) => ((slot + 0.5) * FIELD.w) / LANES;
 /** Where a card's center goes: its lane, pulled in so a locked card is never cut off. */
 export const cardX = (slot) => Math.min(FIELD.w - LOCK_W / 2, Math.max(LOCK_W / 2, laneX(slot)));
-/**
- * How near a word is, 0 at the top to 1 at the danger zone, in steps of 0.05: far words are
- * dimmer, as the mock draws them (Shara, Nov 12). The CSS mixes --accent into --text by it.
- */
-export const nearness = (progress) => Math.round(Math.min(1, progress / DANGER_FROM) * 20) / 20;
 /** A card's top edge for its progress: 0 at the top, landing on the station line at 1. */
 export const cardY = (progress) => progress * (FIELD.h - FIELD.cardH);
 
@@ -62,6 +57,7 @@ function makeCard(el, target) {
         el("div", { class: "fw-lock-foot" }, el("span", {}, "╚════════╝")),
       ]),
       el("div", { class: "fw-trail" }),
+      el("span", { class: "m-check" }, "✓"),
     ]),
   ]);
   return { node, parts, locked: null, danger: null, near: null };
@@ -70,11 +66,12 @@ function makeCard(el, target) {
 /**
  * Build the field. `update(state)` draws one frame of the engine state.
  * @param {Function} el The `el` function.
- * @returns {{ node: HTMLElement, update: (state: object) => void, cards: Map<number, object> }}
+ * @returns {{ node: HTMLElement, update: (state: object) => void, cards: Map<number, object>, banner: HTMLElement }}
  */
 export function createFalling(el) {
   const layer = el("div", { class: "fall-cards" });
   const beam = el("div", { class: "fall-beam" });
+  const banner = el("div", { class: "m-wave" });
   const node = el("div", { class: "fall-field", "aria-hidden": "true" }, [
     el(
       "div",
@@ -91,6 +88,7 @@ export function createFalling(el) {
     ]),
     beam,
     layer,
+    banner,
   ]);
   const cards = new Map();
   function update(state) {
@@ -124,12 +122,12 @@ export function createFalling(el) {
       if (isLocked) move(beam, cardX(t.slot), cardY(t.progress) + FIELD.cardH);
     }
     for (const [id, c] of cards) {
-      if (!live.has(id)) {
+      if (!live.has(id) && !c.leaving) {
         c.node.remove();
         cards.delete(id);
       }
     }
     beam.setAttribute("class", state.lockId === null ? "fall-beam" : "fall-beam is-on");
   }
-  return { node, update, cards };
+  return { node, update, cards, banner };
 }

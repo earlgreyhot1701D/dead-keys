@@ -1,21 +1,21 @@
-// The play screen (play Req 2 to 5): engine + loop + renderer + keys + dialogs. Keys go to the
-// engine one character at a time, only while no dialog is open. Escape follows the engine's
-// layered rule (drop the lock, else pause). The loop stops when the round ends or the screen is
-// gone. STUB: corners is task 7, moments task 8, practice task 9, results and saving task 10;
-// until then an ended round returns to the Play picker.
+// The play screen (play Req 2 to 7): engine + loop + renderer + keys + dialogs + moments. Keys go
+// to the engine one character at a time, only while no dialog is open. Escape follows the
+// engine's layered rule (drop the lock, else pause). The loop stops when the round ends or the
+// screen is gone. An ended round is recorded through app.finishRound and shown on results.
 import pack from "../../../packs/general.json" with { type: "json" };
 import { announceAll } from "../../a11y/announce.js";
 import { LIVES_MAX } from "../../engine/config.js";
 import { endRound, pause, resolveOutOfLives, resume, tick } from "../../engine/lifecycle.js";
+import { toResult } from "../../engine/result.js";
 import { createRound, key, pressEscape } from "../../engine/round.js";
-import { createFalling } from "../../render/falling.js";
 import { liveWpm } from "../../render/hud.js";
 import { startLoop } from "../../render/loop.js";
-import { createPlayHud } from "../../render/playHud.js";
-import { scanlines } from "../components/chrome.js";
+import { createStage } from "../../render/stage.js";
 import { openConfirm } from "../components/confirmDialog.js";
 import { el } from "../dom.js";
-import { nextRound } from "./play.js";
+import { localDay } from "../roundRecord.js";
+import { chooseRound, nextRound } from "./play.js";
+import { showResults } from "./results.js";
 
 /** The pause dialog's words (play copy table). */
 export const PAUSE = Object.freeze({ title: "Paused", resume: "Resume", end: "End round" });
@@ -36,75 +36,60 @@ let live = null; // the running round: { state, step, ... }; only one at a time
 
 function begin(ctx) {
   const kind = nextRound();
-  const r = createRound({
-    mode: kind.mode,
-    mechanic: kind.mechanic,
-    items: pack.pools.words,
-    seed: Date.now(),
-    speed: ctx.state.settings.speed,
-  });
-  const field = createFalling(el);
+  const { speed } = ctx.state.settings;
+  const r = createRound({ ...kind, items: pack.pools.words, seed: Date.now(), speed });
   const doc = ctx.root?.ownerDocument ?? globalThis.document;
   const run = { state: r.state, loop: null };
-  const draw = () => {
-    field.update(run.state);
-    hud.update(run.state);
-  };
+  const stage = createStage(el, {
+    mechanic: kind.mechanic,
+    practice: kind.mode === "practice",
+    title: kind.title,
+    persist: ctx.state.persist !== false,
+    speed,
+    onPause: () => step(pause(run.state)),
+  });
   const stop = () => {
     run.loop?.stop();
+    stage.stop();
     if (live === run) live = null;
   };
   const finish = () => {
     stop();
-    ctx.go("play"); // STUB until task 10: results and saving
+    const now = Date.now();
+    const meta = { id: `round-${now}`, date: now, packId: pack.id, lessonId: null };
+    const result = toResult(run.state, { ...meta, drillSource: null });
+    const outcome = ctx.app.finishRound(result, localDay(now));
+    showResults({ result, log: stage.log(), outcome });
+    ctx.replace("results");
   };
   const step = ({ state, events }) => {
     const before = run.state;
     run.state = state;
     const lines = announceAll(events, before, state);
     if (lines.length) ctx.announce(lines.join(" "));
-    draw();
+    stage.show(events, before, state);
     for (const e of events) {
       if (e.type === "paused") openPause();
       if (e.type === "outOfLives") openOut();
       if (e.type === "ended") finish();
     }
   };
-  const openPause = () =>
+  // Cancel (focused first, and Escape) is the safe choice: Resume, or Continue. Each button
+  // hands the round to an engine call.
+  const ask = (id, title, lines, cancelLabel, cancel, confirm) =>
     openConfirm(doc, el, {
-      id: "pause",
-      title: PAUSE.title,
-      lines: [],
-      cancelLabel: PAUSE.resume,
-      confirmLabel: PAUSE.end,
-      onCancel: () => step(resume(run.state)),
-      onConfirm: () => step(endRound(run.state)),
+      ...{ id, title, lines, cancelLabel, confirmLabel: PAUSE.end },
+      onCancel: () => step(cancel(run.state)),
+      onConfirm: () => step(confirm(run.state)),
     });
+  const openPause = () => ask("pause", PAUSE.title, [], PAUSE.resume, resume, endRound);
+  const goOn = (yes) => (s) => resolveOutOfLives(s, yes);
   const openOut = () =>
-    openConfirm(doc, el, {
-      id: "out",
-      title: "Out of lives",
-      lines: outOfLivesLines(run.state),
-      cancelLabel: "Continue",
-      confirmLabel: PAUSE.end,
-      onCancel: () => step(resolveOutOfLives(run.state, true)),
-      onConfirm: () => step(resolveOutOfLives(run.state, false)),
-    });
-  const hud = createPlayHud(el, {
-    onPause: () => step(pause(run.state)),
-    persist: ctx.state.persist !== false,
-    speed: ctx.state.settings.speed,
-  });
+    ask("out", "Out of lives", outOfLivesLines(run.state), "Continue", goOn(true), goOn(false));
   run.step = step;
   run.dialogOpen = () => !!doc.querySelector?.("dialog[open]");
-  run.node = el("div", { class: "screen-frame play-frame" }, [
-    scanlines(),
-    el("h1", { class: "sr-only" }, kind.title),
-    hud.header,
-    el("main", { id: "main", class: "play-main" }, [field.node, hud.station]),
-    hud.footer,
-  ]);
-  draw();
+  run.node = stage.node;
+  stage.show([], run.state, run.state);
   run.loop = startLoop({
     onFrame: (dt) => {
       // The screen was left another way: stop, and go nowhere (no frame outlives its screen).
@@ -135,5 +120,16 @@ export const roundScreen = {
     if (!isTyping(e)) return false;
     live.step(key(live.state, e.key));
     return true;
+  },
+};
+
+/** Practice (Req 2.2): the menu's Practice opens a practice round on the falling layout at once. */
+export const practiceScreen = {
+  ...roundScreen,
+  id: "practice",
+  title: "Practice",
+  render(ctx) {
+    chooseRound("practice");
+    return roundScreen.render(ctx);
   },
 };

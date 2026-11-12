@@ -11,10 +11,7 @@ export const MODES = ["corners", "falling", "practice", "lesson", "testout", "da
 /** The result for an ignored input: the very same state, no events. */
 const same = (state) => ({ state, events: [] });
 
-/**
- * Spawn until the screen is at the wave's limit or the spawn gap stops it (so one at most once
- * a round is running; `tick` brings the rest). Shared with lifecycle.js.
- */
+/** Spawn up to the wave's limit; the spawn gap stops it after one (tick brings the rest). */
 export function fill(state) {
   for (;;) {
     const r = spawn(state);

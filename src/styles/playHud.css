@@ -63,3 +63,8 @@
   font-size: 12px;
   letter-spacing: 1px;
 }
+/* Practice: the note in place of lives and sector (play copy table). */
+.hud-note {
+  margin: 0;
+  color: var(--soft);
+}

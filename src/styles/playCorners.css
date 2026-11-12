@@ -1,0 +1,130 @@
+/* Four corners: the quadrants, lines, rings, core and the beam (mock screen 4, value for value;
+   word cards in playCornersCards.css, the locked word in playCornersLock.css). Sizes match AREA
+   in src/render/corners.js. */
+.cn-main {
+  padding: 0;
+}
+.cn-field {
+  position: relative;
+  flex-shrink: 0;
+  width: 1440px;
+  height: 780px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+.cn-quads {
+  position: absolute;
+  inset: 16px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  border: 1px solid rgba(60, 73, 71, 0.6);
+  font-size: 13px;
+  color: var(--dim);
+}
+.cn-quad {
+  padding: 8px;
+}
+.cn-quad.is-on {
+  color: var(--accent);
+}
+.cn-nw {
+  border-right: 1px solid rgba(60, 73, 71, 0.4);
+  border-bottom: 1px solid rgba(60, 73, 71, 0.4);
+}
+.cn-ne {
+  border-bottom: 1px solid rgba(60, 73, 71, 0.4);
+  text-align: right;
+}
+.cn-sw {
+  display: flex;
+  align-items: flex-end;
+  border-right: 1px solid rgba(60, 73, 71, 0.4);
+}
+.cn-se {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+.cn-art {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.cn-line {
+  fill: none;
+  stroke: var(--rule);
+  stroke-dasharray: 6 6;
+  stroke-opacity: 0.45;
+  stroke-width: 1.5;
+}
+.cn-line.is-on {
+  stroke: var(--text);
+  stroke-dasharray: 8 4;
+  stroke-opacity: 0.85;
+  stroke-width: 2;
+}
+.cn-outer {
+  fill: none;
+  stroke: var(--rule);
+  stroke-dasharray: 2 8;
+  stroke-opacity: 0.35;
+}
+.cn-ring {
+  fill: rgba(242, 193, 78, 0.04);
+  stroke: var(--shaky);
+  stroke-dasharray: 4 6;
+  stroke-opacity: 0.8;
+}
+.cn-ring-label {
+  position: absolute;
+  top: 142px;
+  left: 720px;
+  padding: 1px 8px;
+  border: 1px solid var(--shaky);
+  background: var(--ink);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  color: var(--shaky);
+  transform: translateX(-50%);
+}
+/* The beam: 1px wide, stretched by scaleX to the locked word (corners.js). */
+.cn-beam {
+  position: absolute;
+  top: -1.5px;
+  left: 0;
+  display: none;
+  width: 1px;
+  height: 3px;
+  background: var(--text);
+  transform-origin: 0 50%;
+}
+.cn-beam.is-on {
+  display: block;
+}
+.cn-core {
+  position: absolute;
+  z-index: 2;
+  top: 302px;
+  left: 632px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 176px;
+  height: 176px;
+  padding: 8px;
+  border: var(--rule-double);
+  background: var(--bar);
+}
+.cn-core-head {
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(60, 73, 71, 0.6);
+  font-size: 13px;
+  color: var(--accent);
+}
+.cn-core-ghost {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
+}

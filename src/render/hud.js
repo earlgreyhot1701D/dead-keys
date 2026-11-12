@@ -18,12 +18,13 @@ export function counts(state) {
   return { correct, total: state.keystrokes.length + state.strayKeys };
 }
 
-/** "[ ♥ ♥ ♡ ♡ ♡ ]": one heart per life, filled for lives left. */
-export function livesText(lives) {
+/** "♥ ♥ ♡ ♡ ♡": one heart per life, filled for lives left (corners draws it bare). */
+export function heartsText(lives) {
   const n = Math.max(0, Math.min(LIVES_MAX, lives));
-  const hearts = [...Array(LIVES_MAX)].map((_, i) => (i < n ? "♥" : "♡"));
-  return `[ ${hearts.join(" ")} ]`;
+  return [...Array(LIVES_MAX)].map((_, i) => (i < n ? "♥" : "♡")).join(" ");
 }
+/** "[ ♥ ♥ ♡ ♡ ♡ ]", as falling draws it. */
+export const livesText = (lives) => `[ ${heartsText(lives)} ]`;
 /** The same, in words for a screen reader (the mock's label). */
 export const livesLabel = (lives) => `${lives} of ${LIVES_MAX} lives left`;
 
@@ -51,6 +52,30 @@ export function accuracyBar(percent) {
   return "█".repeat(filled) + "░".repeat(10 - filled);
 }
 
+/** Words kept for the results word log (Req 7.2: the last 8). */
+export const LOG_WORDS = 8;
+/**
+ * Add one step's cleared and breached words to the round's log: the last LOG_WORDS words, newest
+ * last, and the count of every breach (the engine does not keep either).
+ * @param {{ words: { text: string, cleared: boolean }[], breaches: number }} log
+ * @param {object[]} events
+ * @param {object} before The state the events came from (it still holds the words).
+ */
+export function logWords(log, events, before) {
+  const text = (id) => before.targets.find((t) => t.id === id)?.text;
+  const add = [];
+  for (const e of events) {
+    if (e.type !== "cleared" && e.type !== "lifeLost") continue;
+    const w = text(e.targetId);
+    if (w) add.push({ text: w, cleared: e.type === "cleared" });
+  }
+  if (!add.length) return log;
+  return {
+    words: [...log.words, ...add].slice(-LOG_WORDS),
+    breaches: log.breaches + add.filter((w) => !w.cleared).length,
+  };
+}
+
 /** "1:12" from active milliseconds (pauses are not in activeMs). */
 export function timeText(ms) {
   const s = Math.max(0, Math.floor(ms / 1000));
@@ -76,6 +101,11 @@ export function lockColumn(state) {
 
 /** Is this word in the danger zone or ring? */
 export const inDanger = (target) => target.progress >= DANGER_FROM;
+/**
+ * How near a word is, 0 at the start to 1 at the danger zone or ring, in steps of 0.05: far
+ * words are dimmer, as the mocks draw them (Shara, Nov 12). The CSS mixes --accent into --text.
+ */
+export const nearness = (progress) => Math.round(Math.min(1, progress / DANGER_FROM) * 20) / 20;
 /** "[!]" in danger, "[·]" otherwise. */
 export const dangerMark = (target) => (inDanger(target) ? "[!]" : "[·]");
 

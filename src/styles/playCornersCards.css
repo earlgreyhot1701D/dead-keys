@@ -1,0 +1,47 @@
+/* Four corners: the word cards, nearer words bigger and brighter (mock screen 4, value for value). */
+.cn-cards {
+  position: absolute;
+  inset: 0;
+}
+.cw {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform;
+}
+.cw-inner {
+  transform: translate(-50%, -50%);
+}
+/* Far words are smaller and dimmer, as the mock draws them (--near from corners.js). */
+.cw-card {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 6px 12px;
+  border: 1px solid var(--rule);
+  background: var(--panel-2);
+  white-space: nowrap;
+}
+.cw-tag {
+  font-size: 13px;
+  color: var(--accent);
+}
+.cw-word {
+  font-size: calc(18px + 4px * var(--near, 1));
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: color-mix(in srgb, var(--text) calc(var(--near, 1) * 100%), var(--accent));
+}
+.cw-dist {
+  font-size: 13px;
+  color: var(--muted);
+}
+.is-danger .cw-card {
+  border: 3px double var(--shaky);
+}
+.is-danger .cw-card > * {
+  color: var(--shaky);
+}
+.is-danger .cw-word {
+  font-size: 24px;
+}

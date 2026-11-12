@@ -1,0 +1,119 @@
+/* Four corners: the locked word (TARGET_LOCKED, DIST, the double box with its ticks, VECTOR)
+   and the ACTIVE_BUFFER line (mock screen 4, value for value). */
+.cw-lock {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+}
+.cw.is-locked {
+  z-index: 6;
+}
+.is-locked .cw-card {
+  display: none;
+}
+.is-locked .cw-lock {
+  display: flex;
+}
+.cw-lock-bar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 1px 8px;
+  border-right: 1px solid var(--text);
+  border-left: 1px solid var(--text);
+  background: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+.cw-lock-dist {
+  color: var(--missed);
+  letter-spacing: 0;
+}
+.cw-lock-box {
+  position: relative;
+  padding: 10px 24px;
+  border: 4px double var(--text);
+  background: var(--ink);
+}
+.cw-tick {
+  position: absolute;
+  font-size: 13px;
+}
+.t-top {
+  top: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.t-bottom {
+  bottom: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.t-left {
+  top: 50%;
+  left: -9px;
+  transform: translateY(-50%);
+}
+.t-right {
+  top: 50%;
+  right: -9px;
+  transform: translateY(-50%);
+}
+.cw-lock-word {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+.cw-typed:not(:empty) {
+  position: relative;
+  z-index: 6;
+  padding: 0 4px;
+  background: var(--text);
+  color: var(--ink);
+}
+.cw-rest {
+  color: var(--soft);
+}
+.cw-vector {
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+.cn-buffer {
+  position: absolute;
+  z-index: 6;
+  bottom: 28px;
+  left: 50%;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 8px 16px;
+  border: 1px solid var(--line);
+  background: var(--ink);
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+.cn-buffer-label {
+  font-size: 14px;
+  color: var(--accent);
+}
+.cn-buffer-typed {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+.cn-buffer-cursor {
+  position: relative;
+  z-index: 6;
+  display: inline-block;
+  width: 10px;
+  height: 18px;
+  background: var(--text);
+}

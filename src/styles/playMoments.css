@@ -1,0 +1,87 @@
+/* The three moments (play Req 6), set by src/render/moments.js through data-moment.
+   Miss: the locked word's border is coral for 200 ms. Clear: the word shrinks away with a ✓
+   over 250 ms. Wave up: a WAVE nn banner for 1 s. Under reduced motion each keeps its color and
+   words and drops the movement. */
+[data-moment="miss"] .fw-lock,
+[data-moment="miss"] .fw-lock-word,
+[data-moment="miss"] .cw-lock-box {
+  border-color: var(--missed);
+}
+.m-check {
+  position: absolute;
+  z-index: 7;
+  top: 50%;
+  left: 50%;
+  display: none;
+  padding: 0 8px;
+  border: 1px solid var(--text);
+  background: var(--ink);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+  transform: translate(-50%, -50%);
+}
+.fw-inner,
+.cw-inner {
+  position: relative;
+}
+[data-moment="clear"] .m-check {
+  display: block;
+}
+[data-moment="clear"] .fw-inner,
+[data-moment="clear"] .cw-inner {
+  animation: m-shrink 250ms ease-in forwards;
+}
+.fw[data-moment="clear"] .fw-inner {
+  animation-name: m-shrink-x;
+}
+@keyframes m-shrink {
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.4);
+  }
+}
+/* Falling cards are centred by x only. */
+@keyframes m-shrink-x {
+  to {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.4);
+  }
+}
+.m-wave {
+  position: absolute;
+  z-index: 8;
+  top: 40%;
+  left: 50%;
+  display: none;
+  padding: 10px 28px;
+  border: var(--rule-double);
+  background: var(--ink);
+  font-family: var(--head);
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--text);
+  transform: translate(-50%, -50%);
+}
+.m-wave[data-moment="wave"] {
+  display: block;
+  animation: m-banner 1s ease-out forwards;
+}
+@keyframes m-banner {
+  from {
+    transform: translate(-50%, -30%);
+  }
+  20%,
+  to {
+    transform: translate(-50%, -50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-moment="clear"] .fw-inner,
+  [data-moment="clear"] .cw-inner,
+  .fw[data-moment="clear"] .fw-inner,
+  .m-wave[data-moment="wave"] {
+    animation: none;
+  }
+}
