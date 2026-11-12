@@ -337,3 +337,28 @@ Pinned, exact, installed with `--before=2026-10-29` so every package in the tree
 | `app.js` reached 175 lines | Fixed: the backup actions moved to `backup.js` (129 and 81 lines) | `src/ui/` |
 | `dismissPrivacy` used `this`, which breaks if a screen passes the method on | Fixed: the app object refers to itself by name | `app.js` |
 | Proof the "nothing written while persist is false" guard works | Proven: with the guard removed, three tests fail (the example and the random-play property); the restored file's hash matched | `app.test.js`, `appSync.test.js` |
+
+## Nov 12 2026: Vercel from the IDE, first deploy (Block 6 task 14)
+
+Driven with the pinned Vercel CLI 65.5.0 through `npx` in Kiro's terminal. Shara was already signed in as `earlgreyhot1701d` and confirmed it was the right account and team. No secrets were typed, read or printed by the agent.
+
+What ran, in order:
+
+| Step | Result |
+|---|---|
+| `npx vercel whoami` | `earlgreyhot1701d`. Shara confirmed the account before anything else ran |
+| `npx vercel link --yes --project dead-keys` | Created the project `dead-keys`, wrote `.vercel/` (git-ignored) and an `.env.local` holding a Vercel OIDC token (matched by the existing `.env.*` ignore rule, and blocked from the agent by `.kiroignore`; never read) |
+| `npx vercel git disconnect --yes` | See the first surprise below |
+| `npx vercel deploy` (no `--prod`) | Built on Vercel (Vite, `dist/`), ready in 12 s |
+
+Preview URL (deployment-specific, behind Vercel sign-in): https://dead-keys-cfyvom22k-earlgreyhot1701ds-projects.vercel.app
+
+Three surprises, each logged with its status:
+
+| What happened | Status | Where |
+|---|---|---|
+| `vercel link --yes` connected the GitHub repo to the project, so a push to `main` would have deployed to production. That breaks "production deploys only on Shara's instruction" | Fixed: disconnected right after linking, before any push. Reversible with `vercel git connect`. Production deploys stay manual (Block 16) | Vercel project settings |
+| `vercel link` appended `.vercel` and `.env*` to `.gitignore`. The new `.env*` line comes after `!.env.example` and would have ignored the example file again | Fixed: reverted with `git checkout -- .gitignore`. The original rules already cover `.vercel/` and `.env.local`. Not committed | `.gitignore` |
+| **Vercel put the first deployment of a new project in Production even without `--prod`.** Its rule: the first deployment of a project becomes production. So `https://dead-keys.vercel.app` is live and public (HTTP 200), though the deployment URL above is protected (HTTP 302 to sign-in) | **Open, needs Shara's decision.** What the public page serves: the Block 6 shell build, same asset hashes as the local build, no fixture ids in it (`check-build` clean before the deploy, and `round-001` is absent from the live JS), no secrets, no AI route, no analytics. Options: (a) leave it, (b) remove the production deployment so the alias goes dark, which also means the next deploy would again be a "first" one and need `--prod` handled deliberately, (c) turn on Deployment Protection for production in the dashboard if the plan allows | Vercel project `dead-keys` |
+
+Lesson for the write-up: the CLI said "Deployed to production" only after the fact. Before the first `vercel deploy` on a new project, create the project and set its production branch rules first, or expect the first deploy to be public. `vercel link --yes` also takes actions (Git connection, `.gitignore`, a token file) that the command name does not suggest.
