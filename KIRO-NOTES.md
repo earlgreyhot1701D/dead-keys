@@ -195,9 +195,9 @@ Built: `config`, `rng`, `score`, `match`, `targets`, `round`, `lifecycle`, `resu
 | `lifecycle.test.js` reached 306 lines, over the hard cap (found by running `scripts/linecap.js` by hand) | Fixed: random-play tests moved to `lifecycleRandom.test.js` | `src/engine/` |
 | `round.test.js` (227), `lifecycle.test.js` (236), `targets.test.js` (185), `result.test.js` (175) over the 150 soft cap; `check-fixtures.js` at 151 | No action: approved. Each tests one source file and all are under 250 | n/a |
 | Test helpers (`freeze`, `opts`, `items`) repeated across test files | No action: a shared test-kit file is not on the allowlist | n/a |
-| Tab hidden then shown sends one huge `dtMs`, so every target arrives at once and all lives are lost (Claude's review) | Deferred to Block 7: the renderer must auto-pause on `visibilitychange`, clamp `dt` per tick, and guard NaN (`tick` throws on a bad `dtMs`, so a NaN on the first frame would otherwise hit the "never a blank screen" rule) | Block 7 |
-| `WAVE_SPEEDUP` has no ceiling: wave 20 is about 1.3 s per word, wave 30 about 0.5 s (Claude's review) | Deferred to Block 7: tune or cap it when it can be seen | Block 7 |
-| A stray space counts as a miss in falling mode, where words have no spaces (Claude's review) | Deferred to Block 7: revisit after the first playtest | Block 7 |
+| Tab hidden then shown sends one huge `dtMs`, so every target arrives at once and all lives are lost (Claude's review) | Closed in Block 7 (task 4): `src/render/loop.js` clamps `dt` to 100 ms, turns NaN or negative into 0, and pauses on hidden or blur, with tests | `loop.js` |
+| `WAVE_SPEEDUP` has no ceiling: wave 20 is about 1.3 s per word, wave 30 about 0.5 s (Claude's review) | Closed in Block 7 (task 2, retuned in the playtest): `WAVE_SPEEDUP` 1.05, capped at wave 10 (`WAVE_SPEEDUP_MAX_WAVE`) | `config.js` |
+| A stray space counts as a miss in falling mode, where words have no spaces (Claude's review) | Closed in Block 7: a space is never counted, locked or not (Req 8.2) | `round.js`, `deferrals.test.js` |
 | Reviewer: `structure.md` and `current-block.md` edited outside the allowlist | No action: the edits were approved in the split decision | n/a |
 | Reviewer: `requirements.md` drifted from the code (targets "up to 8", "Shara to confirm" heading, short Scope list) | Fixed: targets row reads "up to 8 (falling), 4 (corners)", heading is "Confirmed numbers", Scope lists all eight engine files | `requirements.md` |
 | Reviewer: the Req 1.4 test scanned two files; Req 5.2 (no clock) had no direct test | Fixed: one test scans every non-test file in `src/engine/` for `Math.random(`, `Date`, `performance.` and `setTimeout`, with comments stripped. A second test proves the scan finds a call in code and ignores one in a comment | `rng.test.js` |
@@ -387,7 +387,7 @@ Built: router and notice bar, confirm dialog, title, menu, privacy card, keyboar
 | Proof that Clear asks before it clears | Proven: a throwaway mutation (call `clear()` while building the dialog) failed a test. My first run of the mutation was invalid because the test and the restore ran in parallel; redone in sequence, and the restored file's hash matched | `settingsData.test.js` |
 | Lock rule on "How we count" said nothing about Escape | Fixed: "Escape drops the lock. If nothing is locked, Escape pauses." (the layered rule decided Nov 11) | `howWeCountText.js` |
 | "How we count" leaves out rules whose code is not built | Deferred: each block adds its own rule and config number. Block 8: lesson pass (95%) and the speed-dip notice. Block 9: how drills are chosen. Block 12: the daily drill. Approved for the preview | `howWeCountText.js` |
-| Three hand-written numbers on that page: five characters to a word, at most three sentences, six practice keys (the engine hard-codes them) | Deferred to Block 7, the next time engine files are on the allowlist: move them into config and read them on the page | `howWeCountText.js`, `score.js`, `diagnose.js` |
+| Three hand-written numbers on that page: five characters to a word, at most three sentences, six practice keys (the engine hard-codes them) | Closed in Block 7 (task 2): `CHARS_PER_WORD`, `MAX_SENTENCES` and `MAX_WEAK_KEYS` are in config and the page reads them; a test ties 3 and 6 to the contract | `config.js`, `progressConfig.js`, `howWeCountText.js` |
 | About has no Tally feedback link (the form has no URL yet) | Deferred to Block 16: Shara will make the form | `about.js` |
 | `check-build.test.js` and `keyboardContrast.test.js` were not named in the tasks | No action: approved and added to the allowlist record | `docs/current-block.md` |
 | `a11y-auditor` has `read` and `shell` tools | Fixed: a permission rule allows only `npm run test:e2e` and `npm run build`, and the prompt says the same. **Known limit:** not tested at runtime, so whether other commands are blocked or only ask first is unverified | `.kiro/agents/a11y-auditor.md` |
@@ -471,7 +471,7 @@ Shara asked Claude to make this round's changes directly, then have Kiro review,
 | `src/render` imports `crtOn` and `svg` from `src/ui` | No action (Shara): logged | `falling.js`, `playHud.js` |
 | Kiro's guard blocked `git push` and the preview deploy | Shara pushes and deploys herself from here on | n/a |
 | US English pack: SCOWL en_US list (ESDB, wordlist-diff commit 7f2f407, MIT-like notice) kept in `packs/source/`; the build stops on any word not in it | Done: removed labour, centre, der, des, les, pre, und, von | `build-pack.js`, `blocklist.txt` |
-| Tasks 7 to 10: mock elements the map does not name, handled the way the map handles their kin | Open: for Shara (corners SOUND dropped as on falling; core ghost kept as part of "the core"; results SOUND and drill badge dropped; "// BUFFER STATUS: DUMP_COMPLETE ::", "[ STAT_0n ]", "[ RECORD ]", "MILESTONE:", "INTERCEPTED WORDS / WORD LOG" kept as mock flavor; "[+3 WPM]" and "STREAK: 3" dropped; the accuracy panel titled "ACCURACY" without "VS PASS LINE"; "STATUS: NOT SAVING" when the round was not saved) | `results.js`, `resultsPanels.js`, `cornersHud.js` |
+| Tasks 7 to 10: mock elements the map does not name, handled the way the map handles their kin | Shown for Shara in the screenshot pairs (`docs/screens/`), with the gameplay she approved Nov 12 (corners SOUND dropped as on falling; core ghost kept as part of "the core"; results SOUND and drill badge dropped; "// BUFFER STATUS: DUMP_COMPLETE ::", "[ STAT_0n ]", "[ RECORD ]", "MILESTONE:", "INTERCEPTED WORDS / WORD LOG" kept as mock flavor; "[+3 WPM]" and "STREAK: 3" dropped; the accuracy panel titled "ACCURACY" without "VS PASS LINE"; "STATUS: NOT SAVING" when the round was not saved) | `results.js`, `resultsPanels.js`, `cornersHud.js` |
 | `round.js` passed 150 lines at task 10 | Split into `src/render/stage.js` (field, HUD, moments, word log), inside the `src/render/**` allowlist | `stage.js` |
 
 ### Block 7: Playtest fixes (Claude, Nov 12; approved by Shara)
@@ -553,3 +553,37 @@ Sixth round (Claude, Nov 12; approved by Shara): falling ship slides to the lock
 - Highest wave on results.
 - Rename the HUD's SPEED to YOUR WPM.
 - Escape labels in the pause and out-of-lives dialogs.
+
+## Nov 12 2026: Block 7, play, close-out (tasks 11 to 13)
+
+Built in Block 7: the 1,500-word US English general pack; the mode picker with Starting speed; Falling words (six lanes, the ship under the locked word), Four corners, and Practice; the warm-up; the strict-but-clear lock; the three moments plus the breach edge; pause and out-of-lives dialogs; results with recording through `app.finishRound` (`src/ui/roundRecord.js`). Shara played it on the preview and approved the gameplay Nov 12.
+
+Task 11 added `e2e/play.spec.js` (keyboard only: lock, a wrong key shown red with 'TYPE "<letter>" TO FIX', Backspace clearing it, finish and the "Cleared" announcement, in both mechanics; the ship sliding under the locked lane and staying; unique first letters on screen after the warm-up; Escape pauses and resumes; End round saves; results' Main menu, Enter and Escape; Practice ended from the pause dialog) and `e2e/playChecks.spec.js` (axe on the picker, both play screens, a wrong key, Practice, the pause and out-of-lives dialogs and results; the warm-up never costing a life; out of lives with Escape continuing; no scroll at 1440x900, 1366x768 and 1280x720). Screenshot pairs for picker, falling, corners and results, at 1440x900 and 1366x768, are in `docs/screens/` next to the mocks.
+
+Checks at task 12: `npm test` 626 of 626, `npm run lint` clean (235 files), `npm run test:e2e` 57 passed and 28 skipped (the opt-in screenshots), checker 42 of 42, `check:build` clean, line caps exit 0 (no source file over 150; test files under 250).
+
+Block 7 deferrals: all closed (tab-hidden `dt`, wave speed-up cap, stray space, the three How we count numbers, the settings `later-hint` rename, `pause(state)`). See the Block 2 and Block 6 rows above.
+
+| Flag | Status | Where |
+|---|---|---|
+| Vercel preview toolbar binds c to comments and blocks it before the page sees it | Shara turns the toolbar off for previews. Production unaffected | Vercel project settings |
+| axe moderate (not blocking): `region` on both play screens and Practice (the field is `aria-hidden` art outside a landmark), `landmark-unique` on results | Open: for the a11y-auditor | `stage.js`, `results.js` |
+| Screenshots against the mocks, differences still visible: falling shows wave 1 with two or three words where the mock shows wave 4 with six; the locked card is wider than a lane; results' milestone list scrolls inside its panel when a first round earns many WPM bands, and the mock's coach note is dropped (Block 8); the picker's speed hint has a dashed rule under it from the shared `.set-row` style | Open: for Shara's visual sign-off | `docs/screens/` |
+| `e2e/screenshots.spec.js` now waits for the h1 to be attached, not visible (the play screens' h1 is screen-reader only) | Done | `screenshots.spec.js` |
+| A leftover preview server held port 4173 once after an interrupted run | No action: it exited on its own; e2e reran clean | n/a |
+
+### Block 7 gate (task 14, Nov 12)
+
+Reviewer: PASS, no High. a11y-auditor: PASS, no High (axe finds only part of the problems; full WCAG validation needs manual testing with assistive technologies). Neither agent had a shell; both used Kiro's check numbers above.
+
+| Gate finding | Status | Where |
+|---|---|---|
+| Reviewer: `.kiro/steering/structure.md` and `docs/current-block.md` changed but are not on the allowlist | Checked: `structure.md` changed only in `0cd35c4` "Block 7: play spec approved", Shara's spec commit; `current-block.md` is Shara's block record | n/a |
+| Reviewer: Block 7 flags still Open (copy-table row for results' Main menu, the test gaps, `round.js` prototype lookup, `lockBar` code points, a stale test comment) | Open: carried to v2 or a later block, for Shara | rows above |
+| Reviewer: the breach edge under reduced motion conflicts with a11y.md "no flash" | Recorded as a deliberate exception (Shara, Nov 12): one 400 ms color change, not repeated flashing | `playMoments.css` |
+| a11y: duplicate "Accuracy" landmark on results (the tile and the bar panel), axe `landmark-unique` | Open: for Shara (drop the panel's label or rename it "Accuracy bar") | `results.js`, `resultsPanels.js` |
+| a11y: axe `region`: the play screens' sr-only h1 and results' h1 sit outside `<main>` | Open: for Shara (move the h1 inside a landmark) | `stage.js`, `results.js` |
+| a11y: Practice has no speed control of its own (words don't move; Settings and the picker set the speed) | Open: for Shara (accept, or word the rule "every timed mode") | `round.js` |
+| a11y: "Paused." and "Out of lives." are spoken by the live region and again as the dialog opens | Open: Low, for Shara | `announce.js` |
+| a11y: Enter while the milestones scroll region has focus plays again; its name reads "[═]" aloud | Open: Low, for Shara | `results.js`, `resultsPanels.js` |
+| PASS-line items for Shara: screenshot sign-off on the four pairs at both sizes; playing a round on the preview (gameplay approved Nov 12) | For Shara | `docs/screens/` |

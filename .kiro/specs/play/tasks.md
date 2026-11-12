@@ -13,7 +13,7 @@ One task at a time. Never "run all." Touch only the files a task names. Tick eac
 - [x] 8. `src/render/moments.js` and reduced-motion versions. _Req 6._
 - [x] 9. Practice. _Req 2.2._
 - [x] 10. `app.finishRound`, results screen and panels. Match mock screen 5 per the map. _Req 7._
-- [ ] 11. e2e: `e2e/play.spec.js` keyboard-only flows, axe on every new screen and dialog, no-scroll at three sizes, screenshot pairs. _Req 9._
-- [ ] 12. Run every check, refresh screenshots, compare each pair with its mock against the map yourself, and list any difference you can still see. `npm run deploy:preview`.
-- [ ] 13. `KIRO-NOTES.md`: Block 7 entry, every flag with a status; close the Block 7 deferrals.
-- [ ] 14. Gates: run the reviewer and the a11y-auditor, run every command yourself, recap both reports. Don't fix anything. Shara decides PASS.
+- [x] 11. e2e: `e2e/play.spec.js` keyboard-only flows, axe on every new screen and dialog, no-scroll at three sizes, screenshot pairs. _Req 9._
+- [x] 12. Run every check, refresh screenshots, compare each pair with its mock against the map yourself, and list any difference you can still see. `npm run deploy:preview`.
+- [x] 13. `KIRO-NOTES.md`: Block 7 entry, every flag with a status; close the Block 7 deferrals.
+- [x] 14. Gates: run the reviewer and the a11y-auditor, run every command yourself, recap both reports. Don't fix anything. Shara decides PASS.
