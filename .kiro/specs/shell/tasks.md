@@ -17,5 +17,5 @@ One task at a time. Never "run all." Touch only the files a task names. Tick eac
 - [x] 12. `scripts/check-build.js`, `.kiro/agents/a11y-auditor.md`, `playwright.config.js`, `e2e/` flows and axe. _Req 8.1, 8.2._
 - [x] 13. Run `npm run lint`, `npm test`, `npm run test:e2e`, `node scripts/check-fixtures.js`, `npm run build && node scripts/check-build.js`. Report all and line counts.
 - [x] 14. Preview deploy: Shara runs `vercel login`; Kiro links and deploys a preview. Report the preview URL. _Req 8.3._
-- [ ] 15. `KIRO-NOTES.md`: Block 6 entry, every flag with a status; close the five Block 6 deferrals.
+- [x] 15. `KIRO-NOTES.md`: Block 6 entry, every flag with a status; close the five Block 6 deferrals.
 - [ ] 16. Gates: run the reviewer and the a11y-auditor, run every command yourself, recap both reports. Don't fix anything. Shara opens the preview and decides PASS.

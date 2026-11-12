@@ -362,3 +362,50 @@ Three surprises, each logged with its status:
 | **Vercel put the first deployment of a new project in Production even without `--prod`.** Its rule: the first deployment of a project becomes production. So `https://dead-keys.vercel.app` is live and public (HTTP 200), though the deployment URL above is protected (HTTP 302 to sign-in) | **Open, needs Shara's decision.** What the public page serves: the Block 6 shell build, same asset hashes as the local build, no fixture ids in it (`check-build` clean before the deploy, and `round-001` is absent from the live JS), no secrets, no AI route, no analytics. Options: (a) leave it, (b) remove the production deployment so the alias goes dark, which also means the next deploy would again be a "first" one and need `--prod` handled deliberately, (c) turn on Deployment Protection for production in the dashboard if the plan allows | Vercel project `dead-keys` |
 
 Lesson for the write-up: the CLI said "Deployed to production" only after the fact. Before the first `vercel deploy` on a new project, create the project and set its production branch rules first, or expect the first deploy to be public. `vercel link --yes` also takes actions (Git connection, `.gitignore`, a token file) that the command name does not suggest.
+
+## Nov 12 2026: Block 6, shell screens, flags from tasks 6 to 13
+
+Built: router and notice bar, confirm dialog, title, menu, privacy card, keyboard heat map, progress, settings (with the data section), How we count, About, the build check, the `a11y-auditor` agent, and Playwright with axe. At task 13: `npm test` 480 of 480, `npm run test:e2e` 26 of 26 (axe: 0 violations on every screen), `npm run lint` clean (160 files), checker 42 of 42, `check-build` clean. No source file over 150 lines (largest `router.js`, 149); nothing over 250.
+
+| Flag | Status | Where |
+|---|---|---|
+| `screens.css` reached 277 lines, over the hard cap. The line-cap hook printed it; I had read only the last three lines of the `linecap` output and said all was well | Fixed: split into `screens.css` (shared), `title.css`, `menu.css`. Lesson: read the whole output, not the tail | `src/styles/` |
+| Phone notice wording | Fixed: approved word for word and tested against the design table | `phoneNotice.js` |
+| "Dismiss" button was unapproved chrome | Fixed: now "Got it" (approved) on the notice bar. The phone notice got its own "Got it" button that hides it for the visit and moves focus to the heading | `noticeBar.js`, `phoneNotice.js`, `router.js` |
+| Progress, settings, import, Clear, How we count and About copy | Fixed: every line approved by Shara, listed in the design copy table, tested word for word against it (no DRAFT rows left) | `design.md` |
+| Personal bests showed internal mode names and no date | Fixed: "Four corners: 30 WPM, set Nov 11" | `progress.js` |
+| Keycaps for shifted characters and accented letters | Deferred: shifted keys to Block 8 (capitals lesson), accents to Block 15 (Spanish pack). Their stats still count in the diagnosis | `keyboardLayout.js` |
+| Privacy card and How we count say Vercel Web Analytics counts visits, which is not wired until Block 16 | No action: they describe the shipped game and the preview is private (but see the Open production item above) | `privacy.js` |
+| `exportFailed` also used when the old-data download fails | No action: approved | `backup.js` |
+| Keyboard detection for the phone notice is best-effort | No action: approved. It only ever hides a notice | `phoneNotice.js` |
+| `fakeDom.js` and `appTestKit.js` live in `src/ui/`; `fakeDom` has no live `textContent`; `withFakeDocument` restores `document` at the first `await` | No action: approved. Async tests use a local helper | `src/ui/` |
+| Notice slot sits outside `<main>` | No action: axe, using its full default rule set, reported no "region" issue | `router.js` |
+| Axe cannot judge text over a gradient or single characters (one "needs review" color-contrast item per screen) | No action: the scanlines only darken the ground (token pairs already tested); the keycaps are covered by `keyboardContrast.test.js` | `src/styles/` |
+| Keycap pattern contrast | Fixed and Proven: the new test failed the shaky amber dots (45% strength gave 3.34:1); lowered to 30% and every band now passes 4.5:1 | `keyboard.css`, `keyboardContrast.test.js` |
+| e2e found: after Clear everything or an import, focus fell to the page body (the screen redraws and the buttons had no `data-focus-id`) | Fixed: buttons and the file input carry `data-focus-id`; an e2e step checks focus returns | `settingsData.js` |
+| e2e found: Escape from the menu after the first-run privacy card went back to the card | Fixed: `nav.replace()` and `ctx.replace()`; Continue uses it. Approved by Shara as Block 6's own bug | `nav.js`, `router.js`, `privacy.js` |
+| Proof that Clear asks before it clears | Proven: a throwaway mutation (call `clear()` while building the dialog) failed a test. My first run of the mutation was invalid because the test and the restore ran in parallel; redone in sequence, and the restored file's hash matched | `settingsData.test.js` |
+| Lock rule on "How we count" said nothing about Escape | Fixed: "Escape drops the lock. If nothing is locked, Escape pauses." (the layered rule decided Nov 11) | `howWeCountText.js` |
+| "How we count" leaves out rules whose code is not built | Deferred: each block adds its own rule and config number. Block 8: lesson pass (95%) and the speed-dip notice. Block 9: how drills are chosen. Block 12: the daily drill. Approved for the preview | `howWeCountText.js` |
+| Three hand-written numbers on that page: five characters to a word, at most three sentences, six practice keys (the engine hard-codes them) | Deferred to Block 7, the next time engine files are on the allowlist: move them into config and read them on the page | `howWeCountText.js`, `score.js`, `diagnose.js` |
+| About has no Tally feedback link (the form has no URL yet) | Deferred to Block 16: Shara will make the form | `about.js` |
+| `check-build.test.js` and `keyboardContrast.test.js` were not named in the tasks | No action: approved and added to the allowlist record | `docs/current-block.md` |
+| `a11y-auditor` has `read` and `shell` tools | Fixed: a permission rule allows only `npm run test:e2e` and `npm run build`, and the prompt says the same. **Known limit:** not tested at runtime, so whether other commands are blocked or only ask first is unverified | `.kiro/agents/a11y-auditor.md` |
+| Playwright wrote `test-results/` into the repo | Fixed: `outputDir` points into `node_modules/.cache` (already ignored); `.gitignore` untouched. Approved | `playwright.config.js` |
+| Chromium for Playwright 1.64.1 | No action: the matching builds were already installed by other projects, so nothing was downloaded | n/a |
+| Test files over the 150 soft cap: `settingsData.test.js` (206), `app.test.js`, `appSync.test.js`, `confirmDialog.test.js`, `menu.test.js`, `dom.test.js`, `contrast.test.js` | No action: each tests one source file and all are under 250. `scripts/check-fixtures.js` is 151 | n/a |
+| `npm audit`: 37 findings, all in the `vercel` CLI tree | Deferred (unchanged): upgrade on or after Nov 23 2026, then re-run `npm audit` | `package.json` |
+| Legacy `.woff` files in the build (about 95 KB extra) | Deferred (unchanged): Block 16 | `dist/` |
+| Vercel's first deploy went to production | Open: see the task 14 entry above; needs Shara's decision | Vercel project |
+
+### Block 4 deferrals closed in Block 6
+
+| Deferred from Block 4 | Status | Evidence |
+|---|---|---|
+| `window.localStorage` can throw: the caller must wrap the lookup | Fixed | `app.js` wraps the lookup in try/catch and passes `null`; `app.test.js` covers a throwing and a missing lookup |
+| `exportText` throws on invalid or oversize progress: the Settings click must handle it | Fixed | `backup.js` catches it and shows the `exportFailed` notice; tested; the Download backup button in Settings only announces on success |
+| `save` cannot refuse to write when `persist` is false: the caller must not call it, with a test | Fixed and Proven | `app.js` never saves while `persist` is false; with the guard removed three tests fail, restored hash matched |
+| Two tabs both save the whole Progress: consider the `storage` event | Fixed | `app.js` listens for it, stops saving and shows the `otherTab` notice with a Reload button; `appSync.test.js` and an e2e test with two pages |
+| Import failure reasons need Shara's word-for-word approval | Fixed | The five reasons are in the shell design copy table, approved, and tested word for word; the old table carries a "Superseded" pointer |
+
+Block 6 pattern worth writing up: the tests that mattered most were the ones that looked at the real browser. Unit tests had passed for the focus loss, the Escape path and the dot contrast, and the e2e run and a contrast calculation found all three.
