@@ -59,8 +59,37 @@ test("old data: a damaged save is kept and can be downloaded; with none, nothing
 
 test("a download that throws is a result, not a crash", () => {
   const { app } = boot({ initial: { [KEY]: "damaged{" }, downloadThrows: true });
+  app.dismissNotice();
   assert.deepEqual(app.downloadOldData(), { ok: false, reason: "download" });
+  assert.equal(app.state.notice, "exportFailed");
+  app.dismissNotice();
   assert.deepEqual(app.exportBackup(), { ok: false, reason: "export" });
+  assert.equal(app.state.notice, "exportFailed");
+  assert.equal(app.state.persist, true); // the save is untouched, as the notice says
+});
+
+test("a successful export or download shows no notice", () => {
+  const { app } = boot({ initial: { [KEY]: GOOD } });
+  assert.deepEqual(app.exportBackup(), { ok: true });
+  assert.equal(app.state.notice, null);
+});
+
+test("a newer save is remembered so the Clear confirm can warn, and forgotten once it is gone", () => {
+  const { app, data } = boot({ initial: { [KEY]: NEWER } });
+  assert.equal(app.state.newerSave, true);
+  app.dismissNotice(); // the flag outlives the notice
+  assert.equal(app.state.newerSave, true);
+  assert.equal(app.clear(), null);
+  assert.equal(data.has(KEY), false);
+  assert.equal(app.state.newerSave, false);
+  assert.equal(boot({ initial: { [KEY]: GOOD } }).app.state.newerSave, false);
+  assert.equal(boot().app.state.newerSave, false);
+});
+
+test("if the newer save could not be removed, it is still remembered", () => {
+  const { app } = boot({ initial: { [KEY]: NEWER }, throwOn: ["removeItem"] });
+  assert.equal(app.clear(), "blocked");
+  assert.equal(app.state.newerSave, true);
 });
 
 // "Save never when persist is false" (Block 4 deferral), for every way persist can be false.

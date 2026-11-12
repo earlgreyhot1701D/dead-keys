@@ -18,12 +18,14 @@ export function createApp(env) {
   let storage = null;
   let unlisten = null;
   const listeners = new Set();
+  // newerSave: a save from a newer version is sitting untouched in storage (the Clear confirm says so)
   let state = {
     progress: null,
     settings: normalizeSettings({}),
     notice: null,
     persist: false,
     oldData: false,
+    newerSave: false,
   };
 
   const set = (patch) => {
@@ -81,7 +83,8 @@ export function createApp(env) {
         storage = null;
       }
       const r = load(storage, env.now());
-      adopt(r.progress, { notice: r.notice, persist: r.persist, oldData: hasOldData() });
+      const newerSave = r.notice === "newer";
+      adopt(r.progress, { notice: r.notice, persist: r.persist, oldData: hasOldData(), newerSave });
       try {
         unlisten = env.listen?.(onStorageEvent) ?? null;
       } catch {
@@ -114,7 +117,13 @@ export function createApp(env) {
     clear() {
       backup.dropPreview();
       const r = clearSaved(storage, env.now());
-      adopt(r.progress, { notice: r.notice, persist: r.persist, oldData: hasOldData() });
+      // the newer save is gone only if the removal worked
+      adopt(r.progress, {
+        notice: r.notice,
+        persist: r.persist,
+        oldData: hasOldData(),
+        newerSave: r.persist ? false : state.newerSave,
+      });
       return r.notice;
     },
     reload() {

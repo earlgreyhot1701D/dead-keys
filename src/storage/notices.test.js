@@ -1,18 +1,19 @@
-// Notice wording: the six notices exist, each has a line and a button, and the wording is exactly
-// what was approved. The first five are in the storage requirements table; `otherTab` is in the
-// shell design's copy table. The test reads both, so the code and the docs cannot drift apart.
+// Notice wording: the seven notices exist, each has a line and a button, and the wording is exactly
+// what was approved. The first five are in the storage requirements table; `otherTab` and
+// `exportFailed` are in the shell design's copy table. The test reads both, so the code and the docs cannot drift apart.
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import { NOTICES } from "./notices.js";
 
 const FROM_STORAGE = ["blocked", "corrupt", "newer", "saveFailed", "importFailed"];
-const IDS = [...FROM_STORAGE, "otherTab"];
+const FROM_SHELL = ["otherTab", "exportFailed"];
+const IDS = [...FROM_STORAGE, ...FROM_SHELL];
 
-/** The `otherTab` row of the shell design's copy table: its line and its button. */
-function otherTabApproved() {
+/** A `notice` row of the shell design's copy table: its line and its button. */
+function shellApproved(id) {
   const text = readFileSync(new URL("../../.kiro/specs/shell/design.md", import.meta.url), "utf8");
-  const row = text.split("\n").find((l) => l.startsWith("| `otherTab` notice |"));
+  const row = text.split("\n").find((l) => l.startsWith(`| \`${id}\` notice |`));
   const cell = row
     .split("|")
     .slice(1, -1)
@@ -40,7 +41,7 @@ function approved() {
   );
 }
 
-test("there are exactly the six approved notice ids", () => {
+test("there are exactly the seven approved notice ids", () => {
   assert.deepEqual(Object.keys(NOTICES).sort(), [...IDS].sort());
 });
 
@@ -62,11 +63,18 @@ test("the first five match the approved table in the storage requirements, word 
   }
 });
 
-test("otherTab matches the shell design's copy table, word for word", () => {
-  const want = otherTabApproved();
-  assert.equal(NOTICES.otherTab.line, want.line);
-  assert.equal(NOTICES.otherTab.button, want.button);
-  assert.match(want.line, /^Your progress changed in another Dead Keys tab\./);
+test("the Block 6 notices match the shell design's copy table, word for word", () => {
+  for (const id of FROM_SHELL) {
+    const want = shellApproved(id);
+    assert.equal(NOTICES[id].line, want.line, `${id} line`);
+    assert.equal(NOTICES[id].button, want.button, `${id} button`);
+  }
+  assert.match(NOTICES.otherTab.line, /^Your progress changed in another Dead Keys tab\./);
+  assert.equal(
+    NOTICES.exportFailed.line,
+    "We couldn't make a backup file just now. Your progress is still saved in this browser. Try again in a moment.",
+  );
+  assert.equal(NOTICES.exportFailed.button, "Try again");
 });
 
 test("the lines are plain text: no markup characters, no blame words", () => {

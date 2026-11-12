@@ -315,3 +315,25 @@ Built: `schemas.js` without `node:fs`, then `notices`, `vet`, `migrate`, `store`
 | When the upgrade copy fails, `load` returns the upgraded progress in memory (not fresh) | No action: Req 2.3 returns fresh progress because the damaged text is unreadable, but here the upgraded data is good and the player can still see it. `persist` is false, so nothing is written over the original | `store.js` |
 
 Block 4 ends with 279 tests, lint clean (107 files), checker 42 of 42, nothing over 250. Tagged `block-4`.
+
+## Nov 11 2026: Block 6, shell screens, flags so far (tasks 1 to 5)
+
+Pinned, exact, installed with `--before=2026-10-29` so every package in the tree is at least two weeks old: `@fontsource/jetbrains-mono` 5.3.0, `@fontsource/roboto-condensed` 5.3.0, `@playwright/test` 1.64.1, `@axe-core/playwright` 4.14.0, `vercel` 65.5.0. Engines raised to `>=22.12` (axe needs it).
+
+| Flag | Status | Where |
+|---|---|---|
+| `npm audit` after the install: 37 vulnerabilities (1 critical, 21 high, 15 moderate), all inside the `vercel` CLI's own dependency tree (`tar`, `zod`, `undici`, `js-yaml`, `minimatch`, `path-to-regexp`, `smol-toml` and the `@vercel/*` packages). Nothing from Playwright, axe, the fonts, Vite, Biome or fast-check. `npm audit --omit=dev` finds 0 | Deferred, Nov 11: accepted for now. It is dev-only, nothing ships, and the CLI only reads our own files. On or after **Nov 23 2026**, upgrade `vercel` to 65.14.0 (or the newest fixed version that is at least two weeks old), then re-run `npm audit`. No `overrides` | `package.json` |
+| `npm ls` shows five "extraneous" packages (`@emnapi/wasi-threads`, `@napi-rs/wasm-runtime`, `@tybys/wasm-util`, `tslib`, `undici-types`) | No action: traced with `npm explain` and the lockfile. All are optional dev packages: the wasm fallback helpers for Vite's bundler (rolldown) and the oxc tools, plus type definitions | `package-lock.json` |
+| OFL license text did not ship in `dist/`, though design 1 says it does | Fixed: the two texts are in `public/licenses/` (byte-identical to the packages, checked by a test), served from our own origin. About credits both fonts with a link in task 11. `public/licenses/` added to the allowlist | `public/licenses/` |
+| The build ships the legacy `.woff` files as well as `.woff2` (about 95 KB more than needed) | Deferred to Block 16 | `dist/` |
+| Export failed with no approved notice | Fixed: new `exportFailed` notice, "We couldn't make a backup file just now. Your progress is still saved in this browser. Try again in a moment." Button "Try again". In the design copy table and tested word for word. Also shown when the old-data download is refused | `notices.js`, `backup.js` |
+| Clear would delete a newer-version save the app refused to touch | Fixed: the app remembers a newer save (`state.newerSave`) and the Clear confirm adds "This also deletes progress saved by a newer version of Dead Keys." (in the copy table; the dialog is task 6) | `app.js` |
+| Defaults the spec did not give: AI drills, finger colors | No action: approved. AI drills off (data leaves only on opt-in), finger colors on (PRD G7) | `settings.js` |
+| Settings clean-up on load: a bad field gets its default, unknown fields are dropped | No action: approved | `settings.js` |
+| The old reasons table in the storage requirements still showed the draft wording | Fixed: a pointer says it is superseded by the shell design's copy table | `.kiro/specs/storage/requirements.md` |
+| `appTestKit.js` sits in `src/ui/` | No action: approved, as long as nothing in the build imports it. It is imported only by `*.test.js`; `main.js` never reaches it | `src/ui/` |
+| The `!important` in the reduced-motion reset tripped Biome | Fixed: three `biome-ignore` comments with a reason | `base.css` |
+| My safety scan flagged the word `srcdoc` inside the list in `dom.js` that bans it | Fixed: the scan now looks for assigning `.srcdoc` | `safety.test.js` |
+| `app.js` reached 175 lines | Fixed: the backup actions moved to `backup.js` (129 and 81 lines) | `src/ui/` |
+| `dismissPrivacy` used `this`, which breaks if a screen passes the method on | Fixed: the app object refers to itself by name | `app.js` |
+| Proof the "nothing written while persist is false" guard works | Proven: with the guard removed, three tests fail (the example and the random-play property); the restored file's hash matched | `app.test.js`, `appSync.test.js` |

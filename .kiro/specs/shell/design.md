@@ -55,6 +55,8 @@ main.js -> app.js (state + storage actions + tab sync)
 | Where | Text |
 |---|---|
 | `otherTab` notice | Your progress changed in another Dead Keys tab. To keep both tabs from overwriting each other, this one has stopped saving. Reload to pick up the latest. Button: Reload |
+| `exportFailed` notice | We couldn't make a backup file just now. Your progress is still saved in this browser. Try again in a moment. Button: Try again |
+| Clear confirm, extra line when a newer save is present | This also deletes progress saved by a newer version of Dead Keys. |
 | Reason: not text | That isn't a backup file. |
 | Reason: over 2 MB | That file is too big to be a Dead Keys backup. The limit is 2 MB. |
 | Reason: not JSON | That file isn't a Dead Keys backup. It can't be read. |

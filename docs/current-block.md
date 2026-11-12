@@ -7,6 +7,7 @@ Blocks 1 to 4 passed Nov 11 (tags `block-1` to `block-4`). Block 5 (design and t
 ## Files this block may touch
 
 - `index.html`, `src/main.js`, `src/ui/**`, `src/styles/**`
+- `public/licenses/` (the two OFL font license texts, served from our own origin; added Nov 11)
 - `src/storage/settings.js` and its test; `src/storage/notices.js` and `src/storage/exportImport.js` (copy only, task 2) and their tests
 - `scripts/check-build.js`, `playwright.config.js`, `e2e/**`
 - `.kiro/agents/a11y-auditor.md`

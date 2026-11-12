@@ -88,6 +88,8 @@ THE SYSTEM SHALL reject a save where any of these is false (the Deferred-to-Bloc
 
 `save` also returns a `reason`, "invalid" or "storage", but it is a code for the app and for tests; the player sees only the `saveFailed` notice.
 
+**Superseded (Nov 11, Block 6):** Shara approved different wording for these reasons. The table above is the old draft; the approved wording is the copy table in `.kiro/specs/shell/design.md`, and `exportImport.test.js` checks the code against that table.
+
 ## Notice wording (approved)
 
 Every notice answers three things, in order: what happened (no blame), what is still safe, and one thing to do, with a button for it.

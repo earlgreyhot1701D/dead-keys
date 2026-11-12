@@ -31,12 +31,13 @@ export function summarize(p) {
 export function createBackup({ getState, set, adopt, persistNow, getStorage, env }) {
   let pending = null; // a checked import waiting for the player's yes
   return {
-    /** @returns {{ ok: boolean, reason?: string }} Never throws; a failure shows no notice (no approved copy yet). */
+    /** @returns {{ ok: boolean, reason?: string }} Never throws; a failure shows the exportFailed notice. */
     exportBackup() {
       try {
         env.download("dead-keys-backup.json", exportText(getState().progress));
         return { ok: true };
       } catch {
+        set({ notice: "exportFailed" });
         return { ok: false, reason: "export" };
       }
     },
@@ -66,7 +67,7 @@ export function createBackup({ getState, set, adopt, persistNow, getStorage, env
     dropPreview() {
       pending = null;
     },
-    /** The damaged copy, as a download. */
+    /** The damaged copy, as a download. A download the browser refuses shows exportFailed too. */
     downloadOldData() {
       const text = readCorrupt(getStorage());
       if (text === null) return { ok: false, reason: "none" };
@@ -74,6 +75,7 @@ export function createBackup({ getState, set, adopt, persistNow, getStorage, env
         env.download("dead-keys-old-data.json", text);
         return { ok: true };
       } catch {
+        set({ notice: "exportFailed" });
         return { ok: false, reason: "download" };
       }
     },

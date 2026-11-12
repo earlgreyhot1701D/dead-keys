@@ -3,7 +3,7 @@
 // id; the screen looks up the line and button here and draws them with textContent.
 
 /**
- * @typedef {"blocked"|"corrupt"|"newer"|"saveFailed"|"importFailed"|"otherTab"} NoticeId
+ * @typedef {"blocked"|"corrupt"|"newer"|"saveFailed"|"importFailed"|"otherTab"|"exportFailed"} NoticeId
  * @typedef {{ id: NoticeId, line: string, button: string }} Notice
  */
 
@@ -41,5 +41,10 @@ export const NOTICES = Object.freeze({
     "otherTab",
     "Your progress changed in another Dead Keys tab. To keep both tabs from overwriting each other, this one has stopped saving. Reload to pick up the latest.",
     "Reload",
+  ),
+  exportFailed: notice(
+    "exportFailed",
+    "We couldn't make a backup file just now. Your progress is still saved in this browser. Try again in a moment.",
+    "Try again",
   ),
 });

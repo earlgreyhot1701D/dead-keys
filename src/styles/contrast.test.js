@@ -101,6 +101,18 @@ test("reduced motion turns off the scanlines and every animation", () => {
   assert.match(baseCss, /@media \(prefers-reduced-motion: reduce\)[\s\S]*animation:\s*none/);
 });
 
+test("the OFL texts ship with the site: public/licenses holds the same text as each font package", () => {
+  const pairs = [
+    ["JetBrainsMono-OFL.txt", "jetbrains-mono"],
+    ["RobotoCondensed-OFL.txt", "roboto-condensed"],
+  ];
+  for (const [file, pkg] of pairs) {
+    const shipped = read(`../../public/licenses/${file}`);
+    assert.equal(shipped, read(`../../node_modules/@fontsource/${pkg}/LICENSE`), file);
+    assert.match(shipped, /SIL Open Font License, Version 1\.1/);
+  }
+});
+
 test("zero border radius, and focus is visible on every control", () => {
   assert.match(baseCss, /border-radius:\s*0/);
   assert.match(baseCss, /:focus-visible\s*\{[^}]*outline:\s*var\(--focus\)/);
