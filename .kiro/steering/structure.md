@@ -17,10 +17,10 @@ One file, one responsibility. Soft cap 150 lines, hard cap 250. Over 250, split 
 | `src/ui/` | app, router, fit, dom, download, `screens/` (one per screen), `components/` | Rendering only, `textContent` only. Only `app.js` calls storage. |
 | `src/styles/` | tokens, base, screens CSS | Locked look; self-hosted fonts |
 | `e2e/` | Playwright flows and axe | Runs against the built site |
-| `src/render/` | corners, falling, playback | The two mechanics and replay |
+| `src/render/` | loop, hud, falling, corners, moments, playback | The two mechanics and replay |
 | `src/a11y/` | announce, motion | Live region, reduced motion |
 | `src/audio/` | sounds | Synthesized sound sets |
-| `packs/` | general.json, spanish.json, README.md | Content and the pack format |
+| `packs/` | general.json, blocklist.txt, spanish.json, README.md | Content and the pack format |
 | `api/` | drill, limits, bedrock, validate | The AI route. `bedrock.js` is the only file that talks to AWS. |
 | `evals/` | golden.json, run.js | Golden set for AI drills |
 | `mcp/` | server.js | `run_golden_set`, `validate_pack` |
