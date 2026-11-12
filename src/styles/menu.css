@@ -1,0 +1,37 @@
+/* Menu */
+.menu-list {
+  display: grid;
+  gap: 0.5rem;
+  max-width: 32rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  text-align: left;
+}
+
+.menu-item[aria-disabled="true"] {
+  border-style: dashed;
+  color: var(--dim);
+  font-weight: 400;
+}
+
+.menu-note {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* Progress */
+.plain-list {
+  margin: 0.5rem 0 1rem;
+  padding-left: 1.2rem;
+  font-family: var(--mono);
+}

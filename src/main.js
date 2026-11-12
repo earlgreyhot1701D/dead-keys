@@ -7,6 +7,8 @@ import "@fontsource/roboto-condensed/latin-700.css";
 import "./styles/tokens.css";
 import "./styles/base.css";
 import "./styles/screens.css";
+import "./styles/title.css";
+import "./styles/menu.css";
 import "./styles/keyboard.css";
 import { createApp } from "./ui/app.js";
 import { downloadText } from "./ui/download.js";
