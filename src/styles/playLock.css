@@ -60,7 +60,13 @@
   color: var(--dim);
 }
 .fw-rest {
+  display: inline-block; /* so ::first-letter can mark the letter the word is waiting on */
   font-weight: 700;
+}
+/* After a wrong key, the letter the word is waiting on turns amber (Shara, Nov 12). */
+.is-wrong .fw-rest::first-letter {
+  color: var(--shaky);
+  text-decoration: underline;
 }
 .fw-lock-foot {
   display: flex;

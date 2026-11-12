@@ -49,7 +49,7 @@ export const CHOICES = Object.freeze([
 export const RULES =
   "The first three words are a slow warm-up and never cost a life. Lives are the arcade part. A word that lands costs one; a wrong key never does. Words speed up each wave, and you get one free continue. Running out just ends the round, and it's still saved. Want no pressure? Try Practice from the menu.";
 export const ESCAPE_LINE =
-  "Type a word's first letter to lock it, then finish it. Backspace or Escape lets go, so you can pick another word. Escape with nothing locked pauses.";
+  "Type a word's first letter to lock it, then finish it. A wrong key never moves you on: type the letter shown in amber. Escape lets go, so you can pick another word. Escape with nothing locked pauses.";
 export const SPEED_HINT =
   "This is where wave 1 starts. Each wave gets a little faster, and every third wave adds a word. You can change it any time.";
 /** The pace line under the slider: what the speed asks of the player at wave 1. */

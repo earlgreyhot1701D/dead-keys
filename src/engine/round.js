@@ -4,11 +4,9 @@ import { applyKey, pickLock } from "./match.js";
 import { createRng } from "./rng.js";
 import { spawn } from "./targets.js";
 
-/** Every mode a RoundResult can carry (contract/schemas/roundResult.json). */
+// Every mode a RoundResult can carry (contract/schemas/roundResult.json).
 export const MODES = ["corners", "falling", "practice", "lesson", "testout", "daily", "specwave"];
-
-/** An ignored input: the very same state, no events. */
-const same = (state) => ({ state, events: [] });
+const same = (state) => ({ state, events: [] }); // an ignored input: the very same state
 
 /** Spawn up to the wave's limit; the spawn gap stops it after one (tick brings the rest). */
 export function fill(state) {
@@ -66,11 +64,11 @@ export function createRound({ mode, mechanic, items, seed, speed }) {
 }
 
 /**
- * One key press. Ignored (same state, no events) when paused, held, ended, or `char` is not
- * one character, so Backspace and Shift never count (Req 2.7).
+ * One key press. Ignored when paused, held, ended, or `char` is not one character (Req 2.7).
+ * A miss marks the locked word `wrong` (waiting on that letter) until the right key. Logged at
+ * `activeMs`, so its time moves only with `tick`.
  * @param {object} state
  * @param {string} char
- * Logged at `activeMs`, so its time moves only with `tick`.
  * @returns {{ state: object, events: object[] }}
  */
 export function key(state, char) {
@@ -95,7 +93,7 @@ export function key(state, char) {
   const d = s.keyDeltas[r.expected] ?? { attempts: 0, misses: 0 };
   s = {
     ...s,
-    targets: s.targets.map((t) => (t.id === lock.id ? r.target : t)),
+    targets: s.targets.map((t) => (t.id === lock.id ? { ...r.target, wrong: !r.ok } : t)),
     keystrokes: [
       ...s.keystrokes,
       { t: Math.round(s.activeMs), expected: r.expected, typed: char, ok: r.ok },
@@ -142,7 +140,9 @@ export function pressEscape(state) {
     state: {
       ...state,
       lockId: null,
-      targets: state.targets.map((t) => (t.id === state.lockId ? { ...t, typed: 0 } : t)),
+      targets: state.targets.map((t) =>
+        t.id === state.lockId ? { ...t, typed: 0, wrong: false } : t,
+      ),
     },
     events: [{ type: "unlocked", targetId: state.lockId }],
   };

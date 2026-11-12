@@ -99,7 +99,7 @@ export function createCorners(el) {
       }
       const isLocked = t.id === state.lockId;
       if (isLocked) lock = t;
-      const cls = `cw${isLocked ? " is-locked" : ""}${inDanger(t) ? " is-danger" : ""}`;
+      const cls = `cw${isLocked ? " is-locked" : ""}${inDanger(t) ? " is-danger" : ""}${t.wrong ? " is-wrong" : ""}`;
       if (c.cls !== cls) c.node.setAttribute("class", cls);
       c.cls = cls;
       const near = nearness(t.progress);

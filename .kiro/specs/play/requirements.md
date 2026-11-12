@@ -45,7 +45,7 @@ This is the first block where Dead Keys plays. A player picks falling words or f
 
 ## Requirement 5: Pause, out of lives, end
 
-1. Escape SHALL follow the layered rule: drop the lock first; with nothing locked, pause.
+1. Escape SHALL follow the layered rule: drop the lock first; with nothing locked, pause. Backspace SHALL do nothing during a round. A wrong key SHALL never move a word on; the letter it waits on SHALL be marked amber until typed (Shara, Nov 12: strict but clear).
 2. Pause SHALL open a real dialog (native `<dialog>`, focus inside, Escape resumes) with "Resume" and "End round".
 3. WHEN the engine emits `outOfLives`, THE SYSTEM SHALL open a dialog that shows the round so far (WPM, words cleared, wave) and says plainly what Continue and End round each do, and that the round is saved either way.
 4. Ending the round, by choice or by running out, SHALL go to results.
@@ -61,13 +61,13 @@ This is the first block where Dead Keys plays. A player picks falling words or f
 1. WHEN a round ends, THE SYSTEM SHALL build the RoundResult with `toResult`, fold it into progress with `record` (local day from the player's clock), and save it through `app.js`, never when `persist` is false.
 2. Results SHALL match the mock's results screen, following the map: WPM, accuracy, cleared, time, mode, keystrokes, correct characters, missed keys (top 2), breaches, the word log (8 words, then "+ n more cleared"), a new-best line and milestone cards when there are any, and "+n WPM over last" only when the player is faster than their last round in the same mode.
 3. WHEN the free continue was used, results SHALL say so.
-4. Enter plays again (same mode), Escape goes to the main menu, and "View progress" opens progress. Share card is a "Not built yet" button.
+4. Enter plays again (same mode), Escape goes to the main menu, a "Main menu" button sits top right in the header (Shara, Nov 12), and "View progress" opens progress. Share card is a "Not built yet" button.
 5. Every stat on results SHALL carry a short plain explanation, always visible (no hover-only tooltips), and a link to How we count.
 
 ## Requirement 8: Block 7 deferrals
 
-1. Waves stop speeding up after wave 12 (`WAVE_SPEEDUP_MAX_WAVE` in config).
-2. A space with no word locked is ignored, not counted (engine, with a test).
+1. Waves stop speeding up after wave 10 (`WAVE_SPEEDUP_MAX_WAVE` in config; was 12, changed Nov 12 with the gentler curve).
+2. A space is ignored, not counted, whether or not a word is locked (engine, with a test; widened Nov 12).
 3. Characters per word (5), most diagnosis sentences (3) and most weak keys (6) move into config, and "How we count" reads them. A test ties the 3 and 6 to the contract's `maxItems`.
 4. The settings hint class `later` is renamed `later-hint`, so it no longer shares progress's `.later` styles.
 5. The engine gains `pause(state)`, which pauses without dropping the lock (for auto-pause).

@@ -473,3 +473,45 @@ Shara asked Claude to make this round's changes directly, then have Kiro review,
 | US English pack: SCOWL en_US list (ESDB, wordlist-diff commit 7f2f407, MIT-like notice) kept in `packs/source/`; the build stops on any word not in it | Done: removed labour, centre, der, des, les, pre, und, von | `build-pack.js`, `blocklist.txt` |
 | Tasks 7 to 10: mock elements the map does not name, handled the way the map handles their kin | Open: for Shara (corners SOUND dropped as on falling; core ghost kept as part of "the core"; results SOUND and drill badge dropped; "// BUFFER STATUS: DUMP_COMPLETE ::", "[ STAT_0n ]", "[ RECORD ]", "MILESTONE:", "INTERCEPTED WORDS / WORD LOG" kept as mock flavor; "[+3 WPM]" and "STREAK: 3" dropped; the accuracy panel titled "ACCURACY" without "VS PASS LINE"; "STATUS: NOT SAVING" when the round was not saved) | `results.js`, `resultsPanels.js`, `cornersHud.js` |
 | `round.js` passed 150 lines at task 10 | Split into `src/render/stage.js` (field, HUD, moments, word log), inside the `src/render/**` allowlist | `stage.js` |
+
+### Block 7: Playtest fixes (Claude, Nov 12; approved by Shara)
+
+Claude made these directly in the repo after Shara played the preview. Kiro ran the reviewer on the uncommitted diff only, then every check, then committed.
+
+| Fix | Where |
+|---|---|
+| Unique first letters on spawn: a new word never shares a first letter with one on screen; when none is free, spawn waits | `targets.js`, `targets.test.js` |
+| Backspace lets go of a locked word (Escape's first layer); unlocked, it does nothing and never pauses | `round.js` (screen), `round.test.js` |
+| Footer hints: "LOCKED: [BKSP] OR [ESC] LETS GO" while locked, "CAPS LOCK IS ON" read from each key press | `playHud.js`, `cornersHud.js`, `playStation.css` |
+| Starting speed on the picker and in Settings, with a WPM pace line ("About N WPM keeps up") | `pace.js`, `play.js`, `settings.js` |
+| New curve: 1× is about 30 WPM at wave 1, +5% per wave up to wave 10, +1 word on screen every 3 waves | `config.js`, `targets.js`, `pace.test.js` |
+| 3-word warm-up that never costs a life ("WARM-UP · n LEFT", then "Warm-up done. Wave 1.") | `lifecycle.js`, `round.js`, `announce.js`, `warmup.test.js` |
+| Spaces are never a miss, locked or not | `round.js` (engine), `deferrals.test.js` |
+| Scanlines moved behind content | `chrome.css` |
+
+Reviewer (read-only, ran without a shell, so it estimated line counts and could not see the diff): no High findings. Its Medium items, checked by Kiro afterwards:
+
+| Reviewer flagged | Status | Where |
+|---|---|---|
+| Changed files might be outside the allowlist | Checked: all 29 are on the allowlist; `title.js` is untouched | `git status` |
+| Line caps likely exceeded | Checked: `linecap.js` warns only on `check-fixtures.js` (151, from Block 1) | n/a |
+| Scanline z-index change could shift overlaps (wave banner vs locked card) | Open: e2e and axe pass; the screenshot pairs (task 12) will show it | `chrome.css` |
+| `requirements.md` drift: Req 8.1 says wave 12 (code: 10), Req 8.2 says a space "with no word locked" (code: any space), Req 4.3 does not mention Backspace letting go | Open: for Shara (spec text, not code) | `requirements.md` |
+| Unique first letters had no test | Checked: two tests exist (never shared; spawn waits when none is free) | `targets.test.js` |
+
+Second round of playtest fixes (Claude, Nov 12; approved by Shara): Backspace no longer lets go (typo habit dropped words); strict-but-clear misses with an amber letter; footer coaching; results Main menu button.
+
+| Reviewer flagged (second round) | Status | Where |
+|---|---|---|
+| Results "Main menu" button label has no copy-table row (it reuses chrome.js `MAIN_MENU`) | Open: for Shara | `design.md`, `results.js` |
+| `round.test.js` header still says "Backspace letting go" | Open: comment only | `round.test.js` |
+| Falling cards now cache `c.cls`; anything still reading `c.locked` / `c.danger`? | Checked: nothing does | `src/render/` |
+
+### v2 list (from the playtest)
+
+- Per-corner shields in Four corners.
+- A WPM-labelled speed slider.
+- Fair spawns for long words.
+- Highest wave on results.
+- Rename the HUD's SPEED to YOUR WPM.
+- Escape labels in the pause and out-of-lives dialogs.

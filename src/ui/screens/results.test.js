@@ -5,6 +5,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import { CHARS_PER_WORD } from "../../engine/config.js";
+import { MAIN_MENU } from "../components/chrome.js";
 import {
   BREAKDOWN_EXPLAIN,
   CONTINUE_USED,
@@ -184,4 +185,13 @@ test("Enter plays the same mode again, Escape goes to the menu; Share card is no
   const how = findAll(node, (n) => n.tag === "button" && textOf(n) === HOW_LINK)[0];
   how.click();
   assert.deepEqual(log.at(-1), ["go", "howWeCount"]);
+});
+
+test("a Main menu button sits in the header, top right, and opens the menu (Shara, Nov 12)", () => {
+  const { node, log } = draw();
+  const head = findAll(node, (n) => n.tag === "header")[0];
+  const b = findAll(head, (n) => n.tag === "button")[0];
+  assert.equal(textOf(b), MAIN_MENU);
+  b.listeners.click();
+  assert.deepEqual(log, [["go", "menu"]]);
 });

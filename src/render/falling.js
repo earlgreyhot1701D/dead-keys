@@ -102,15 +102,9 @@ export function createFalling(el) {
         layer.append(c.node);
       }
       const isLocked = t.id === state.lockId;
-      const isDanger = inDanger(t);
-      if (c.locked !== isLocked || c.danger !== isDanger) {
-        c.node.setAttribute(
-          "class",
-          `fw${isLocked ? " is-locked" : ""}${isDanger ? " is-danger" : ""}`,
-        );
-        c.locked = isLocked;
-        c.danger = isDanger;
-      }
+      const cls = `fw${isLocked ? " is-locked" : ""}${inDanger(t) ? " is-danger" : ""}${t.wrong ? " is-wrong" : ""}`;
+      if (c.cls !== cls) c.node.setAttribute("class", cls);
+      c.cls = cls;
       setText(c.parts.tag, dangerMark(t));
       const { typed, rest } = lockParts(t);
       setText(c.parts.typed, typed);

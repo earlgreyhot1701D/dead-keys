@@ -24,6 +24,9 @@
   font-weight: 700;
   letter-spacing: 0.18em;
 }
+.rs-head > .btn {
+  margin-left: auto;
+}
 .rs-head .pill {
   padding: 2px 8px;
   border: 1px solid var(--line);

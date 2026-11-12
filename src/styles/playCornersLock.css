@@ -79,7 +79,13 @@
   color: var(--ink);
 }
 .cw-rest {
+  display: inline-block; /* so ::first-letter can mark the letter the word is waiting on */
   color: var(--soft);
+}
+/* After a wrong key, the letter the word is waiting on turns amber (Shara, Nov 12). */
+.is-wrong .cw-rest::first-letter {
+  color: var(--shaky);
+  text-decoration: underline;
 }
 .cw-vector {
   font-size: 13px;

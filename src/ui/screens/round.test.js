@@ -4,7 +4,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
-import { CAPS_HINT, LET_GO_HINT, PRACTICE_NOTE } from "../../render/playHud.js";
+import { CAPS_HINT, COACH, PRACTICE_NOTE, WRONG_HINT } from "../../render/playHud.js";
 import { findAll, makeFakeDoc, textOf } from "../fakeDom.js";
 import { chooseRound } from "./play.js";
 import { isTyping, outOfLivesLines, PAUSE, practiceScreen, roundScreen } from "./round.js";
@@ -126,21 +126,27 @@ test("a typed key locks a word; Escape drops the lock, then pauses", () => {
   }
 });
 
-test("Backspace lets go of a locked word and shows the hint only while locked; unlocked, it never pauses", () => {
+test("strict but clear: a wrong key marks the word, Backspace does nothing, Escape lets go", () => {
   const r = start();
   const hint = () => findAll(r.node, (n) => n.attrs?.class === "foot-hint")[0].textContent ?? "";
   try {
     r.frame(16);
+    assert.equal(hint(), COACH.pick); // the warm-up coaches every step
     const first = textOf(findAll(r.node, (n) => n.attrs?.class === "fw-word")[0]);
-    assert.equal(hint(), "");
     r.press(first[0]);
     r.frame(16);
-    assert.equal(hint(), LET_GO_HINT);
+    assert.equal(hint(), COACH.finish);
+    r.press("~"); // never in a word: a miss
+    r.frame(16);
+    assert.equal(hint(), WRONG_HINT);
+    assert.ok(findAll(r.node, (n) => /\bis-wrong\b/.test(n.attrs?.class ?? "")).length === 1);
     assert.equal(r.press("Backspace"), true);
     r.frame(16);
+    assert.notEqual(lockWord(r.node), "", "Backspace keeps the word");
+    r.press("Escape");
+    r.frame(16);
     assert.equal(lockWord(r.node), "");
-    assert.equal(hint(), "");
-    assert.equal(r.press("Backspace"), false);
+    assert.equal(hint(), COACH.pick);
     assert.equal(r.doc.querySelector("dialog[open]"), null);
   } finally {
     cleanup();
@@ -156,7 +162,7 @@ test("Caps Lock on shows its hint; off hides it. A space is taken and never a mi
     roundScreen.onKey({}, caps(true));
     assert.equal(hint(), CAPS_HINT);
     roundScreen.onKey({}, caps(false));
-    assert.equal(hint(), "");
+    assert.equal(hint(), COACH.pick);
     assert.equal(r.press(" "), true);
     assert.equal(r.doc.querySelector("dialog[open]"), null);
   } finally {

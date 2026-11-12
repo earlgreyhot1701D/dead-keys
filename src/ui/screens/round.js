@@ -123,13 +123,9 @@ export const roundScreen = {
       live.step(pressEscape(live.state));
       return true;
     }
-    // Backspace lets go of a locked word (the same engine call as Escape), so a player who
-    // locked the wrong word can start over. With nothing locked it does nothing: it never pauses.
-    if (e.key === "Backspace") {
-      if (live.state.lockId === null || live.state.paused) return false;
-      live.step(pressEscape(live.state));
-      return true;
-    }
+    // Backspace does nothing in a round: misses never move a word on, so there is nothing to
+    // delete, and the habit of fixing a typo must not throw a word away (Shara, Nov 12).
+    if (e.key === "Backspace") return true;
     if (!isTyping(e)) return false;
     live.step(key(live.state, e.key));
     return true;

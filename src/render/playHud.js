@@ -55,11 +55,27 @@ export function playFooter(el, { onPause, persist, speed }) {
   };
 }
 
-/** The footer hint: how to let go of a locked word, or nothing when no word is locked. */
-export const LET_GO_HINT = "LOCKED: [BKSP] OR [ESC] LETS GO";
+/** The footer hint lines (play copy table, Shara, Nov 12). */
+export const LET_GO_HINT = "LOCKED: [ESC] LETS GO";
+export const WRONG_HINT = "TYPE THE AMBER LETTER. [ESC] LETS GO";
+export const COACH = Object.freeze({
+  pick: "TYPE A WORD'S FIRST LETTER TO LOCK IT",
+  finish: "FINISH IT BEFORE IT LANDS. [ESC] LETS GO",
+});
 /** Shown while Caps Lock is on: the words are lowercase, so every key would miss. */
 export const CAPS_HINT = "CAPS LOCK IS ON";
-export const lockHint = (state) => (state.lockId === null ? "" : LET_GO_HINT);
+
+/**
+ * What the footer says: during the warm-up and in Practice it coaches every step; later only how
+ * to let go, and which letter a word waits on after a wrong key.
+ */
+export function lockHint(state) {
+  const t = state.targets.find((x) => x.id === state.lockId);
+  const coach = state.warmup > 0 || state.mode === "practice";
+  if (t?.wrong) return WRONG_HINT;
+  if (t) return coach ? COACH.finish : LET_GO_HINT;
+  return coach ? COACH.pick : "";
+}
 
 /**
  * @param {Function} el

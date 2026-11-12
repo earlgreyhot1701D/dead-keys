@@ -13,7 +13,7 @@ Blocks 1 to 4 and 6 passed Nov 11 (tags `block-1` to `block-4`, `block-6`). Bloc
 - `packs/**`, `scripts/build-pack.js`
 - `biome.json` (one change, Nov 12: lint `packs/**/*.js`)
 - `src/engine/config.js`, `targets.js`, `round.js`, `lifecycle.js`, `score.js`, `diagnose.js`, `progressConfig.js` and their tests (Req 8 only)
-- `src/engine/pace.js` and its test, `src/engine/warmup.test.js` (new, Shara, Nov 12: the picker's WPM estimate, the warm-up)
+- `src/engine/pace.js` and its test, `src/engine/warmup.test.js`, `src/engine/wrongKey.test.js`, `src/render/playHud.test.js` (new, Shara, Nov 12: the picker's WPM estimate, the warm-up)
 - `src/render/**`, `src/a11y/**`
 - `src/ui/screens/play.js`, `round.js`, `results.js`, `howWeCountText.js`, `settings.js`; `src/ui/components/resultsPanels.js`; `src/ui/app.js`; `src/ui/roundRecord.js` (finishRound, like backup.js; Shara, Nov 12); `src/main.js`; and their tests
 - `src/styles/**`

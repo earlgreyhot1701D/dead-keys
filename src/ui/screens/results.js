@@ -2,7 +2,7 @@
 // `showResults` before it opens this screen (the router has no parameters). Enter plays the same
 // mode again, Escape goes to the main menu, View progress opens progress. Dropped per the map:
 // SESSION, PASS LINE, the drill label, the coach note, the feedback link (and SOUND, as on play).
-import { hints, NOT_BUILT, scanlines, sysLine } from "../components/chrome.js";
+import { hints, menuButton, NOT_BUILT, scanlines, sysLine } from "../components/chrome.js";
 import { breakdownPanel, milestonesPanel, statTiles } from "../components/resultsPanels.js";
 import { el } from "../dom.js";
 import { chooseRound } from "./play.js";
@@ -86,6 +86,7 @@ export const resultsScreen = {
       el("header", { class: "rs-head" }, [
         el("span", { class: "rs-brand" }, "DEAD KEYS // TERMINAL 84"),
         el("span", { class: "pill" }, "NODE: 0x84-RESULTS"),
+        menuButton(ctx), // top right, like every page (Shara, Nov 12)
       ]),
       el("div", { class: "rs-body" }, [
         el("section", { class: "rs-title" }, [
