@@ -421,3 +421,22 @@ Both reviewers recommended FAIL (title-screen keyboard bug and a set of a11y and
 | How to stop it happening again | Fixed: every deploy uses `--environment=preview` (CLI 65.5.0; `--prod` is shorthand for `--environment=production`) through `npm run deploy:preview`, which runs `check:build` first. Vercel's community forum notes the first-deploy rule applies even with a preview target, so the flag alone would not have saved the first one; now that a production deployment exists, previews stay previews. Nothing goes to production without Shara's word | `package.json` |
 
 Lesson for the write-up: a green test suite can only check what the spec asked for. "Looks like the mock" was never written down, so nothing tested it, and two reviewers who read the spec didn't raise it either.
+
+## Nov 12 2026: fix round, screens rebuilt to the mock, two preview deploys
+
+| Deploy | Command | Result |
+|---|---|---|
+| a11y and reviewer fixes (`3da3ce7`) | `npm run deploy:preview` | Preview, https://dead-keys-gpzw3v7f3-earlgreyhot1701ds-projects.vercel.app. `vercel ls` lists it as Preview; production untouched |
+| Screens rebuilt to the mock (`dc822b9`) | `npm run deploy:preview` | Preview, https://dead-keys-oforax22n-earlgreyhot1701ds-projects.vercel.app. Listed as Preview; production (`dead-keys.vercel.app`, Nov 11 build) untouched |
+
+Both ran `check:build` first (clean: 13 files, 216 fixture ids, 32 sample strings).
+
+| Flag | Status | Where |
+|---|---|---|
+| Title, menu and progress did not look like the locked mock | Fixed: rebuilt from the mock's markup, value for value; settings, privacy, How we count and About restyled in the same panel system. Screenshot pairs in `docs/screens/`, compared by Kiro, differences listed in the report | `src/ui/`, `src/styles/` |
+| Mock items that were not true today | Fixed by Shara's Nov 12 calls: demo controls, sound button, "first run" labels, SHIELD, CAPACITOR, word codes, KEY_ codes, SESSION, ROOT_OP, "+4 THIS WEEK", "LAST: 34", "BEST: 7", "LEFT PINKY" left out; each returns in the block that makes it true | `title.js`, `menu.js`, `progressPanels.js` |
+| The mock's 55% shaky dots fail 4.5:1 for the cap's letter | Fixed and Proven: 45% in the build; `keyboardContrast.test.js` checks every band's letter on its fill and its brightest pattern pixel, and a test shows 55% fails | `heatBands.css` |
+| The mock's chart and icons are SVG; `dom.js` bans svg | Fixed: a separate safe builder (`svg.js`: svg, path, rect, circle; fixed attributes; every value checked), with tests that refuse script, text, links, events and bad values | `src/ui/svg.js` |
+| The title strip sat outside any landmark (axe "region", moderate) | Fixed: both bars sit in the page's `<header>` | `chrome.js` |
+| New CSS reached 307 lines in one file | Fixed: split by concern, every stylesheet under 150 | `src/styles/` |
+| The mock's chart labels are SVG text, not allowed in the builder | Known limit: gridline labels are HTML text placed over the chart; x labels are OLDEST and LATEST instead of every few rounds | `speedChart.js` |
