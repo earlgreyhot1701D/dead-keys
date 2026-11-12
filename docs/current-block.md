@@ -1,29 +1,28 @@
 # Current block
 
-**Block 4: storage** (PRD G9, backlog item 4, size D). Spec: `.kiro/specs/storage/`.
+**Block 6: shell screens** (PRD G10, G11, backlog item 6, size W). Spec: `.kiro/specs/shell/`.
 
-Blocks 1 to 3 passed Nov 11 (tags `block-1`, `block-2`, `block-3`). The contract is frozen: no new shapes.
+Blocks 1 to 4 passed Nov 11 (tags `block-1` to `block-4`). Block 5 (design and tokens) was locked Nov 11 in `docs/design-brief.md`. The contract is frozen.
 
 ## Files this block may touch
 
-- `contract/schemas.js` (browser switch only, design decision 1; spike passed Nov 11, so plan B is not needed)
-- `contract/contract.test.js` (one test that the `FILES` list matches `contract/schemas/`, added Nov 11)
-- `package.json` (the `engines` field only, added Nov 11)
-- `src/storage/notices.js`, `vet.js`, `migrate.js`, `store.js`, `saveClear.js`, `exportImport.js`, and their `*.test.js` (`saveClear.js` was split from `store.js` at the line cap, Nov 11; `storeHelpers.test.js` holds the `freshProgress` and `readCorrupt` tests)
-- `src/engine/record.js`, `src/engine/record.test.js`
-- `.kiro/specs/storage/*`
-- `KIRO-NOTES.md`
+- `index.html`, `src/main.js`, `src/ui/**`, `src/styles/**`
+- `src/storage/settings.js` and its test; `src/storage/notices.js` and `src/storage/exportImport.js` (copy only, task 2) and their tests
+- `scripts/check-build.js`, `playwright.config.js`, `e2e/**`
+- `.kiro/agents/a11y-auditor.md`
+- `package.json`, `package-lock.json` (the pinned devDependencies from task 1 and the `test:e2e`, `check:build`, deploy scripts)
+- `.kiro/specs/shell/*`, `KIRO-NOTES.md`
 
 Anything else: stop and ask Shara.
 
 ## Rigor tier
 
-Full. Every input checked, every failure path handled.
+Working for layout. Full for settings, export, import, clear and anything else that touches saved data.
 
 ## PASS line
 
-Every requirement in `.kiro/specs/storage/requirements.md` has a test. `npm test` is green. `npm run lint` is clean. `node scripts/check-fixtures.js` passes. Source files under 150 lines without Shara's OK; nothing over 250. The reviewer has run and Shara has read its report.
+Every requirement in `.kiro/specs/shell/requirements.md` has a test or an e2e flow. `npm test`, `npm run test:e2e`, `npm run lint`, `node scripts/check-fixtures.js` and the build check all pass. axe reports no serious or critical issues. Source files under 150 lines without Shara's OK; nothing over 250. The reviewer and the a11y-auditor have run. Shara has opened the preview link and read both reports.
 
 ## Hooks alive
 
-`line-cap` (permanent), `block-scope` (permanent). `fixture-check` retired at the end of Block 3.
+`line-cap` (permanent), `block-scope` (permanent).

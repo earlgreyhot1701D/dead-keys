@@ -11,10 +11,12 @@ One file, one responsibility. Soft cap 150 lines, hard cap 250. Over 250, split 
 | `contract/` | `schemas/*.json`, `types.js`, `schemas.js`, `validate.js`, `rules.js` | Data shapes only (PRD G4) |
 | `fixtures/` | `normal/`, `ugly/` | Sample data both tracks build against |
 | `src/engine/` | config, rng, score, match, targets, round, lifecycle, result, progressConfig, keystats, dayStreak, heatmap, diagnose, record, sample, daily, ghost, milestones, recommend | Pure functions. No DOM, no storage, no network. |
-| `src/storage/` | store, saveClear, migrate, exportImport, vet, notices | localStorage only, every call in try/catch |
+| `src/storage/` | store, saveClear, migrate, exportImport, vet, notices, settings | localStorage only, every call in try/catch |
 | `src/packs/` | load, validate | Validator also runs as a CLI |
 | `src/net/` | drillClient | The only fetch. Timeout, try/catch, built-in fallback |
-| `src/ui/` | one file per screen or component | Rendering only, `textContent` only |
+| `src/ui/` | app, router, dom, download, `screens/` (one per screen), `components/` | Rendering only, `textContent` only. Only `app.js` calls storage. |
+| `src/styles/` | tokens, base, screens CSS | Locked look; self-hosted fonts |
+| `e2e/` | Playwright flows and axe | Runs against the built site |
 | `src/render/` | corners, falling, playback | The two mechanics and replay |
 | `src/a11y/` | announce, motion | Live region, reduced motion |
 | `src/audio/` | sounds | Synthesized sound sets |
