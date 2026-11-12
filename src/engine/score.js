@@ -1,4 +1,8 @@
 // WPM and accuracy (PRD G5). Pure. Bad input is a programmer error and throws (design decision 6).
+import { CHARS_PER_WORD } from "./config.js";
+
+/** Words per minute for one correct character per millisecond: 60000 / CHARS_PER_WORD. */
+const WPM_PER_CHAR_MS = 60000 / CHARS_PER_WORD;
 
 /** Throw unless n is a finite number of at least 0. */
 function check(name, n) {
@@ -8,7 +12,7 @@ function check(name, n) {
 }
 
 /**
- * Words per minute: (correct characters / 5) / minutes. 0 when no time has passed.
+ * Words per minute: (correct characters / CHARS_PER_WORD) / minutes. 0 when no time has passed.
  * @param {number} correctChars Keystrokes that matched.
  * @param {number} durationMs Active play time in milliseconds, paused time left out.
  * @returns {number} At least 0.
@@ -19,7 +23,7 @@ export function wpm(correctChars, durationMs) {
   check("durationMs", durationMs);
   if (durationMs === 0) return 0;
   // (chars / 5) / (ms / 60000), rearranged: a tiny ms must not underflow to 0 and give 0 / 0.
-  const w = (correctChars * 12000) / durationMs;
+  const w = (correctChars * WPM_PER_CHAR_MS) / durationMs;
   return Number.isFinite(w) ? w : 0; // overflow only with absurd inputs; real rounds never get here
 }
 

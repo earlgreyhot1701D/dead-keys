@@ -6,8 +6,13 @@ export const LIVES_MAX = 5;
 /** Targets cleared in one wave before the next wave starts. */
 export const WAVE_SIZE = 10;
 
-/** Each wave, travel is this many times faster than the wave before. */
+/** Each wave, travel is this many times faster than the wave before... */
 export const WAVE_SPEEDUP = 1.1;
+/** ...up to this wave; later waves keep its speed (Block 7: wave 20 was about 1.3 s a word). */
+export const WAVE_SPEEDUP_MAX_WAVE = 12;
+
+/** Characters that count as one word for WPM (PRD G5). */
+export const CHARS_PER_WORD = 5;
 
 /** Lowest and highest value of the speed slider. Default is 1. */
 export const SPEED_MIN = 0.5;

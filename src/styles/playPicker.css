@@ -1,0 +1,38 @@
+/* Play: the mode picker. No mock screen of its own; built from the Block 6 page system. */
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+.picker-line {
+  margin: 0;
+  font-size: 16px;
+  color: var(--soft);
+}
+.picker-choices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.mode-choice {
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px;
+}
+.mode-how {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--soft);
+}
+.picker-rules p + p {
+  margin-top: 6px;
+}
+@media (max-width: 1099px) {
+  .picker-choices {
+    grid-template-columns: 1fr;
+  }
+}

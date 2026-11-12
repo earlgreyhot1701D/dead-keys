@@ -78,6 +78,8 @@ export function key(state, char) {
   const events = [];
   let s = state;
   let lock = s.targets.find((t) => t.id === s.lockId);
+  // A space with no word locked is ignored, not counted: words have no spaces (Block 7, Req 8.2).
+  if (!lock && char === " ") return same(state);
   if (!lock) {
     lock = pickLock(s.targets, char);
     // Nothing expects this key: it counts as a keystroke but there is no expected key to blame.

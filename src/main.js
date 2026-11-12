@@ -22,6 +22,11 @@ import "./styles/progress.css";
 import "./styles/progressRight.css";
 import "./styles/progressWeak.css";
 import "./styles/pages.css";
+import "./styles/playPicker.css";
+import "./styles/playHud.css";
+import "./styles/playStation.css";
+import "./styles/playFalling.css";
+import "./styles/playLock.css";
 import { createApp } from "./ui/app.js";
 import { downloadText } from "./ui/download.js";
 import { mountFit } from "./ui/fit.js";
@@ -29,8 +34,10 @@ import { mountRouter } from "./ui/router.js";
 import { aboutScreen } from "./ui/screens/about.js";
 import { howWeCountScreen } from "./ui/screens/howWeCount.js";
 import { menuScreen } from "./ui/screens/menu.js";
+import { playScreen } from "./ui/screens/play.js";
 import { privacyScreen } from "./ui/screens/privacy.js";
 import { progressScreen } from "./ui/screens/progress.js";
+import { roundScreen } from "./ui/screens/round.js";
 import { settingsScreen } from "./ui/screens/settings.js";
 import { titleScreen } from "./ui/screens/title.js";
 
@@ -57,6 +64,8 @@ const screens = Object.fromEntries(
     settingsScreen,
     howWeCountScreen,
     aboutScreen,
+    playScreen,
+    roundScreen,
   ].map((s) => [s.id, s]),
 );
 mountRouter({

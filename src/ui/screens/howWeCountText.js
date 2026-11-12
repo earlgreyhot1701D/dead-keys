@@ -2,11 +2,11 @@
 // cannot disagree (shell Req 7.1). Pure: no DOM, no storage. `buildSections` takes the config as
 // an argument, so a test can change a number and see the page change with it.
 //
-// Numbers that are not in any config file, and so are written here: five characters to a word
-// (score.js divides by 5 inline), three sentences and six practice keys (diagnose.js slices them
-// inline). Rules whose code is not built yet (lesson pass, drills, daily drill, the speed dip
-// notice) are left out until their block adds both the config and the text.
+// Every number comes from config, including characters per word and the most sentences and weak
+// keys (Block 7). Rules whose code is not built yet (lesson pass, drills, daily drill, the speed
+// dip notice) are left out until their block adds both the config and the text.
 
+import { CHARS_PER_WORD } from "../../engine/config.js";
 import {
   BANDS,
   BEST_ACCURACY,
@@ -16,6 +16,8 @@ import {
   GROUP_RATIO,
   GROUPS,
   HIGH_RATIO,
+  MAX_SENTENCES,
+  MAX_WEAK_KEYS,
   MIN_KEY_ATTEMPTS,
   STREAK_ACCURACY,
   STREAK_DAYS,
@@ -37,6 +39,9 @@ export const CONFIG = Object.freeze({
   HIGH_RATIO,
   MAX_ROUNDS,
   MIN_KEY_ATTEMPTS,
+  CHARS_PER_WORD,
+  MAX_SENTENCES,
+  MAX_WEAK_KEYS,
   STREAK_ACCURACY,
   STREAK_DAYS,
   STREAK_ROUNDS,
@@ -44,6 +49,21 @@ export const CONFIG = Object.freeze({
 });
 
 const pct = (x) => `${Math.round(x * 100)}%`;
+const WORDS = [
+  "zero",
+  "one",
+  "two",
+  "three",
+  "four",
+  "five",
+  "six",
+  "seven",
+  "eight",
+  "nine",
+  "ten",
+];
+/** Small counts read as words ("five"), as the approved text has them; bigger ones as digits. */
+export const inWords = (n) => WORDS[n] ?? String(n);
 
 /** One line per heat band, worst first, with its glyph and where it starts. */
 function bandLines(bands) {
@@ -69,7 +89,7 @@ export function buildSections(c = CONFIG) {
       id: "speed",
       heading: "Speed",
       paragraphs: [
-        "Words per minute is the characters you typed correctly, divided by five, divided by the minutes you played. Time spent paused is left out.",
+        `Words per minute is the characters you typed correctly, divided by ${inWords(c.CHARS_PER_WORD)}, divided by the minutes you played. Time spent paused is left out.`,
       ],
     },
     {
@@ -101,8 +121,8 @@ export function buildSections(c = CONFIG) {
       heading: "What we notice",
       paragraphs: [
         `We say nothing about your typing until you have made ${c.ENOUGH_DATA} keystrokes. After that we look at groups of keys: ${groups}.`,
-        `A group is mentioned when you have at least ${c.GROUP_MIN_ATTEMPTS} attempts on it, it misses at least ${c.GROUP_RATIO} times as often as you do overall, and its own miss rate is at least ${pct(c.GROUP_FLOOR)}. At ${c.HIGH_RATIO} times or more we say so. You see at most three sentences, worst first.`,
-        `Keys to practice are up to six keys with at least ${c.MIN_KEY_ATTEMPTS} attempts and at least one miss, worst first.`,
+        `A group is mentioned when you have at least ${c.GROUP_MIN_ATTEMPTS} attempts on it, it misses at least ${c.GROUP_RATIO} times as often as you do overall, and its own miss rate is at least ${pct(c.GROUP_FLOOR)}. At ${c.HIGH_RATIO} times or more we say so. You see at most ${inWords(c.MAX_SENTENCES)} sentences, worst first.`,
+        `Keys to practice are up to ${inWords(c.MAX_WEAK_KEYS)} keys with at least ${c.MIN_KEY_ATTEMPTS} attempts and at least one miss, worst first.`,
       ],
     },
     {

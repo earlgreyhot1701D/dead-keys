@@ -9,6 +9,8 @@ import {
   GROUP_RATIO,
   GROUPS,
   HIGH_RATIO,
+  MAX_SENTENCES,
+  MAX_WEAK_KEYS,
   MIN_KEY_ATTEMPTS,
 } from "./progressConfig.js";
 
@@ -61,7 +63,7 @@ export function diagnose(keys) {
   const weakKeys = keys
     .filter((k) => k.attempts >= MIN_KEY_ATTEMPTS && k.misses > 0)
     .sort(worse)
-    .slice(0, 6)
+    .slice(0, MAX_WEAK_KEYS)
     .map((k) => k.key);
   const sufficientData = total.attempts >= ENOUGH_DATA;
   if (!sufficientData) return { sentences: [], weakKeys, sufficientData };
@@ -81,7 +83,7 @@ export function diagnose(keys) {
         x.misses / x.attempts >= GROUP_FLOOR,
     )
     .sort(worse)
-    .slice(0, 3)
+    .slice(0, MAX_SENTENCES)
     .map((x) => {
       const high = x.misses * total.attempts >= HIGH_RATIO * total.misses * x.attempts;
       const severity = high ? "high" : "medium";

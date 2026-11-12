@@ -70,6 +70,17 @@ export function endRound(state) {
 }
 
 /**
+ * Pause without dropping the lock (auto-pause when the tab is hidden or the window loses focus;
+ * Escape pauses only with nothing locked). Ignored if already paused, held or ended.
+ * @param {object} state
+ * @returns {{ state: object, events: object[] }}
+ */
+export function pause(state) {
+  if (state.paused || state.held || state.ended) return same(state);
+  return { state: { ...state, paused: true }, events: [{ type: "paused" }] };
+}
+
+/**
  * Leave pause (the pause dialog button; Escape does the same). Ignored if not paused.
  * @param {object} state
  * @returns {{ state: object, events: object[] }}

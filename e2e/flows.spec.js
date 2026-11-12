@@ -25,7 +25,7 @@ test("the menu works by keyboard alone, with a visible focus ring", async ({ pag
   await page.keyboard.press("End");
   await expect(page.getByRole("button", { name: "About", exact: true })).toBeFocused();
   await page.keyboard.press("Home");
-  await expect(page.getByRole("button", { name: /^Play/ })).toBeFocused(); // its name ends "Not built yet"
+  await expect(page.getByRole("button", { name: /^Play/ })).toBeFocused();
   await page.getByRole("button", { name: "Settings", exact: true }).focus();
   await page.keyboard.press("Enter");
   await expect(page.getByRole("heading", { level: 1, name: "Settings" })).toBeFocused();
@@ -35,10 +35,10 @@ test("the menu works by keyboard alone, with a visible focus ring", async ({ pag
 
 test("a screen that is not built says so and does not open", async ({ page }) => {
   await toMenu(page);
-  const play = page.getByRole("button", { name: /^Play/ });
-  await expect(play).toHaveAttribute("aria-disabled", "true");
-  await expect(play).toContainText("Not built yet");
-  await play.click({ force: true }); // aria-disabled, not disabled: it stays focusable on purpose
+  const lessons = page.getByRole("button", { name: /^Lessons/ }); // Play is built from Block 7
+  await expect(lessons).toHaveAttribute("aria-disabled", "true");
+  await expect(lessons).toContainText("Not built yet");
+  await lessons.click({ force: true }); // aria-disabled, not disabled: it stays focusable on purpose
   await expect(page.getByRole("heading", { level: 1, name: "Main menu" })).toBeVisible();
 });
 

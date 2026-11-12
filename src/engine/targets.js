@@ -7,6 +7,7 @@ import {
   TARGETS_MAX,
   TARGETS_START,
   WAVE_SPEEDUP,
+  WAVE_SPEEDUP_MAX_WAVE,
 } from "./config.js";
 import { createRng } from "./rng.js";
 
@@ -83,7 +84,8 @@ export function spawn(state) {
 
 /**
  * Move every target toward danger by `dtMs`. A target takes
- * BASE_TRAVEL_MS / (speed x WAVE_SPEEDUP^(wave-1)) to get there. Practice never moves.
+ * BASE_TRAVEL_MS / (speed x WAVE_SPEEDUP^(min(wave, WAVE_SPEEDUP_MAX_WAVE)-1)) to get there.
+ * Practice never moves.
  * Targets stop at progress 1; the caller (round.tick) removes them and takes the life.
  * @param {TargetState} state
  * @param {number} dtMs Milliseconds since the last call.
@@ -96,7 +98,8 @@ export function advance(state, dtMs) {
     throw new RangeError(`dtMs must be a finite number of at least 0, got ${dtMs}`);
   }
   if (state.mode === "practice") return { state, arrived: [] };
-  const travelMs = BASE_TRAVEL_MS / (state.speed * WAVE_SPEEDUP ** (state.wave - 1));
+  const waves = Math.min(state.wave, WAVE_SPEEDUP_MAX_WAVE) - 1; // no faster after the cap
+  const travelMs = BASE_TRAVEL_MS / (state.speed * WAVE_SPEEDUP ** waves);
   const targets = state.targets.map((t) => ({
     ...t,
     progress: Math.min(1, t.progress + dtMs / travelMs),

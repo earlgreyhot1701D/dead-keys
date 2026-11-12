@@ -1,0 +1,101 @@
+/* Play screens: the station line with the input stream and target, and the footer (mock screen 3). */
+.play-station {
+  position: relative;
+  flex-shrink: 0;
+}
+.station-rule {
+  display: flex;
+  justify-content: flex-end;
+  border-top: var(--rule-double);
+}
+.station-tag {
+  position: relative;
+  z-index: 6;
+  margin-top: -14px;
+  padding: 2px 10px;
+  border: 1px solid var(--line);
+  background: var(--ink);
+  font-size: 13px;
+}
+.stream-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 620px;
+  margin: 8px auto;
+  padding: 8px 16px;
+  border: 1px solid var(--accent);
+  background: var(--bar);
+}
+.stream-left,
+.stream-right {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.stream-label {
+  font-size: 14px;
+  color: var(--muted);
+}
+.stream-text {
+  display: flex;
+  align-items: center;
+  font-size: 24px;
+  letter-spacing: 0.08em;
+}
+.stream-typed:not(:empty) {
+  position: relative;
+  z-index: 6;
+  padding: 0 6px;
+  background: var(--teal-fill);
+  color: var(--ink);
+  font-weight: 700;
+}
+.stream-cursor {
+  position: relative;
+  z-index: 6;
+  margin-left: 4px;
+  font-weight: 700;
+}
+.stream-target {
+  min-width: 2ch;
+  padding: 2px 10px;
+  border: 1px solid var(--text);
+  background: #29373a;
+  font-size: 15px;
+  font-weight: 700;
+}
+.play-footer {
+  min-height: 48px;
+  padding: 0 28px;
+  font-size: 14px;
+  color: var(--accent);
+}
+.foot-left {
+  display: flex;
+  gap: 12px;
+}
+.foot-speed {
+  font-weight: 700;
+  color: var(--soft);
+}
+.foot-sep {
+  color: var(--dim);
+}
+.foot-save,
+.foot-crt {
+  color: var(--muted);
+}
+.play-pause {
+  min-height: 36px;
+  padding: 0 16px;
+  border: 1px solid var(--line);
+  background: var(--bar);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+}

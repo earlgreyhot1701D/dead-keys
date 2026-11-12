@@ -3,12 +3,12 @@
 **Spec:** `play`. Requirements and design approved Nov 11. **Rigor:** Working for layout, Full for recording and saving.
 One task at a time. Never "run all." Touch only the files a task names. Tick each when done. If the map or the copy table does not cover something, stop and ask; never invent copy or numbers. Keep a running flag list for task 13. DO NOT refactor other code.
 
-- [ ] 1. Word pack: find the right file in top-english-wordlists (report which file and why), write `scripts/build-pack.js`, `packs/blocklist.txt`, `packs/general.json`, `packs/general.test.js`. Report the first 40 words and the blocklist size, then stop for Shara's OK. _Req 1._
-- [ ] 2. Engine deferrals: speed ceiling, stray space ignored, `pause(state)`, the 5/3/6 constants (and How we count reads them), rename `later` to `later-hint`. Tests for each. _Req 8._
-- [ ] 3. `src/a11y/announce.js` and `src/render/hud.js`, pure, with unit tests for every line in the copy table and every HUD value. _Req 3.2, 6.3._
-- [ ] 4. `src/render/loop.js` with tests (fake frame and clock): dt clamp, NaN guard, auto-pause on hidden or blur, stops on close. _Req 4._
-- [ ] 5. `src/ui/screens/play.js` (mode picker) and router entries. _Req 2._
-- [ ] 6. `src/render/falling.js` + falling styles + `round.js` (falling only). Match mock screen 3 per the map. _Req 3, 5._
+- [x] 1. Word pack: find the right file in top-english-wordlists (report which file and why), write `scripts/build-pack.js`, `packs/blocklist.txt`, `packs/general.json`, `packs/general.test.js`. Report the first 40 words and the blocklist size, then stop for Shara's OK. _Req 1._
+- [x] 2. Engine deferrals: speed ceiling, stray space ignored, `pause(state)`, the 5/3/6 constants (and How we count reads them), rename `later` to `later-hint`. Tests for each. _Req 8._
+- [x] 3. `src/a11y/announce.js` and `src/render/hud.js`, pure, with unit tests for every line in the copy table and every HUD value. _Req 3.2, 6.3._
+- [x] 4. `src/render/loop.js` with tests (fake frame and clock): dt clamp, NaN guard, auto-pause on hidden or blur, stops on close. _Req 4._
+- [x] 5. `src/ui/screens/play.js` (mode picker) and router entries. _Req 2._
+- [x] 6. `src/render/falling.js` + falling styles + `round.js` (falling only). Match mock screen 3 per the map. _Req 3, 5._
 - [ ] 7. `src/render/corners.js` + corners styles. Match mock screen 4 per the map. _Req 3._
 - [ ] 8. `src/render/moments.js` and reduced-motion versions. _Req 6._
 - [ ] 9. Practice. _Req 2.2._

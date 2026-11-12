@@ -1,0 +1,68 @@
+/* Falling words: the locked card, heavier, with the typed part filled (mock screen 3). */
+.fw-lock {
+  display: none;
+  box-sizing: border-box;
+  width: 220px;
+  padding: 8px;
+  border: var(--rule-double);
+  background: var(--panel-2);
+  text-align: center;
+}
+/* Wider than a lane, so it sits above its neighbors. */
+.fw.is-locked {
+  z-index: 5;
+}
+.is-locked .fw-card,
+.is-locked .fw-trail {
+  display: none;
+}
+.is-locked .fw-lock {
+  display: block;
+}
+.fw-lock-bar {
+  position: relative;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 8px;
+  background: var(--accent);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+.fw-lock-word {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  margin: 8px 0 6px;
+  padding: 8px 4px;
+  border: 1px solid var(--text);
+  background: var(--ink);
+  font-size: 26px;
+  letter-spacing: 0.08em;
+}
+.fw-bracket {
+  font-size: 14px;
+  color: var(--soft);
+}
+.fw-typed:not(:empty) {
+  position: relative;
+  z-index: 6;
+  padding: 0 4px;
+  background: var(--text);
+  color: var(--ink);
+  font-weight: 700;
+}
+.fw-caret {
+  color: var(--dim);
+}
+.fw-rest {
+  font-weight: 700;
+}
+.fw-lock-foot {
+  display: flex;
+  font-size: 13px;
+}

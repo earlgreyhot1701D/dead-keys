@@ -1,0 +1,128 @@
+/* Falling words: the field, lanes, word cards, the beam, the danger band and the station
+   (mock screen 3, value for value; the locked card is in playLock.css). Sizes match FIELD in
+   src/render/falling.js. */
+.play-main {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: 0;
+  padding: 0 32px;
+}
+.fall-field {
+  position: relative;
+  flex-shrink: 0;
+  width: 1376px;
+  height: 680px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+.fall-lanes {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  opacity: 0.35;
+}
+.fall-lane {
+  border-right: 1px dashed var(--line);
+}
+.fall-lane:last-child {
+  border-right: 0;
+}
+/* From 80% of the way down (hud.js DANGER_FROM): 680 - (0.8 x 616 + 64) = 123px. */
+.fall-danger {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 123px;
+  border-top: 1px dashed var(--shaky);
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(242, 193, 78, 0.1) 0,
+    rgba(242, 193, 78, 0.1) 2px,
+    transparent 2px,
+    transparent 10px
+  );
+}
+.fall-danger-label {
+  position: absolute;
+  right: 0;
+  bottom: 96px;
+  padding: 2px 8px;
+  border: 1px solid var(--shaky);
+  background: var(--ink);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  color: var(--shaky);
+}
+.fall-station {
+  position: absolute;
+  z-index: 2;
+  bottom: 2px;
+  left: 50%;
+  width: 120px;
+  font-size: 14px;
+  line-height: 1.2;
+  letter-spacing: 0.1em;
+  text-align: center;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+.fall-beam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+  height: 680px;
+  border-left: 2px solid var(--text);
+}
+.fall-beam.is-on {
+  display: block;
+}
+.fall-cards {
+  position: absolute;
+  inset: 0;
+}
+.fw {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform;
+}
+.fw-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translateX(-50%);
+}
+.fw-card {
+  padding: 6px 14px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  text-align: center;
+}
+.fw-tag {
+  font-size: 13px;
+  color: var(--muted);
+}
+.fw-word {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text);
+}
+.fw-trail {
+  width: 0;
+  height: 40px;
+  margin-top: 4px;
+  border-left: 1px dashed var(--line);
+}
+.is-danger .fw-card {
+  border: 3px double var(--shaky);
+}
+.is-danger .fw-tag,
+.is-danger .fw-word {
+  color: var(--shaky);
+}

@@ -22,7 +22,7 @@ export const speedText = (v) => `${v}×`;
  * The small "Not built yet" line under a setting that saves now but does nothing until a later
  * block (sound: Block 14, speed and finger colors: Blocks 7 and 8, AI drills: Block 10).
  */
-const later = (id) => el("span", { id: `${id}-later`, class: "hint later" }, NOT_BUILT);
+const later = (id) => el("span", { id: `${id}-later`, class: "hint later-hint" }, NOT_BUILT);
 
 /** Change a setting only if the value is allowed; the screen never offers anything else. */
 function change(ctx, key, value) {

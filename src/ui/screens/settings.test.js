@@ -139,3 +139,12 @@ test("every setting that saves but does nothing yet says Not built yet, tied to 
     }
   });
 });
+
+test("the Not built yet hints use their own class, not progress's .later (Block 7, Req 8.4)", () => {
+  withFakeDocument(() => {
+    const node = settingsScreen.render(ctxFor());
+    const hint = byId(node, "st-sound-later");
+    assert.equal(hint.attrs.class, "hint later-hint");
+    assert.equal(findAll(node, (n) => /(^| )later( |$)/.test(n.attrs?.class ?? "")).length, 0);
+  });
+});

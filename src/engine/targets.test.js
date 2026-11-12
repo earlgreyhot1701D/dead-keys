@@ -10,6 +10,7 @@ import {
   TARGETS_MAX,
   TARGETS_START,
   WAVE_SPEEDUP,
+  WAVE_SPEEDUP_MAX_WAVE,
 } from "./config.js";
 import { advance, spawn } from "./targets.js";
 
@@ -117,12 +118,13 @@ test("a full screen spawns nothing and hands back the same state", () => {
   assert.equal(spawn(full).state, full);
 });
 
-test("travel time follows BASE_TRAVEL_MS / (speed x WAVE_SPEEDUP^(wave-1))", () => {
+test("travel time follows BASE_TRAVEL_MS / (speed x WAVE_SPEEDUP^(min(wave, cap)-1))", () => {
   fc.assert(
     fc.property(wave, speed, fc.integer({ min: 0, max: 20000 }), (w, sp, dt) => {
       const t = { id: 0, itemId: "w1", text: "fad", typed: 0, progress: 0, slot: 0 };
       const s = state({ wave: w, speed: sp, targets: [t] });
-      const travel = BASE_TRAVEL_MS / (sp * WAVE_SPEEDUP ** (w - 1));
+      const travel =
+        BASE_TRAVEL_MS / (sp * WAVE_SPEEDUP ** (Math.min(w, WAVE_SPEEDUP_MAX_WAVE) - 1));
       const got = advance(s, dt).state.targets[0].progress;
       assert.ok(Math.abs(got - Math.min(1, dt / travel)) < 1e-9, `${got} vs ${dt / travel}`);
     }),

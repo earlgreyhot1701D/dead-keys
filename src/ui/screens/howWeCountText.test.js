@@ -24,7 +24,21 @@ const CHANGED = {
   STREAK_DAYS: 12,
   WPM_BAND: 25,
   MAX_ROUNDS: 321,
+  CHARS_PER_WORD: 4,
+  MAX_SENTENCES: 2,
+  MAX_WEAK_KEYS: 8,
 };
+
+test("characters per word, most sentences and most weak keys are read from config (Req 8.3)", () => {
+  const t = textOf(CONFIG);
+  assert.ok(t.includes("divided by five, divided by the minutes"));
+  assert.ok(t.includes("at most three sentences"));
+  assert.ok(t.includes("up to six keys"));
+  const changed = textOf({ ...CONFIG, CHARS_PER_WORD: 4, MAX_SENTENCES: 2, MAX_WEAK_KEYS: 8 });
+  assert.ok(changed.includes("divided by four,"));
+  assert.ok(changed.includes("at most two sentences"));
+  assert.ok(changed.includes("up to eight keys"));
+});
 
 test("the page says what the config says today", () => {
   const t = textOf(CONFIG);

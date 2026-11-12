@@ -24,6 +24,10 @@ export const GROUP_RATIO = 2;
 export const HIGH_RATIO = 3;
 /** ...and only if the group itself misses at least this share of its keys. */
 export const GROUP_FLOOR = 0.05;
+/** Most diagnosis sentences and most weak keys (the contract's Diagnosis maxItems). */
+export const MAX_SENTENCES = 3;
+export const MAX_WEAK_KEYS = 6;
+
 /** Total attempts before the diagnosis says anything (about one minute of calibration). */
 export const ENOUGH_DATA = 100;
 

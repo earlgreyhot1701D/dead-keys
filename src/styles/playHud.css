@@ -1,0 +1,65 @@
+/* Play screens: the frame and the HUD header (mock screen 3, value for value). The station
+   line and footer are in playStation.css. Dropped per the map: drill label, SHIELD, CAPACITOR, SOUND. */
+.play-frame {
+  min-height: max(100vh, 900px);
+  background: var(--bg-deep);
+}
+.play-hud {
+  display: flex;
+  flex-shrink: 0;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  border-bottom: var(--rule-double);
+  background: var(--bar);
+  font-size: 14px;
+  white-space: nowrap;
+}
+.hud-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.hud-term {
+  font-family: var(--head);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+.hud-box {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  background: var(--ink);
+}
+.hud-label {
+  color: var(--soft);
+}
+.hud-lives {
+  font-size: 18px;
+  letter-spacing: 0.2em;
+  color: var(--missed);
+}
+.hud-strong {
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+.hud-dim {
+  color: var(--muted);
+}
+.hud-big {
+  font-size: 22px;
+  font-weight: 700;
+}
+.hud-unit {
+  color: var(--accent);
+}
+.hud-bar {
+  position: relative;
+  z-index: 6;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
