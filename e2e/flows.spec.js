@@ -51,7 +51,7 @@ test("settings are saved and come back after a reload", async ({ page }) => {
   await page.keyboard.press("ArrowRight");
   const saved = await page.evaluate((k) => JSON.parse(localStorage.getItem(k)).settings, KEY);
   expect(saved).toMatchObject({ ai: true, sound: "arcade", fingerColors: false });
-  expect(saved.speed).toBeGreaterThan(1);
+  expect(saved.speed).toBeGreaterThan(0.7); // the default (Shara, Nov 12)
   await page.reload();
   await page.keyboard.press("a");
   await page.getByRole("button", { name: "Settings", exact: true }).click();

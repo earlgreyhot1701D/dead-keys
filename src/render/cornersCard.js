@@ -15,6 +15,7 @@ export function makeCard(el, target) {
     typed: el("span", { class: "cw-typed" }),
     wrong: el("span", { class: "cw-wrong" }),
     rest: el("span", { class: "cw-rest" }),
+    bar: el("span", {}, "TARGET_LOCKED"),
     vector: el("span", { class: "cw-vector" }),
   };
   const tick = (cls, ch) => el("span", { class: `cw-tick ${cls}` }, ch);
@@ -26,7 +27,7 @@ export function makeCard(el, target) {
         p.dist,
       ]),
       el("div", { class: "cw-lock" }, [
-        el("div", { class: "cw-lock-bar" }, [el("span", {}, "TARGET_LOCKED"), p.lockDist]),
+        el("div", { class: "cw-lock-bar" }, [p.bar, p.lockDist]),
         el("div", { class: "cw-lock-box" }, [
           tick("t-top", "┴"),
           tick("t-bottom", "┬"),

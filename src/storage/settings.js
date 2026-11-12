@@ -20,7 +20,7 @@ export const SOUND_SETS = Object.freeze(["off", "typewriter", "arcade"]);
 export const DEFAULTS = Object.freeze({
   ai: false,
   sound: "off",
-  speed: 1,
+  speed: 0.7, // new typists start slow; anyone can raise it on the picker (Shara, Nov 12)
   fingerColors: true,
   privacySeen: false,
 });

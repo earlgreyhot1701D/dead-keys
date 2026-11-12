@@ -520,12 +520,22 @@ Fourth round (Claude, Nov 12; approved by Shara): Wrong key shown red, waiting l
 
 | Reviewer flagged (fourth round) | Status | Where |
 |---|---|---|
-| The swallow survives Continue: `resolveOutOfLives` spreads `...state` and never clears `lostTail`, so the first key matching the old tail is eaten in the fresh screen (held time adds no `activeMs`) | Open: for Shara. Confirmed in the code; fix is `lostTail: null` in the Continue fill, plus a test | `src/engine/lifecycle.js` |
+| The swallow survives Continue: `resolveOutOfLives` spreads `...state` and never clears `lostTail`, so the first key matching the old tail is eaten in the fresh screen (held time adds no `activeMs`) | Fixed (Nov 12): `resolveOutOfLives` sets `lostTail: null`, with a test | `src/engine/lifecycle.js`, `lostTail.test.js` |
 | Breach edge may be hidden under the field's children | Checked: not hidden. Set by hand in a browser, the coral edge shows clearly around the falling field | `playMoments.css` |
-| a11y.md says reduced motion means "no flash"; the breach edge is a static color for 400 ms with no movement, so it shows under reduced motion too | Open: for Shara (does a static color change count as a flash?) | `playMoments.css`, `a11y.md` |
+| a11y.md says reduced motion means "no flash"; the breach edge is a static color for 400 ms with no movement, so it shows under reduced motion too | Decided by Shara (Nov 12): the breach edge stays under reduced motion; it is one 400 ms color change, not repeated flashing | `playMoments.css` |
 | Swallow can eat a key the player meant, when a new word starts with the tail's next letter | No action: inherent to the design, up to 1.5 s | `lostTail.js` |
-| Escape and pause do not end the swallow (it is 1.5 s of active play, since time only runs in `tick`) | Open: say so in the spec, or clear on Escape | `requirements.md` |
+| Escape and pause do not end the swallow (it is 1.5 s of active play, since time only runs in `tick`) | Fixed (Nov 12): `pause` and `pressEscape` with nothing locked clear it, with tests | `lifecycle.js`, `round.js`, `lostTail.test.js` |
 | Test gaps: breach on `lifeLost` and not on a warm-up landing; swallow after a warm-up landing, Escape, pause, Continue, a part-swallowed tail then a non-matching key | Open: for Shara | `moments.test.js`, `lostTail.test.js` |
+
+Fifth round (Claude, Nov 12; approved by Shara): the locked card's top bar reads 'TYPE "<letter>" TO FIX' while a wrong key shows; `lostTail` cleared on Continue and on pause. Decided by Shara: new players start at 0.7× so beginners are not discouraged (saved speeds are unchanged; `src/storage/settings.js` DEFAULTS, one change on the allowlist).
+
+| Reviewer flagged (fifth round) | Status | Where |
+|---|---|---|
+| Fix-bar copy tested thinly: only "x" against "b"; no quote, "<", capital, or `wrong: false` case; nothing pins the revert | Open: for Shara | `hud.test.js` |
+| `lockBar` indexes the waiting letter by code point, the rest of the HUD by UTF-16 unit (differs only for astral characters; no pack has any) | Open: for Shara | `src/render/hud.js` |
+| `config.js` comment still says the speed default is 1 | Open: comment only | `src/engine/config.js` |
+| Escape that only drops a lock, and resume, leave `lostTail` alone (untested) | No action: safe, since `key()` drops a tail before it locks and a pause already cleared it | `lostTail.test.js` |
+| Diff showed mojibake in ×, ═, ✓ | Checked: only in the exported diff file; the sources are UTF-8 | n/a |
 
 ### v2 list (from the playtest)
 

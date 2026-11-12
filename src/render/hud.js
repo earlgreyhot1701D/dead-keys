@@ -95,6 +95,13 @@ export function lockParts(target) {
   return { typed, wrong: target.wrong || "", rest: target.text.slice(target.typed) };
 }
 
+/**
+ * The locked card's top bar: its usual label, or after a wrong key how to fix it, naming the
+ * letter the word waits on (play copy table, Shara, Nov 12).
+ */
+export const lockBar = (target, label) =>
+  target.wrong ? `TYPE "${[...target.text][target.typed]}" TO FIX` : label;
+
 /** "LOCK: COLUMN_3" for the locked word's lane, or null when nothing is locked. */
 export function lockColumn(state) {
   const t = locked(state);

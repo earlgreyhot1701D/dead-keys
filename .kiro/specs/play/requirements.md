@@ -52,7 +52,7 @@ This is the first block where Dead Keys plays. A player picks falling words or f
 
 ## Requirement 6: The three moments
 
-1. Miss: the locked word's border flashes coral for 200 ms. Clear: the word shrinks away with a "✓" over 250 ms. Wave up: a "WAVE nn" banner for 1 second. Breach (Shara, Nov 12): when a word lands and costs a life, the field's edge flashes coral for 400 ms. When the locked word lands, its leftover letters are swallowed for up to 1.5 s as the player finishes typing them, so they never lock another word.
+1. Miss: the locked word's border flashes coral for 200 ms. Clear: the word shrinks away with a "✓" over 250 ms. Wave up: a "WAVE nn" banner for 1 second. Breach (Shara, Nov 12): when a word lands and costs a life, the field's edge flashes coral for 400 ms. When the locked word lands, its leftover letters are swallowed for up to 1.5 s as the player finishes typing them, so they never lock another word. Pause and Continue end the swallow.
 2. Under reduced motion, each moment keeps its color and words and drops the movement.
 3. The live region SHALL speak: "Cleared <word>.", "Life lost. <n> left.", "Wave <n>.", "Out of lives." and "Paused." It SHALL NOT speak each keystroke or each miss.
 

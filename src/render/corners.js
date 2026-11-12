@@ -1,8 +1,6 @@
-// Four corners (mock screen 4, play Req 3): four quadrants, the line from each corner to the
-// core, the danger ring, the core, word cards with D:nn, the locked word with TARGET_LOCKED,
-// DIST and VECTOR, and the beam from the core to it. Positions come only from the engine's
-// `slot` and `progress` (design 1); per frame only `transform`, `textContent` and `--near`
-// change. Classes change on events (lock, danger), never every frame.
+// Four corners (mock screen 4, play Req 3): quadrants, corner lines, the danger ring, the core,
+// word cards with D:nn, the locked word (TARGET_LOCKED, DIST, VECTOR) and the beam to it.
+// Positions come only from `slot` and `progress`; per frame only transform, text and --near.
 import { ghostIcon } from "../ui/components/chrome.js";
 import { svg } from "../ui/svg.js";
 import { makeCard } from "./cornersCard.js";
@@ -12,6 +10,7 @@ import {
   dangerMark,
   dist,
   inDanger,
+  lockBar,
   lockParts,
   nearness,
   quadrantText,
@@ -111,6 +110,7 @@ export function createCorners(el) {
       const { typed, wrong, rest } = lockParts(t);
       setText(c.p.typed, typed);
       setText(c.p.wrong, wrong);
+      setText(c.p.bar, lockBar(t, "TARGET_LOCKED"));
       setText(c.p.rest, rest);
       setText(c.p.vector, isLocked ? vectorText(state) : "");
       const at = wordAt(t.slot, t.progress);

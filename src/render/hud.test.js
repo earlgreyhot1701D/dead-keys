@@ -21,6 +21,7 @@ import {
   livesLabel,
   livesText,
   liveWpm,
+  lockBar,
   lockColumn,
   lockParts,
   logWords,
@@ -108,6 +109,8 @@ test("the lock: its lane, its typed and remaining parts; nothing when unlocked",
   assert.equal(lockColumn(s), `LOCK: COLUMN_${t.slot + 1}`);
   assert.deepEqual(lockParts(t), { typed: "har", wrong: "", rest: "bor" });
   assert.equal(lockParts({ ...t, wrong: "x" }).wrong, "x");
+  assert.equal(lockBar(t, "LOCKED"), "LOCKED");
+  assert.equal(lockBar({ ...t, wrong: "x" }, "LOCKED"), 'TYPE "b" TO FIX');
 });
 
 test("danger from 80% of the way: [!], otherwise [·]", () => {

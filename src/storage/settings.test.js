@@ -24,11 +24,11 @@ const basic = () =>
 const own = (obj, key, value) =>
   Object.defineProperty(obj, key, { value, enumerable: true, writable: true, configurable: true });
 
-test("defaults: sound off, speed 1x, AI off, finger colors on, privacy card not yet seen", () => {
+test("defaults: sound off, speed 0.7x (Shara, Nov 12: new typists start slow), AI off, finger colors on, privacy card not yet seen", () => {
   assert.deepEqual(DEFAULTS, {
     ai: false,
     sound: "off",
-    speed: 1,
+    speed: 0.7,
     fingerColors: true,
     privacySeen: false,
   });
@@ -92,7 +92,7 @@ test("each field is judged alone: one bad field does not cost the good ones", ()
   assert.deepEqual(got, {
     ai: true,
     sound: "off",
-    speed: 1,
+    speed: 0.7,
     fingerColors: false,
     privacySeen: false,
   });

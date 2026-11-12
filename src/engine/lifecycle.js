@@ -1,7 +1,7 @@
 // Time, lives, the free continue, resume and end for a round. Pure, like round.js: every call
 // returns a new { state, events }; an ignored call returns the very same state and no events.
 import { LIVES_MAX } from "./config.js";
-import { tailOf } from "./lostTail.js";
+import { dropTail, tailOf } from "./lostTail.js";
 import { fill } from "./round.js";
 import { advance, cool } from "./targets.js";
 
@@ -68,6 +68,7 @@ export function resolveOutOfLives(state, doContinue) {
     lockId: null,
     targets: [],
     spawnWaitMs: 0, // the first fresh word comes at once
+    lostTail: null, // the old screen's leftover letters don't reach the fresh one
   });
   return { state: s, events: [{ type: "continued" }] };
 }
@@ -106,7 +107,7 @@ export function backspace(state) {
  */
 export function pause(state) {
   if (state.paused || state.held || state.ended) return same(state);
-  return { state: { ...state, paused: true }, events: [{ type: "paused" }] };
+  return { state: { ...dropTail(state), paused: true }, events: [{ type: "paused" }] };
 }
 
 /**

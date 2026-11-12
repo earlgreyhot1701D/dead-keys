@@ -16,6 +16,7 @@ Blocks 1 to 4 and 6 passed Nov 11 (tags `block-1` to `block-4`, `block-6`). Bloc
 - `src/engine/pace.js` and its test, `src/engine/warmup.test.js`, `src/engine/wrongKey.test.js`, `src/engine/lostTail.js` and its test, `src/render/playHud.test.js` (new, Shara, Nov 12: the picker's WPM estimate, the warm-up)
 - `src/render/**`, `src/a11y/**`
 - `src/ui/screens/play.js`, `round.js`, `results.js`, `howWeCountText.js`, `settings.js`; `src/ui/components/resultsPanels.js`; `src/ui/app.js`; `src/ui/roundRecord.js` (finishRound, like backup.js; Shara, Nov 12); `src/main.js`; and their tests
+- `src/storage/settings.js` and its test (one change, Shara, Nov 12: the default speed is 0.7×)
 - `src/styles/**`
 - `e2e/**`, `docs/screens/**`
 - `.kiro/specs/play/*`, `KIRO-NOTES.md`, `package.json` (scripts only)

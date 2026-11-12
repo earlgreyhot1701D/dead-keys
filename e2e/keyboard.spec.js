@@ -94,9 +94,9 @@ test("settings by keyboard: switch, sound, speed; each is saved", async ({ page 
   await tabTo(page, page.getByLabel("Speed"));
   await page.keyboard.press("ArrowRight");
   await expect(page.getByLabel("Speed")).toBeFocused();
-  await expect(page.getByLabel("Speed")).toHaveAttribute("aria-valuetext", "1.1×");
+  await expect(page.getByLabel("Speed")).toHaveAttribute("aria-valuetext", "0.8×"); // from the 0.7× default
   const saved = await page.evaluate((k) => JSON.parse(localStorage.getItem(k)).settings, KEY);
-  expect(saved).toMatchObject({ ai: true, speed: 1.1 });
+  expect(saved).toMatchObject({ ai: true, speed: 0.8 });
 });
 
 test("the Clear dialog by keyboard: opens on Enter, Cancel first, Escape keeps everything", async ({

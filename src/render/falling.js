@@ -5,7 +5,9 @@
 // danger), never every frame.
 import { SLOTS } from "../engine/config.js";
 import { svg } from "../ui/svg.js";
-import { dangerMark, inDanger, lockParts, nearness } from "./hud.js";
+import { dangerMark, inDanger, lockBar, lockParts, nearness } from "./hud.js";
+
+const LOCKED_BAR = "╔══ LOCKED ══╗";
 
 /** The field in design pixels (the page is fitted to 1440x900, Block 6 fit.js). */
 export const FIELD = Object.freeze({ w: 1376, h: 680, cardH: 64 });
@@ -42,12 +44,13 @@ function makeCard(el, target) {
     typed: el("span", { class: "fw-typed" }),
     wrong: el("span", { class: "fw-wrong" }),
     rest: el("span", { class: "fw-rest" }),
+    bar: el("span", {}, LOCKED_BAR),
   };
   const node = el("div", { class: "fw" }, [
     el("div", { class: "fw-inner" }, [
       el("div", { class: "fw-card" }, [parts.tag, parts.word]),
       el("div", { class: "fw-lock" }, [
-        el("div", { class: "fw-lock-bar" }, [el("span", {}, "╔══ LOCKED ══╗"), crosshair()]),
+        el("div", { class: "fw-lock-bar" }, [parts.bar, crosshair()]),
         el("div", { class: "fw-lock-word" }, [
           el("span", { class: "fw-bracket" }, "["),
           parts.typed,
@@ -111,6 +114,7 @@ export function createFalling(el) {
       const { typed, wrong, rest } = lockParts(t);
       setText(c.parts.typed, typed);
       setText(c.parts.wrong, wrong);
+      setText(c.parts.bar, lockBar(t, LOCKED_BAR));
       setText(c.parts.rest, rest);
       const near = nearness(t.progress);
       if (c.near !== near && c.node.style) c.node.style.setProperty("--near", String(near));

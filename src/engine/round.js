@@ -135,7 +135,7 @@ export function pressEscape(state) {
   if (state.ended || state.held) return same(state);
   if (state.paused) return { state: { ...state, paused: false }, events: [{ type: "resumed" }] };
   if (state.lockId === null)
-    return { state: { ...state, paused: true }, events: [{ type: "paused" }] };
+    return { state: { ...dropTail(state), paused: true }, events: [{ type: "paused" }] };
   return {
     state: {
       ...state,
