@@ -1,12 +1,12 @@
-// The three moments (play Req 6): a miss flashes the locked word's border coral, a clear shrinks
-// the word away with a "✓", a wave up shows a "WAVE nn" banner. Each one sets `data-moment` on a
+// The moments (play Req 6): a miss flashes the locked word's border coral, a clear shrinks the
+// word away with a "✓", a wave up shows a "WAVE nn" banner, a breach flashes the field's edge. Each one sets `data-moment` on a
 // node for its time; the look, and the reduced-motion version (same colors and words, no
 // movement), are in src/styles/playMoments.css. `stop` clears every timer, so none outlives its
 // screen (Req 4.4).
 import { waveText } from "./hud.js";
 
 /** How long each moment lasts, in milliseconds (Req 6.1). */
-export const MOMENT_MS = Object.freeze({ miss: 200, clear: 250, wave: 1000 });
+export const MOMENT_MS = Object.freeze({ miss: 200, clear: 250, wave: 1000, breach: 400 });
 
 /**
  * @param {{ setTimeout: Function, clearTimeout: Function }} [timers] The page's, or a fake.
@@ -29,6 +29,8 @@ export function createMoments(timers = globalThis) {
     miss: (card) => hold(card, "miss", MOMENT_MS.miss),
     /** A cleared word's card: shrinks away with a ✓, then `done` takes it off the page. */
     clear: (card, done) => hold(card, "clear", MOMENT_MS.clear, done),
+    /** The field: a coral edge for MOMENT_MS.breach when a word lands and costs a life. */
+    breach: (field) => hold(field, "breach", MOMENT_MS.breach),
     /** The banner: "WAVE 04" for MOMENT_MS.wave. */
     wave(banner, wave) {
       if (!banner) return;
@@ -54,6 +56,7 @@ export function playMoments(m, field, events, before) {
   for (const e of events) {
     if (e.type === "miss" && e.expected !== null) m.miss(field.cards.get(before.lockId)?.node);
     if (e.type === "waveUp") m.wave(field.banner, e.wave);
+    if (e.type === "lifeLost") m.breach(field.node); // Shara, Nov 12: a lost word was easy to miss
     if (e.type === "warmupDone") m.wave(field.banner, 1); // wave 1 starts for real
     if (e.type !== "cleared") continue;
     const c = field.cards.get(e.targetId);

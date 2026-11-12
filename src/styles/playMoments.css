@@ -85,3 +85,10 @@
     animation: none;
   }
 }
+
+/* A word landed and cost a life: the field's edge flashes coral (color only, so it is the same
+   under reduced motion). */
+.fall-field[data-moment="breach"],
+.cn-field[data-moment="breach"] {
+  box-shadow: inset 0 0 0 3px var(--missed);
+}

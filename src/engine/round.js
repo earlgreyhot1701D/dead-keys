@@ -1,5 +1,6 @@
 // Create a round, take keys, handle Escape. Pure: a new { state, events } per call, no clock.
 import { LIVES_MAX, SLOTS, SPEED_MAX, SPEED_MIN, WARMUP_WORDS, WAVE_SIZE } from "./config.js";
+import { dropTail, swallow } from "./lostTail.js";
 import { applyKey, pickLock } from "./match.js";
 import { createRng } from "./rng.js";
 import { spawn } from "./targets.js";
@@ -64,24 +65,23 @@ export function createRound({ mode, mechanic, items, seed, speed }) {
 }
 
 /**
- * One key press. Ignored when paused, held, ended, or `char` is not one character (Req 2.7).
- * A miss sets the locked word's `wrong` to the key pressed, until the right key. Logged at
- * `activeMs`, so its time moves only with `tick`.
+ * One key press. Ignored when paused, held, ended, a space (no word has one), or not one
+ * character (Req 2.7). A miss sets the locked word's `wrong` to the key, until the right key.
  * @param {object} state
  * @param {string} char
  * @returns {{ state: object, events: object[] }}
  */
 export function key(state, char) {
-  if (state.ended || state.paused || state.held) return same(state);
+  if (state.ended || state.paused || state.held || char === " ") return same(state);
   if (typeof char !== "string" || [...char].length !== 1) return same(state);
+  const swallowed = swallow(state, char); // the rest of a word that just landed (lostTail.js)
+  if (swallowed) return same(swallowed);
   const events = [];
-  let s = state;
+  let s = dropTail(state);
   let lock = s.targets.find((t) => t.id === s.lockId);
-  // A space is never a miss, locked or not: words have no spaces (Req 8.2; Shara, Nov 12).
-  if (char === " ") return same(state);
   if (!lock) {
     lock = pickLock(s.targets, char);
-    // Nothing expects this key: it counts as a keystroke but there is no expected key to blame.
+    // Nothing expects this key: a counted keystroke, with no expected key to blame.
     if (!lock) {
       const miss = { type: "miss", expected: null, typed: char };
       return { state: { ...s, strayKeys: s.strayKeys + 1 }, events: [miss] };

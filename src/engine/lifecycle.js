@@ -1,6 +1,7 @@
 // Time, lives, the free continue, resume and end for a round. Pure, like round.js: every call
 // returns a new { state, events }; an ignored call returns the very same state and no events.
 import { LIVES_MAX } from "./config.js";
+import { tailOf } from "./lostTail.js";
 import { fill } from "./round.js";
 import { advance, cool } from "./targets.js";
 
@@ -22,6 +23,7 @@ export function tick(state, dtMs) {
   const { state: moved, arrived } = advance(state, dtMs);
   let s = { ...cool(moved, dtMs), activeMs: state.activeMs + dtMs };
   if (arrived.length === 0) return { state: fill(s), events: [] }; // a word after the spawn gap
+  s = { ...s, lostTail: tailOf(s, arrived) }; // the landed word's leftover letters, if locked
   if (s.warmup > 0) {
     const left = Math.max(0, s.warmup - arrived.length);
     const events = arrived.map((targetId) => ({ type: "warmupLanded", targetId }));

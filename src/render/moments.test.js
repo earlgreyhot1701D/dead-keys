@@ -40,7 +40,7 @@ const node = () => ({
 });
 
 test("the times are Req 6.1's", () => {
-  assert.deepEqual({ ...MOMENT_MS }, { miss: 200, clear: 250, wave: 1000 });
+  assert.deepEqual({ ...MOMENT_MS }, { miss: 200, clear: 250, wave: 1000, breach: 400 });
 });
 
 test("a miss marks the locked card for 200 ms; a second miss restarts its time", () => {
