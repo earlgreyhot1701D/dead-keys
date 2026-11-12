@@ -26,4 +26,10 @@ export const TARGETS_MAX = 8;
 export const BASE_TRAVEL_MS = 8000;
 
 /** Where a target can appear: corners for the four-corner mechanic, lanes for falling. */
-export const SLOTS = Object.freeze({ corners: 4, falling: 8 });
+export const SLOTS = Object.freeze({ corners: 4, falling: 6 });
+
+/**
+ * Milliseconds at speed 1 between one new target and the next, so words never appear level
+ * with each other (Shara, Nov 12). Divided by the speed: faster rounds bring words sooner.
+ */
+export const SPAWN_GAP_MS = 900;

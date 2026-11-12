@@ -1,6 +1,8 @@
 // createRound keeps its own copy of the items (split from round.test.js at the line cap).
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import { SPAWN_GAP_MS } from "./config.js";
+import { tick } from "./lifecycle.js";
 import { createRound, key } from "./round.js";
 
 const words = () => [
@@ -19,6 +21,8 @@ test("the caller cannot change a running round by editing the items it passed in
   mine.push({ id: "d", text: "d" });
   mine.length = 1;
   for (let n = 0; n < 12; n++) {
+    live = tick(live, SPAWN_GAP_MS).state; // let the next word in
+    calm = tick(calm, SPAWN_GAP_MS).state;
     for (const c of "abc") {
       live = key(live, c).state;
       calm = key(calm, c).state;

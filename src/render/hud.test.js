@@ -7,6 +7,7 @@ import { toResult } from "../engine/result.js";
 import { createRound, key } from "../engine/round.js";
 import {
   accuracyBar,
+  accuracyText,
   CORNERS,
   counts,
   dangerMark,
@@ -65,6 +66,8 @@ test("live WPM and accuracy use the same counts as the round's result", () => {
   assert.equal(liveWpm(s), Math.round(r.wpm));
   assert.equal(liveAccuracy(s), Math.round(r.accuracy * 100));
   assert.equal(liveAccuracy(start()), 0); // no keys yet: the same 0 results would show
+  assert.equal(accuracyText(start()), "--"); // ...but the HUD shows "--" until a key is pressed
+  assert.equal(accuracyText(s), `${liveAccuracy(s)}%`);
 });
 
 test("accuracy bar: ten cells, one per 10%", () => {

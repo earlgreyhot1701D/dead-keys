@@ -18,15 +18,15 @@ This is the first block where Dead Keys plays. A player picks falling words or f
 ## Requirement 1: The general word pack
 
 1. `packs/general.json` SHALL be a valid Pack (contract) with id `general`, built by `scripts/build-pack.js` from the top-english-wordlists list (github.com/david47k/top-english-wordlists, CC BY 3.0), with the attribution line from PRD G6.
-2. Its `words` pool SHALL hold 1,500 words, most frequent first, each 3 to 8 letters, lowercase a to z only.
-3. The build SHALL drop every word on `packs/blocklist.txt`, which has four sections: offensive words; common proper nouns that appear lowercase in the source; non-words (abbreviations, numerals, acronyms); and words about sex, violence, death, illness or drugs, so the game stays encouraging for every player. The pack's charset is `abcdefghijklmnopqrstuvwxyz`. (Updated Nov 12, Shara.)
+2. Its `words` pool SHALL hold 1,500 words, most frequent first, each 3 to 8 letters, lowercase a to z only, in **US English spelling only** (no British spellings such as labour, colour, centre, defence, programme, organise).
+3. The build SHALL drop every word on `packs/blocklist.txt`, which has five sections: offensive words; common proper nouns that appear lowercase in the source; non-words (abbreviations, numerals, acronyms, and foreign words not in the US list); words about sex, violence, death, illness or drugs, so the game stays encouraging for every player; and British spellings. The build SHALL stop if any word is not in SCOWL's en_US speller list (`packs/source/scowl_en_US.txt`, pinned commit, notice kept beside it). The pack's charset is `abcdefghijklmnopqrstuvwxyz`. (Updated Nov 12, Shara.)
 4. A test SHALL check the pack passes the contract, every word is in the charset and 3 to 8 letters, no word is on the blocklist, and there are no duplicates.
 
 ## Requirement 2: Choosing a round
 
 1. Play SHALL open a mode picker with two choices, "Falling words" and "Four corners", each with a one-line "how it plays", and a shared panel with the rules both games use and the current speed. Enter on a choice starts that round. Escape goes back.
 2. Practice SHALL start a practice round on the falling layout straight away: words stay still, there are no lives and no waves, and the round ends only when the player ends it.
-3. Every round SHALL use the speed from Settings, the general pack's words, and a seed from the clock.
+3. The player SHALL choose the speed on the mode picker before starting (it starts at the saved speed and saves the choice). Every round SHALL use that speed, the general pack's words, and a seed from the clock.
 
 ## Requirement 3: Falling words and four corners
 

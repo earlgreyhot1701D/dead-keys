@@ -2,7 +2,7 @@
 // returns a new { state, events }; an ignored call returns the very same state and no events.
 import { LIVES_MAX } from "./config.js";
 import { fill } from "./round.js";
-import { advance } from "./targets.js";
+import { advance, cool } from "./targets.js";
 
 const same = (state) => ({ state, events: [] });
 
@@ -19,8 +19,8 @@ export function tick(state, dtMs) {
   if (!Number.isFinite(dtMs) || dtMs < 0) throw new RangeError(`bad dtMs ${dtMs}`);
   if (state.ended || state.paused || state.held) return same(state);
   const { state: moved, arrived } = advance(state, dtMs);
-  let s = { ...moved, activeMs: state.activeMs + dtMs };
-  if (arrived.length === 0) return { state: s, events: [] };
+  let s = { ...cool(moved, dtMs), activeMs: state.activeMs + dtMs };
+  if (arrived.length === 0) return { state: fill(s), events: [] }; // a word after the spawn gap
   s = {
     ...s,
     targets: s.targets.filter((t) => !arrived.includes(t.id)),
@@ -52,6 +52,7 @@ export function resolveOutOfLives(state, doContinue) {
     held: false,
     lockId: null,
     targets: [],
+    spawnWaitMs: 0, // the first fresh word comes at once
   });
   return { state: s, events: [{ type: "continued" }] };
 }

@@ -4,7 +4,10 @@
 //   node scripts/build-pack.js
 // The source is a copy of top_english_words_lower_10000.txt from
 // github.com/david47k/top-english-wordlists (CC BY 3.0), kept in packs/source/ so the build
-// needs no network.
+// needs no network. US spelling only (Req 1.2): every word must be in scowl_en_US.txt, SCOWL's
+// en_US speller list (github.com/en-wl/wordlist-diff, commit 7f2f407, notice in
+// scowl_COPYRIGHT.txt). A word that is not stops the build, so a person decides which blocklist
+// section it goes in.
 import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
@@ -49,6 +52,17 @@ export function pickWords(sourceLines, blocked, count = WORD_COUNT) {
   return out;
 }
 
+/**
+ * Refuse any word that is not in the US spelling list.
+ * @param {string[]} words
+ * @param {Set<string>} usWords
+ * @throws {Error} Naming every word not in the list.
+ */
+export function checkUsSpelling(words, usWords) {
+  const off = words.filter((w) => !usWords.has(w));
+  if (off.length) throw new Error(`not in the US spelling list: ${off.join(", ")}`);
+}
+
 /** The Pack (contract shape) for a list of words. */
 export function makePack(words) {
   return {
@@ -71,13 +85,18 @@ export function makePack(words) {
   };
 }
 
+/** The US spelling list file to a set, one word per line. */
+export const readUsWords = (path) => new Set(readFileSync(path, "utf8").split(/\r?\n/));
+
 function main() {
   const at = (p) => fileURLToPath(new URL(`../packs/${p}`, import.meta.url));
   const source = readFileSync(at("source/top_english_words_lower_10000.txt"), "utf8").split(
     /\r?\n/,
   );
   const blocked = parseBlocklist(readFileSync(at("blocklist.txt"), "utf8"));
-  const pack = makePack(pickWords(source, blocked));
+  const words = pickWords(source, blocked);
+  checkUsSpelling(words, readUsWords(at("source/scowl_en_US.txt")));
+  const pack = makePack(words);
   writeFileSync(at("general.json"), `${JSON.stringify(pack)}\n`); // compact: it ships to players
   console.log(`packs/general.json: ${pack.pools.words.length} words, ${blocked.size} blocked`);
 }

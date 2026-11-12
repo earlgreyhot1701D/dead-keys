@@ -1,10 +1,11 @@
-// Falling words (mock screen 3, play Req 3): eight lanes, word cards, the locked card with its
+// Falling words (mock screen 3, play Req 3): six lanes, word cards, the locked card with its
 // typed and remaining parts, the beam under it, the danger band and the station. Positions come
-// only from the engine's `slot` and `progress` (design 1); per frame only `transform` and
-// `textContent` change. Classes change on events (lock, danger), never every frame.
+// only from the engine's `slot` and `progress` (design 1); per frame only `transform`,
+// `textContent` and the `--near` dimming value change. Classes change on events (lock,
+// danger), never every frame.
 import { SLOTS } from "../engine/config.js";
 import { svg } from "../ui/svg.js";
-import { dangerMark, inDanger, lockParts } from "./hud.js";
+import { DANGER_FROM, dangerMark, inDanger, lockParts } from "./hud.js";
 
 /** The field in design pixels (the page is fitted to 1440x900, Block 6 fit.js). */
 export const FIELD = Object.freeze({ w: 1376, h: 680, cardH: 64 });
@@ -16,6 +17,11 @@ export const LOCK_W = 220;
 export const laneX = (slot) => ((slot + 0.5) * FIELD.w) / LANES;
 /** Where a card's center goes: its lane, pulled in so a locked card is never cut off. */
 export const cardX = (slot) => Math.min(FIELD.w - LOCK_W / 2, Math.max(LOCK_W / 2, laneX(slot)));
+/**
+ * How near a word is, 0 at the top to 1 at the danger zone, in steps of 0.05: far words are
+ * dimmer, as the mock draws them (Shara, Nov 12). The CSS mixes --accent into --text by it.
+ */
+export const nearness = (progress) => Math.round(Math.min(1, progress / DANGER_FROM) * 20) / 20;
 /** A card's top edge for its progress: 0 at the top, landing on the station line at 1. */
 export const cardY = (progress) => progress * (FIELD.h - FIELD.cardH);
 
@@ -58,7 +64,7 @@ function makeCard(el, target) {
       el("div", { class: "fw-trail" }),
     ]),
   ]);
-  return { node, parts, locked: null, danger: null };
+  return { node, parts, locked: null, danger: null, near: null };
 }
 
 /**
@@ -111,6 +117,9 @@ export function createFalling(el) {
       const { typed, rest } = lockParts(t);
       setText(c.parts.typed, typed);
       setText(c.parts.rest, rest);
+      const near = nearness(t.progress);
+      if (c.near !== near && c.node.style) c.node.style.setProperty("--near", String(near));
+      c.near = near;
       move(c.node, cardX(t.slot), cardY(t.progress));
       if (isLocked) move(beam, cardX(t.slot), cardY(t.progress) + FIELD.cardH);
     }

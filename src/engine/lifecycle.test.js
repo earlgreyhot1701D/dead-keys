@@ -1,7 +1,7 @@
 // Req 3.3, 3.4 and Req 5: time, lives, wave up, the free continue, practice, ending.
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { BASE_TRAVEL_MS, LIVES_MAX, TARGETS_START } from "./config.js";
+import { BASE_TRAVEL_MS, LIVES_MAX } from "./config.js";
 import { endRound, resolveOutOfLives, resume, tick } from "./lifecycle.js";
 import { createRound, key, pressEscape } from "./round.js";
 
@@ -47,7 +47,7 @@ test("time moves targets by the travel formula and adds to activeMs", () => {
   assert.deepEqual(r.events, []);
 });
 
-test("a target reaching danger is removed, takes a life, releases the lock and is replaced", () => {
+test("a target reaching danger is removed, takes a life, releases the lock; a new word comes", () => {
   const s = round([[0, "ab", 0.99]], { lockId: 0 });
   const r = tick(s, 1000);
   assert.deepEqual(r.events, [{ type: "lifeLost", targetId: 0 }]);
@@ -57,7 +57,7 @@ test("a target reaching danger is removed, takes a life, releases the lock and i
     r.state.targets.some((t) => t.id === 0),
     false,
   );
-  assert.equal(r.state.targets.length, TARGETS_START);
+  assert.equal(r.state.targets.length, 1); // the spawn gap passed during the tick: one new word
 });
 
 test("a lock on another target is kept when a different target arrives", () => {
@@ -187,7 +187,7 @@ test("endRound works from any state and is idempotent; an ended round ignores ev
 });
 
 test("wave up: the tenth clear starts the next wave and gives a life back", () => {
-  const s = round([[0, "a", 0.5]], { clearedThisWave: 9, cleared: 9, lives: 3 });
+  const s = round([[0, "a", 0.5]], { clearedThisWave: 9, cleared: 9, lives: 3, spawnWaitMs: 0 });
   const r = key(s, "a");
   assert.deepEqual(r.events, [
     { type: "locked", targetId: 0 },
@@ -198,7 +198,7 @@ test("wave up: the tenth clear starts the next wave and gives a life back", () =
   assert.equal(r.state.clearedThisWave, 0);
   assert.equal(r.state.cleared, 10);
   assert.equal(r.state.lives, 4);
-  assert.equal(r.state.targets.length, TARGETS_START + 1);
+  assert.equal(r.state.targets.length, 1); // one at once; the rest come a spawn gap apart
 });
 
 test("wave up never gives more than the maximum lives", () => {

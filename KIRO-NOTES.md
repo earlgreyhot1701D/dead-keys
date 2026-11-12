@@ -463,3 +463,11 @@ Shara asked Claude to make this round's changes directly, then have Kiro review,
 | Screenshots | 1366x768 set added (`built-<screen>-1366.png`) | Fixed |
 | Privacy-card claims, scanline contrast, build check short strings, Vercel rebuild, menu screenshot focus | Shara's decisions and eye checks | No action |
 | Lockfile out of sync | `npm ci` failed: @emnapi/core and @emnapi/runtime 2.0.0-beta.2 were missing from package-lock.json (the "extraneous" packages from Block 6 task 5). Vercel runs `npm install`, so deploys worked, but `npm ci` did not | Fixed (Kiro, Nov 12): `npm install` refreshed the lockfile (it dropped 11 stale `"peer": true` lines; no package added or changed), and `npm ci` now succeeds (exit 0). npm still does not write the two @emnapi packages: they are optional peers of the extraneous wasm fallback `@emnapi/wasi-threads`, which this Windows install never uses, so `npm ls --all` still lists them as unmet under that helper |
+
+## Nov 12 2026: Block 7, Shara's decisions after playing falling words (running list for task 13)
+
+| Flag | Status | Where |
+|---|---|---|
+| `src/render` imports `crtOn` and `svg` from `src/ui` | No action (Shara): logged | `falling.js`, `playHud.js` |
+| Kiro's guard blocked `git push` and the preview deploy | Shara pushes and deploys herself from here on | n/a |
+| US English pack: SCOWL en_US list (ESDB, wordlist-diff commit 7f2f407, MIT-like notice) kept in `packs/source/`; the build stops on any word not in it | Done: removed labour, centre, der, des, les, pre, und, von | `build-pack.js`, `blocklist.txt` |

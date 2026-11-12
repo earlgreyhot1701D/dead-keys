@@ -1,16 +1,10 @@
-// Play: the mode picker (play Req 2.1). Two choices, each with its one-line "how it plays", and
-// one shared panel with the rules both games use and the real speed. Enter on a choice starts
-// that round; Escape goes back. Every word here is the copy table's (play design.md). No mock
-// screen of its own, so it uses the Block 6 page pieces (header, title strip, panels, footer).
-import {
-  backButton,
-  hints,
-  menuButton,
-  saveNote,
-  scanlines,
-  termBar,
-  termFooter,
-} from "../components/chrome.js";
+// Play: the mode picker (play Req 2.1, 2.3). Two choices, each with its one-line "how it plays",
+// one shared panel with the rules both games use, and the speed slider (the same setting
+// Settings shows). Enter on a choice starts that round; Escape goes back. Every word here is the
+// copy table's (play design.md). No mock screen of its own, so it uses the Block 6 page pieces.
+import { SPEED_MAX, SPEED_MIN } from "../../engine/config.js";
+import { isValidSetting } from "../../storage/settings.js";
+import { termPage } from "../components/chrome.js";
 import { el } from "../dom.js";
 import { speedText } from "./settings.js";
 
@@ -35,11 +29,12 @@ export function chooseRound(kind) {
 export const nextRound = () => ROUND_KINDS[next];
 
 export const PICK_LINE = "Pick how the words come at you.";
+export const BADGE = "SELECT";
 export const CHOICES = Object.freeze([
   {
     kind: "falling",
     name: "Falling words",
-    how: "Words drop down eight lanes toward your station. Type the first letter to lock a word, then finish it before it lands.",
+    how: "Words drop down six lanes toward your station. Type the first letter to lock a word, then finish it before it lands.",
   },
   {
     kind: "corners",
@@ -50,8 +45,7 @@ export const CHOICES = Object.freeze([
 export const RULES =
   "Lives are the arcade part. A word that lands costs one; a wrong key never does. Words speed up each wave, and you get one free continue. Running out just ends the round, and it's still saved. Want no pressure? Try Practice from the menu.";
 export const ESCAPE_LINE = "Escape pauses.";
-/** "Speed: 1× (change it in Settings)." with the real speed. */
-export const speedLine = (speed) => `Speed: ${speedText(speed)} (change it in Settings).`;
+export const SPEED_HINT = "Slower words give you more time. You can change this any time.";
 
 function choice(ctx, { kind, name, how }) {
   const howId = `pick-${kind}-how`;
@@ -75,27 +69,51 @@ function choice(ctx, { kind, name, how }) {
   ]);
 }
 
+/** The speed slider: same range, steps and readout as Settings; a change saves at once. */
+function speedRow(ctx) {
+  const speed = ctx.state.settings.speed;
+  // The slider speaks its own value, so the visible readout is hidden from a screen reader.
+  const shown = el("span", { class: "pick-speed-out", "aria-hidden": "true" }, speedText(speed));
+  return el("p", { class: "set-row picker-speed" }, [
+    el("label", { for: "pick-speed" }, "Speed "),
+    el("input", {
+      type: "range",
+      id: "pick-speed",
+      "data-focus-id": "pick-speed",
+      min: SPEED_MIN,
+      max: SPEED_MAX,
+      step: 0.1,
+      value: speed,
+      "aria-valuetext": speedText(speed),
+      "aria-describedby": "pick-speed-hint",
+      onInput: (e) => {
+        const text = speedText(Number(e.target.value));
+        shown.textContent = text;
+        e.target.setAttribute?.("aria-valuetext", text);
+      },
+      onChange: (e) => {
+        const v = Number(e.target.value);
+        if (isValidSetting("speed", v)) ctx.app.setSetting("speed", v);
+        else ctx.refresh(); // put the slider back to what is saved
+      },
+    }),
+    " ",
+    shown,
+    el("span", { id: "pick-speed-hint", class: "hint" }, SPEED_HINT),
+  ]);
+}
+
 /** @type {import("../router.js").Screen} */
 export const playScreen = {
   id: "play",
   title: "Play",
+  // The slider already shows a speed change, so a settings change does not redraw the picker.
+  redrawOn: ["progress", "persist", "oldData", "newerSave"],
   render(ctx) {
-    const right = [
-      el("span", { class: "save-note" }, saveNote(ctx.state)),
-      menuButton(ctx),
-      backButton(ctx),
-    ];
-    return el("div", { class: "screen-frame term-page" }, [
-      scanlines(),
-      el("header", { class: "term-page-head" }, [
-        termBar(right, "", () => ctx.go("menu")),
-        el(
-          "div",
-          { class: "title-strip" },
-          el("span", { class: "title-strip-left" }, el("h1", {}, "Play")),
-        ),
-      ]),
-      el("main", { id: "main", class: "term-main picker" }, [
+    return termPage(ctx, {
+      badgeText: BADGE,
+      title: "Play",
+      body: el("main", { id: "main", class: "term-main picker" }, [
         el("p", { class: "picker-line" }, PICK_LINE),
         el(
           "div",
@@ -105,14 +123,9 @@ export const playScreen = {
         el(
           "section",
           { class: "term-panel prose-panel picker-rules", "aria-label": "Rules for both games" },
-          [
-            el("p", {}, RULES),
-            el("p", {}, ESCAPE_LINE),
-            el("p", {}, speedLine(ctx.state.settings.speed)),
-          ],
+          [el("p", {}, RULES), el("p", {}, ESCAPE_LINE), speedRow(ctx)],
         ),
       ]),
-      termFooter(ctx.state, [hints(["[ESC] BACK", "[TAB] MOVE"])]),
-    ]);
+    });
   },
 };

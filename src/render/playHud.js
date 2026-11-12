@@ -4,6 +4,7 @@
 import { crtOn } from "../ui/components/chrome.js";
 import {
   accuracyBar,
+  accuracyText,
   leftText,
   liveAccuracy,
   livesLabel,
@@ -85,9 +86,8 @@ export function createPlayHud(el, { onPause, persist, speed }) {
     setText(v.wave, waveText(state));
     setText(v.left, leftText(state));
     setText(v.wpm, String(liveWpm(state)));
-    const acc = liveAccuracy(state);
-    setText(v.acc, `${acc}%`);
-    setText(v.bar, accuracyBar(acc));
+    setText(v.acc, accuracyText(state));
+    setText(v.bar, accuracyBar(liveAccuracy(state)));
     setText(v.time, timeText(state.activeMs));
     const col = lockColumn(state);
     setText(v.station, col ? `STATION_ID: TER-84 // ${col}` : "STATION_ID: TER-84");

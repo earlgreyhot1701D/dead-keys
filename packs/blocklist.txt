@@ -1,4 +1,4 @@
-# Words scripts/build-pack.js drops from the general pack (Block 7, Req 1.3).
+# Words scripts/build-pack.js drops from the general pack (Block 7, Req 1.2 and 1.3).
 # One word per line, lowercase. Lines starting with # are comments. Shara approves changes.
 
 # Offensive: slurs, profanity and sexual terms. Kept as a defensive list even where the
@@ -205,3 +205,23 @@ med
 san
 usa
 vol
+# Not in the US spelling list (Nov 12): foreign words and a prefix from book text.
+der
+des
+les
+pre
+und
+von
+
+# British spellings (Req 1.2, Shara, Nov 12): the pack is US English only. labour and centre
+# were in the top 1,500; the rest are kept as a defensive list, like the offensive one.
+behaviour
+centre
+colour
+defence
+favour
+honour
+labour
+organise
+programme
+theatre

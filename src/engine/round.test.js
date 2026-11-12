@@ -2,7 +2,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import * as fc from "fast-check";
-import { LIVES_MAX, SLOTS, TARGETS_MAX, TARGETS_START } from "./config.js";
+import { LIVES_MAX, SLOTS, SPAWN_GAP_MS, TARGETS_MAX, TARGETS_START } from "./config.js";
+import { tick } from "./lifecycle.js";
 import { createRound, key, pressEscape } from "./round.js";
 
 const items = [
@@ -40,14 +41,22 @@ function withTargets(list, over = {}) {
   return freeze({ ...state, targets, nextId: 100 });
 }
 
-test("createRound fills the screen to the wave-1 limit, with no lock and no keystrokes", () => {
+test("createRound starts with one word; the rest come one spawn gap apart, up to the limit", () => {
   const { state, events } = createRound(opts());
   assert.deepEqual(events, []);
-  assert.equal(state.targets.length, TARGETS_START);
+  assert.equal(state.targets.length, 1);
+  let s = state;
+  for (let n = 2; n <= TARGETS_START; n++) {
+    s = tick(s, SPAWN_GAP_MS - 1).state;
+    assert.equal(s.targets.length, n - 1, "not before the gap");
+    s = tick(s, 1).state;
+    assert.equal(s.targets.length, n);
+  }
+  assert.equal(tick(s, SPAWN_GAP_MS).state.targets.length, TARGETS_START, "never past the limit");
   assert.equal(state.lives, LIVES_MAX);
   assert.equal(state.lockId, null);
   assert.deepEqual(state.keystrokes, []);
-  assert.equal(createRound(opts({ mechanic: "corners" })).state.targets.length, 3);
+  assert.equal(createRound(opts({ mechanic: "corners" })).state.targets.length, 1);
 });
 
 test("the same options give the same round", () => {
@@ -99,8 +108,8 @@ test("a wrong key on a locked target is a miss against the expected key and keep
   assert.equal(r.state.keystrokes.at(-1).ok, false);
 });
 
-test("typing the last character clears the target, releases the lock and refills the screen", () => {
-  let s = withTargets([[0, "ab", 0.5]]);
+test("typing the last character clears the target, releases the lock and brings a new word", () => {
+  let s = freeze({ ...withTargets([[0, "ab", 0.5]]), spawnWaitMs: 0 }); // the gap has passed
   s = key(s, "a").state;
   const r = key(s, "b");
   assert.deepEqual(r.events, [{ type: "cleared", targetId: 0 }]);
@@ -110,7 +119,7 @@ test("typing the last character clears the target, releases the lock and refills
     r.state.targets.some((t) => t.id === 0),
     false,
   );
-  assert.equal(r.state.targets.length, TARGETS_START);
+  assert.equal(r.state.targets.length, 1); // one at once; tick brings the rest, a gap apart
   assert.ok(r.state.targets.every((t) => t.id >= 100));
 });
 

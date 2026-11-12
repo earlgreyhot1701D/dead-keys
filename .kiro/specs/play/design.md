@@ -60,9 +60,11 @@ Everything a screen shows is decided below: the map says what each mock element 
 | Where | Text |
 |---|---|
 | Mode picker h1 and line | h1 "Play". Line under it: "Pick how the words come at you." |
-| Mode picker, Falling words | Name "Falling words". How it plays: "Words drop down eight lanes toward your station. Type the first letter to lock a word, then finish it before it lands." |
+| Mode picker, Falling words | Name "Falling words". How it plays: "Words drop down six lanes toward your station. Type the first letter to lock a word, then finish it before it lands." |
 | Mode picker, Four corners | Name "Four corners". How it plays: "Words close in from four corners toward the core. Type the first letter to lock the closest one, then finish it before it reaches the ring." |
-| Mode picker, both (one panel under the choices) | "Lives are the arcade part. A word that lands costs one; a wrong key never does. Words speed up each wave, and you get one free continue. Running out just ends the round, and it's still saved. Want no pressure? Try Practice from the menu." Then: "Escape pauses." Then the real speed: "Speed: 1× (change it in Settings)." |
+| Mode picker, both (one panel under the choices) | "Lives are the arcade part. A word that lands costs one; a wrong key never does. Words speed up each wave, and you get one free continue. Running out just ends the round, and it's still saved. Want no pressure? Try Practice from the menu." Then: "Escape pauses." |
+| Mode picker, speed (Shara, Nov 11) | A speed slider on the picker, labelled "Speed", same range and steps as Settings (0.5× to 2×), showing the value like "1.2×". It starts at the saved speed, and changing it saves it (the same setting Settings shows). Hint under it: "Slower words give you more time. You can change this any time." |
+| Mode picker badge | SELECT |
 | Practice h1 | Practice |
 | Practice HUD note | No lives, no clock pressure. End the round from the pause menu. |
 | Pause dialog | Title "Paused". Buttons "Resume", "End round". |
@@ -98,7 +100,7 @@ Everything a screen shows is decided below: the map says what each mock element 
 
 ## Decisions
 
-1. **Positions.** Falling: x from `slot` (8 lanes across the play area), y from `progress`. Corners: each slot is a corner; a word moves along the line from its corner to the core by `progress`. Use CSS transforms; only `transform` and `textContent` change per frame.
+1. **Positions.** Falling: x from `slot` (6 lanes across the play area, as the mock draws; Shara, Nov 12), y from `progress`. Corners: each slot is a corner; a word moves along the line from its corner to the core by `progress`. Use CSS transforms; only `transform` and `textContent` change per frame.
 2. **Danger.** Falling `[!]` from progress 0.8. Corners `[!]` inside the ring, also progress 0.8.
 3. **Live WPM and accuracy** come from `score.js` with the round's counts so far (same math as results).
 4. **Round end.** `endRound` then `toResult(state, { id: "round-" + now, date: now, packId: "general", lessonId: null, drillSource: null })`, then `app.finishRound`. Local day is `YYYY-MM-DD` from the player's clock.

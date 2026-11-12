@@ -5,6 +5,7 @@ import * as fc from "fast-check";
 import {
   BASE_TRAVEL_MS,
   SLOTS,
+  SPAWN_GAP_MS,
   SPEED_MAX,
   SPEED_MIN,
   TARGETS_MAX,
@@ -12,7 +13,7 @@ import {
   WAVE_SPEEDUP,
   WAVE_SPEEDUP_MAX_WAVE,
 } from "./config.js";
-import { advance, spawn } from "./targets.js";
+import { advance, cool, spawn, spawnGap } from "./targets.js";
 
 const items = [
   { id: "w1", text: "fad" },
@@ -43,11 +44,11 @@ const mechanic = fc.constantFrom("corners", "falling");
 const wave = fc.integer({ min: 1, max: 30 });
 const speed = fc.double({ min: SPEED_MIN, max: SPEED_MAX, noNaN: true });
 
-/** Spawn until nothing more arrives. */
+/** Spawn until nothing more arrives, skipping the spawn gap each time. */
 function fill(s) {
   for (let i = 0; i < 40; i++) {
-    const r = spawn(s);
-    if (r.state === s) return s;
+    const r = spawn(freeze({ ...s, spawnWaitMs: 0 }));
+    if (r.state.targets.length === s.targets.length) return s;
     s = freeze({ ...r.state });
   }
   throw new Error("spawn never stopped");
@@ -69,10 +70,30 @@ test("corners never holds more than 4 targets, even in a late wave", () => {
   assert.equal(s.targets.length, 4);
 });
 
-test("falling starts at 3 and grows by one a wave up to 8", () => {
+test("falling starts at 3 and grows by one a wave up to its 6 lanes", () => {
+  assert.equal(SLOTS.falling, 6); // as the mock draws (Shara, Nov 12)
   assert.equal(fill(state({ wave: 1 })).targets.length, 3);
   assert.equal(fill(state({ wave: 2 })).targets.length, 4);
-  assert.equal(fill(state({ wave: 20 })).targets.length, 8);
+  assert.equal(fill(state({ wave: 20 })).targets.length, 6);
+});
+
+test("spawn gap: one word, then nothing until SPAWN_GAP_MS / speed has passed", () => {
+  fc.assert(
+    fc.property(speed, (sp) => {
+      const one = spawn(state({ speed: sp })).state;
+      assert.equal(one.targets.length, 1);
+      assert.equal(one.spawnWaitMs, SPAWN_GAP_MS / sp);
+      assert.equal(spawnGap(sp), SPAWN_GAP_MS / sp);
+      assert.equal(spawn(one).state, one); // inside the gap: the same state
+      const almost = cool(one, one.spawnWaitMs - 1);
+      assert.equal(spawn(almost).state, almost);
+      const ready = cool(almost, 1);
+      assert.equal(ready.spawnWaitMs, 0);
+      assert.equal(spawn(ready).state.targets.length, 2);
+    }),
+  );
+  assert.equal(cool(state({ spawnWaitMs: 100 }), 500).spawnWaitMs, 0); // never below 0
+  assert.equal(cool(state(), 50).spawnWaitMs, 0);
 });
 
 test("ids count up from the state, slots are in range and never shared", () => {
@@ -114,7 +135,7 @@ test("the same state spawns the same target (seeded, no hidden randomness)", () 
 });
 
 test("a full screen spawns nothing and hands back the same state", () => {
-  const full = fill(state());
+  const full = freeze({ ...fill(state()), spawnWaitMs: 0 });
   assert.equal(spawn(full).state, full);
 });
 

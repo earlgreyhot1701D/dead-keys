@@ -7,9 +7,11 @@ import { validate } from "../contract/validate.js";
 import {
   ATTRIBUTION,
   CHARSET,
+  checkUsSpelling,
   makePack,
   parseBlocklist,
   pickWords,
+  readUsWords,
   WORD_COUNT,
 } from "../scripts/build-pack.js";
 
@@ -56,6 +58,15 @@ test("the build drops short, long, non-letter, repeated and blocked words", () =
   );
   assert.deepEqual(got, ["the", "cat"]);
   assert.throws(() => pickWords(["the"], new Set(), 2), /only 1 words/);
+});
+
+test("US English only: every word is in the US spelling list, and British ones are refused", () => {
+  const us = readUsWords(new URL("./source/scowl_en_US.txt", import.meta.url));
+  checkUsSpelling(words, us);
+  for (const w of ["labour", "centre", "colour", "defence", "programme", "organise"]) {
+    assert.ok(!us.has(w) && blocked.has(w), w);
+  }
+  assert.throws(() => checkUsSpelling(["color", "colour"], us), /US spelling list: colour$/);
 });
 
 test("the blocklist parser skips comments and blank lines", () => {

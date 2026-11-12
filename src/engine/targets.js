@@ -2,6 +2,7 @@
 import {
   BASE_TRAVEL_MS,
   SLOTS,
+  SPAWN_GAP_MS,
   SPEED_MAX,
   SPEED_MIN,
   TARGETS_MAX,
@@ -25,6 +26,7 @@ const { next } = createRng(0); // `next` takes the state as an argument, so any 
  * @property {number} wave 1 or more.
  * @property {import("./match.js").Target[]} targets
  * @property {number} nextId
+ * @property {number} [spawnWaitMs] Time left before the next spawn may happen (0 or missing: now).
  */
 
 /** How many targets may be on screen: the wave's limit, but never more than there are slots. */
@@ -45,17 +47,22 @@ function check(state) {
     throw new RangeError(`unknown mechanic "${state.mechanic}"`);
 }
 
+/** The wait after a spawn before the next one: SPAWN_GAP_MS divided by the speed. */
+export const spawnGap = (speed) => SPAWN_GAP_MS / speed;
+
 /**
- * Add one target if fewer are on screen than the wave allows. Call it again for more.
+ * Add one target if fewer are on screen than the wave allows and the spawn gap has passed
+ * (`spawnWaitMs` is 0 or missing). The new target starts the gap again; `cool` runs it down.
  * The item is picked uniformly (Block 9 swaps in weighted sampling here), then a free slot.
  * @param {TargetState} state
- * @returns {{ state: TargetState, events: [] }} The same state, untouched, when at the limit.
+ * @returns {{ state: TargetState, events: [] }} The same state, untouched, when at the limit
+ *   or still inside the gap.
  * @throws {Error} If there are no items to spawn from.
  */
 export function spawn(state) {
   check(state);
   if (state.items.length === 0) throw new Error("spawn needs at least one item");
-  if (state.targets.length >= cap(state)) return { state, events: [] };
+  if (state.targets.length >= cap(state) || state.spawnWaitMs > 0) return { state, events: [] };
   const taken = new Set(state.targets.map((t) => t.slot));
   const free = Array.from({ length: SLOTS[state.mechanic] }, (_, i) => i).filter(
     (i) => !taken.has(i),
@@ -77,10 +84,22 @@ export function spawn(state) {
       rng: b.state,
       nextId: state.nextId + 1,
       targets: [...state.targets, target],
+      spawnWaitMs: spawnGap(state.speed),
     },
     events: [],
   };
 }
+
+/**
+ * Run the spawn gap down by `dtMs`, never below 0.
+ * @param {TargetState} state
+ * @param {number} dtMs
+ * @returns {TargetState}
+ */
+export const cool = (state, dtMs) => ({
+  ...state,
+  spawnWaitMs: Math.max(0, (state.spawnWaitMs ?? 0) - dtMs),
+});
 
 /**
  * Move every target toward danger by `dtMs`. A target takes

@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { createEl } from "../ui/dom.js";
 import { makeFakeDoc } from "../ui/fakeDom.js";
-import { cardX, cardY, createFalling, FIELD, LANES, LOCK_W, laneX } from "./falling.js";
+import { cardX, cardY, createFalling, FIELD, LANES, LOCK_W, laneX, nearness } from "./falling.js";
 
 const target = (id, text, slot, progress, typed = 0) => ({ id, text, slot, progress, typed });
 
@@ -26,15 +26,20 @@ const draw = (f, s) => {
   }
 };
 
-test("eight lanes across the field, cards from the top to the station line", () => {
-  assert.equal(LANES, 8);
-  assert.equal(laneX(0), FIELD.w / 16);
-  assert.equal(laneX(LANES - 1), FIELD.w - FIELD.w / 16);
+test("six lanes across the field, cards from the top to the station line", () => {
+  assert.equal(LANES, 6);
+  assert.equal(laneX(0), FIELD.w / 12);
+  assert.equal(laneX(LANES - 1), FIELD.w - FIELD.w / 12);
   for (let s = 0; s < LANES; s++) {
     assert.ok(cardX(s) - LOCK_W / 2 >= 0 && cardX(s) + LOCK_W / 2 <= FIELD.w, `lane ${s}`);
   }
   assert.equal(cardX(3), laneX(3));
   assert.equal(cardY(0), 0);
+  // Far words are dimmer: 0 at the top, 1 from the danger zone on, in steps of 0.05.
+  assert.equal(nearness(0), 0);
+  assert.equal(nearness(0.4), 0.5);
+  assert.equal(nearness(0.8), 1);
+  assert.equal(nearness(1), 1);
   assert.equal(cardY(1), FIELD.h - FIELD.cardH);
 });
 

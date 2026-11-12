@@ -21,7 +21,7 @@
   position: absolute;
   inset: 0;
   display: grid;
-  grid-template-columns: repeat(8, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   opacity: 0.35;
 }
 .fall-lane {
@@ -107,11 +107,12 @@
   font-size: 13px;
   color: var(--muted);
 }
+/* Far words are dimmer: --accent at the top, full --text from the danger zone (falling.js). */
 .fw-word {
   font-size: 24px;
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: var(--text);
+  color: color-mix(in srgb, var(--text) calc(var(--near, 1) * 100%), var(--accent));
 }
 .fw-trail {
   width: 0;

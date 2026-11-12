@@ -41,6 +41,10 @@ export function liveAccuracy(state) {
   const { correct, total } = counts(state);
   return Math.round(accuracy(correct, total) * 100);
 }
+/** "95%", or "--" before the first key (Shara, Nov 12: no 0% for keys not yet pressed). */
+export function accuracyText(state) {
+  return counts(state).total === 0 ? "--" : `${liveAccuracy(state)}%`;
+}
 /** "█████████░": ten cells, one per 10%. */
 export function accuracyBar(percent) {
   const filled = Math.max(0, Math.min(10, Math.floor(percent / 10))); // the mock: 95% is 9 cells

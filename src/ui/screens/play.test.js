@@ -1,17 +1,20 @@
-// The mode picker (Req 2.1): two choices with their lines, the shared rules, the real speed, all
-// word for word from the play copy table; a choice starts that round.
+// The mode picker (Req 2.1, 2.3): two choices with their lines, the shared rules, the badge and
+// the speed slider, all word for word from the play copy table; a choice starts that round, and
+// the slider starts at the saved speed and saves a change.
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
+import { SPEED_MAX, SPEED_MIN } from "../../engine/config.js";
 import { findAll, textOf, withFakeDocument } from "../fakeDom.js";
 import {
+  BADGE,
   CHOICES,
   ESCAPE_LINE,
   nextRound,
   PICK_LINE,
   playScreen,
   RULES,
-  speedLine,
+  SPEED_HINT,
 } from "./play.js";
 
 const design = readFileSync(
@@ -26,12 +29,15 @@ function draw(speed = 1) {
   withFakeDocument(() => {
     node = playScreen.render({
       state: { settings: { speed }, persist: true },
+      app: { setSetting: (k, v) => log.push(["set", k, v]) },
       go: (id) => log.push(["go", id]),
       back: () => log.push(["back"]),
+      refresh: () => log.push(["refresh"]),
     });
   });
   return { node, log, text: textOf(node) };
 }
+const slider = (node) => findAll(node, (n) => n.attrs?.id === "pick-speed")[0];
 
 test("the copy is the play copy table's, word for word", () => {
   assert.ok(row("| Mode picker h1 and line").includes(`"${PICK_LINE}"`));
@@ -43,20 +49,39 @@ test("the copy is the play copy table's, word for word", () => {
   const both = row("| Mode picker, both");
   assert.ok(both.includes(`"${RULES}"`));
   assert.ok(both.includes(`"${ESCAPE_LINE}"`));
-  assert.ok(both.includes(`"${speedLine(1)}"`));
-  assert.equal(speedLine(1), "Speed: 1× (change it in Settings).");
+  assert.ok(row("| Mode picker, speed").includes(`Hint under it: "${SPEED_HINT}"`));
+  assert.equal(row("| Mode picker badge"), `| Mode picker badge | ${BADGE} |`);
 });
 
-test("h1 Play, the line, both choices and the rules panel are on the screen", () => {
+test("h1 Play, the badge, the line, both choices and the rules panel are on the screen", () => {
   const { node, text } = draw();
   assert.equal(textOf(findAll(node, (n) => n.tag === "h1")[0]), "Play");
-  for (const s of [PICK_LINE, RULES, ESCAPE_LINE, ...CHOICES.flatMap((c) => [c.name, c.how])]) {
+  for (const s of [BADGE, PICK_LINE, RULES, ESCAPE_LINE, SPEED_HINT])
     assert.ok(text.includes(s), s);
-  }
+  for (const c of CHOICES) assert.ok(text.includes(c.name) && text.includes(c.how), c.name);
 });
 
-test("the speed shown is the real setting", () => {
-  assert.ok(draw(0.8).text.includes("Speed: 0.8× (change it in Settings)."));
+test("the speed slider: labelled, Settings' range and steps, starts at the saved speed", () => {
+  const { node, text } = draw(0.8);
+  const s = slider(node);
+  const label = findAll(node, (n) => n.tag === "label" && n.attrs.for === "pick-speed")[0];
+  assert.equal(textOf(label).trim(), "Speed");
+  assert.equal(s.attrs.type, "range");
+  assert.equal(s.attrs.min, String(SPEED_MIN));
+  assert.equal(s.attrs.max, String(SPEED_MAX));
+  assert.equal(s.attrs.step, "0.1");
+  assert.equal(s.value, 0.8);
+  assert.equal(s.attrs["aria-valuetext"], "0.8×");
+  assert.ok(text.includes("0.8×"));
+  assert.equal(s.attrs["aria-describedby"], "pick-speed-hint");
+});
+
+test("moving the slider saves the speed; a bad value is never saved", () => {
+  const { node, log } = draw();
+  const s = slider(node);
+  s.listeners.change({ target: { value: "1.2" } });
+  s.listeners.change({ target: { value: "9" } });
+  assert.deepEqual(log, [["set", "speed", 1.2], ["refresh"]]);
 });
 
 test("each choice is a button, described by its line, that starts its round", () => {
