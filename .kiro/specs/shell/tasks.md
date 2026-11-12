@@ -3,7 +3,7 @@
 **Spec:** `shell`. **Rigor:** Working for layout, Full for saved data.
 One task at a time. Never "run all." Touch only the files a task names. Tick each when done. Flag anything that looks off; keep a running list for task 15. DO NOT refactor other code.
 
-- [ ] 1. Longevity check and pin: `@fontsource/jetbrains-mono`, `@fontsource/roboto-condensed`, `@playwright/test`, `@axe-core/playwright`, `vercel`. Newest release at least two weeks old, active, no deprecations. Report a table and stop for Shara's OK before installing. _Design 1, 2, 7._
+- [x] 1. Longevity check and pin: `@fontsource/jetbrains-mono`, `@fontsource/roboto-condensed`, `@playwright/test`, `@axe-core/playwright`, `vercel`. Newest release at least two weeks old, active, no deprecations. Report a table and stop for Shara's OK before installing. _Design 1, 2, 7._
 - [ ] 2. Copy: update `src/storage/notices.js` with the approved `otherTab` notice, and `src/storage/exportImport.js` reason strings with the approved wording. Tests updated. _Req 3.4, Block 4 deferral._
 - [ ] 3. `index.html`, `src/main.js`, `src/ui/dom.js`, `src/styles/*.css` with fonts and tokens. Contrast test for every text token pair. `npm run dev` shows a blank styled page. _Req 1.1, 1.3, 2._
 - [ ] 4. `src/storage/settings.js` + test: defaults and check. _Req 5.1, 5.2._
