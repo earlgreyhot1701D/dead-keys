@@ -1,8 +1,11 @@
 // The notice line and its button (shell Req 3.3). The wording and button label come from
 // storage/notices.js, the approved copy; this file adds only what each button does and a
-// "Dismiss" control. The slot it is drawn in is a polite live region (role="status"), so a screen
+// "Got it" control. The slot it is drawn in is a polite live region (role="status"), so a screen
 // reader speaks a notice when it appears.
 import { NOTICES } from "../../storage/notices.js";
+
+/** The quiet button on every notice (approved copy; it replaced "Dismiss"). */
+export const QUIET_BUTTON = "Got it";
 
 /**
  * What each notice's button does. `retry` repeats whichever export or download just failed.
@@ -51,7 +54,7 @@ export function renderNotice(mk, id, { run, dismiss }) {
     mk("p", { class: "notice-line" }, notice.line),
     mk("div", { class: "notice-actions" }, [
       mk("button", { type: "button", class: "btn", onClick: () => run(id) }, notice.button),
-      mk("button", { type: "button", class: "btn btn-quiet", onClick: dismiss }, "Dismiss"),
+      mk("button", { type: "button", class: "btn btn-quiet", onClick: dismiss }, QUIET_BUTTON),
     ]),
   ]);
 }

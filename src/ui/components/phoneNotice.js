@@ -1,5 +1,5 @@
 // The one-line notice for visitors who probably have no keyboard (shell Req 1.5, design 5). Menus
-// still work. The wording is a draft in the shell design's copy table, waiting for Shara.
+// still work. The wording is approved and sits in the shell design's copy table.
 
 /** The wording. Says plainly that a keyboard is needed, and what the visitor can still do. */
 export const PHONE_NOTICE =

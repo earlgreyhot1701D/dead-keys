@@ -14,12 +14,12 @@ test("every notice has an action, and no action is for a notice that does not ex
   assert.deepEqual(Object.keys(ACTIONS).sort(), Object.keys(NOTICES).sort());
 });
 
-test("each notice is drawn with its approved line, its button, and Dismiss", () => {
+test("each notice is drawn with its approved line, its button, and its quiet button", () => {
   for (const [id, notice] of Object.entries(NOTICES)) {
     const node = renderNotice(mk, id, { run: () => {}, dismiss: () => {} });
     assert.equal(node.attrs["data-notice"], id);
     assert.equal(findAll(node, (n) => n.tag === "p")[0].children[0].text, notice.line);
-    assert.deepEqual(buttons(node).map(textOf), [notice.button, "Dismiss"], id);
+    assert.deepEqual(buttons(node).map(textOf), [notice.button, "Got it"], id);
   }
 });
 

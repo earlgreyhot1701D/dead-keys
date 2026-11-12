@@ -50,14 +50,25 @@ main.js -> app.js (state + storage actions + tab sync)
 7. **Preview deploys.** Vercel CLI pinned in devDependencies and run through npm scripts. Shara runs `vercel login` herself. Kiro links the project and deploys previews only. Every deploy is logged in `KIRO-NOTES.md`.
 8. **Build check** runs after every build at the gate: `npm run build && node scripts/check-build.js`.
 
-## Copy for Shara to approve
+## Copy (approved rows are marked; new rows need Shara's approval)
 
 | Where | Text |
 |---|---|
 | `otherTab` notice | Your progress changed in another Dead Keys tab. To keep both tabs from overwriting each other, this one has stopped saving. Reload to pick up the latest. Button: Reload |
 | `exportFailed` notice | We couldn't make a backup file just now. Your progress is still saved in this browser. Try again in a moment. Button: Try again |
 | Clear confirm, extra line when a newer save is present | This also deletes progress saved by a newer version of Dead Keys. |
-| Phone notice (draft, Shara to approve) | Dead Keys needs a physical keyboard to play. You can still look around the menus here. To type, open this page on a computer. |
+| Phone notice (approved) | Dead Keys needs a physical keyboard to play. You can still look around the menus here. To type, open this page on a computer. |
+| Notice bar, quiet button (approved, replaces "Dismiss") | Got it |
+| Progress, no rounds (approved) | Play a round and your keys will show up here. |
+| Progress, too little data (approved) | Not enough typing yet to say anything about your keys. Keep playing. |
+| Progress, nothing flagged (approved) | Nothing stands out. Your keys look even. |
+| Personal bests, none (approved) | No personal bests yet. Play a round to set one. |
+| Progress headings (approved) | Your keys / What we notice / Personal bests / Heat map in words |
+| Personal best names (approved) | corners: Four corners; falling: Falling words; lesson: Lessons; testout: Test outs; daily: Daily drill; specwave: Spec Wave |
+| Personal best date (approved) | set Nov 11 (short month and day, local time) |
+| Clear confirm title (approved) | Clear all progress? |
+| Clear confirm line (approved) | This deletes your rounds, heat map, personal bests and milestones from this browser. It can't be undone, so download a backup first if you might want them back. |
+| Clear confirm buttons (approved) | Clear everything (confirm) / Keep my progress (cancel) |
 | Reason: not text | That isn't a backup file. |
 | Reason: over 2 MB | That file is too big to be a Dead Keys backup. The limit is 2 MB. |
 | Reason: not JSON | That file isn't a Dead Keys backup. It can't be read. |

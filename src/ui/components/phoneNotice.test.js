@@ -69,7 +69,7 @@ test("a real key counts as a hardware key; the on-screen keyboard's does not", (
   for (const bad of [null, undefined, {}, { key: 5 }]) assert.equal(isHardwareKey(bad), false);
 });
 
-test("the wording is the shell design's draft, one sentence per idea, and says a keyboard is needed", () => {
+test("the wording is the shell design's approved copy, one sentence per idea, and says a keyboard is needed", () => {
   const design = readFileSync(
     new URL("../../../.kiro/specs/shell/design.md", import.meta.url),
     "utf8",
