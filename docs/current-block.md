@@ -9,7 +9,8 @@ Blocks 1 to 4 passed Nov 11 (tags `block-1` to `block-4`). Block 5 (design and t
 - `index.html`, `src/main.js`, `src/ui/**`, `src/styles/**`
 - `public/licenses/` (the two OFL font license texts, served from our own origin; added Nov 11)
 - `src/storage/settings.js` and its test; `src/storage/notices.js` and `src/storage/exportImport.js` (copy only, task 2) and their tests
-- `scripts/check-build.js`, `playwright.config.js`, `e2e/**`
+- `scripts/check-build.js`, `scripts/check-build.test.js` (added Nov 12), `playwright.config.js`, `e2e/**`
+- `src/styles/keyboardContrast.test.js` (added Nov 12; under `src/styles/**` already, named here for the record)
 - `.kiro/agents/a11y-auditor.md`
 - `package.json`, `package-lock.json` (the pinned devDependencies from task 1 and the `test:e2e`, `check:build`, deploy scripts)
 - `.kiro/specs/shell/*`, `KIRO-NOTES.md`
