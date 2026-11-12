@@ -65,7 +65,7 @@ export function createRound({ mode, mechanic, items, seed, speed }) {
 
 /**
  * One key press. Ignored when paused, held, ended, or `char` is not one character (Req 2.7).
- * A miss marks the locked word `wrong` (waiting on that letter) until the right key. Logged at
+ * A miss sets the locked word's `wrong` to the key pressed, until the right key. Logged at
  * `activeMs`, so its time moves only with `tick`.
  * @param {object} state
  * @param {string} char
@@ -93,7 +93,7 @@ export function key(state, char) {
   const d = s.keyDeltas[r.expected] ?? { attempts: 0, misses: 0 };
   s = {
     ...s,
-    targets: s.targets.map((t) => (t.id === lock.id ? { ...r.target, wrong: !r.ok } : t)),
+    targets: s.targets.map((t) => (t.id === lock.id ? { ...r.target, wrong: !r.ok && char } : t)),
     keystrokes: [
       ...s.keystrokes,
       { t: Math.round(s.activeMs), expected: r.expected, typed: char, ok: r.ok },

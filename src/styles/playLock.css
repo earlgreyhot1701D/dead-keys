@@ -72,3 +72,16 @@
   display: flex;
   font-size: 13px;
 }
+/* The wrong key, shown in red where the next letter goes, until the right key or Backspace. */
+.fw-wrong:not(:empty),
+.cw-wrong:not(:empty),
+.stream-wrong:not(:empty),
+.cn-buffer-wrong:not(:empty) {
+  color: var(--missed);
+  text-decoration: line-through;
+}
+/* The red key takes the caret's place, so a long locked word still fits its box. */
+.is-wrong .fw-caret,
+.is-wrong .cw-caret {
+  display: none;
+}

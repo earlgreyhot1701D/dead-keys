@@ -108,8 +108,9 @@ export function createCorners(el) {
       setText(c.p.tag, dangerMark(t));
       setText(c.p.dist, `D:${dist(t)}`);
       setText(c.p.lockDist, `DIST: ${dist(t)}`);
-      const { typed, rest } = lockParts(t);
+      const { typed, wrong, rest } = lockParts(t);
       setText(c.p.typed, typed);
+      setText(c.p.wrong, wrong);
       setText(c.p.rest, rest);
       setText(c.p.vector, isLocked ? vectorText(state) : "");
       const at = wordAt(t.slot, t.progress);

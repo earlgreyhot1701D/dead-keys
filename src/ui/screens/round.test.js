@@ -1,5 +1,5 @@
 // The round screen (Req 3 to 5): the dialogs' copy word for word, which keys reach the engine,
-// Escape's layers (drop the lock, else pause), Backspace letting go, keys ignored under a dialog, and the loop driving
+// Escape's layers (drop the lock, else pause), Backspace clearing a wrong key, keys ignored under a dialog, and the loop driving
 // time. A fake window gives the frames, so the round runs under node.
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -126,7 +126,7 @@ test("a typed key locks a word; Escape drops the lock, then pauses", () => {
   }
 });
 
-test("strict but clear: a wrong key marks the word, Backspace does nothing, Escape lets go", () => {
+test("strict but clear: a wrong key shows in red, Backspace clears it, Escape lets go", () => {
   const r = start();
   const hint = () => findAll(r.node, (n) => n.attrs?.class === "foot-hint")[0].textContent ?? "";
   try {
@@ -140,9 +140,13 @@ test("strict but clear: a wrong key marks the word, Backspace does nothing, Esca
     r.frame(16);
     assert.equal(hint(), WRONG_HINT);
     assert.ok(findAll(r.node, (n) => /\bis-wrong\b/.test(n.attrs?.class ?? "")).length === 1);
+    const red = () => findAll(r.node, (n) => n.attrs?.class === "fw-wrong")[0].textContent;
+    assert.equal(red(), "~");
     assert.equal(r.press("Backspace"), true);
     r.frame(16);
-    assert.notEqual(lockWord(r.node), "", "Backspace keeps the word");
+    assert.equal(red(), "", "Backspace clears the red key");
+    assert.equal(hint(), COACH.finish);
+    assert.notEqual(lockWord(r.node), "", "and keeps the word");
     r.press("Escape");
     r.frame(16);
     assert.equal(lockWord(r.node), "");

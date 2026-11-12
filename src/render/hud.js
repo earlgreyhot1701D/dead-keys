@@ -91,7 +91,8 @@ export const locked = (state) => state.targets.find((t) => t.id === state.lockId
 
 /** Its typed part and remaining part. */
 export function lockParts(target) {
-  return { typed: target.text.slice(0, target.typed), rest: target.text.slice(target.typed) };
+  const typed = target.text.slice(0, target.typed);
+  return { typed, wrong: target.wrong || "", rest: target.text.slice(target.typed) };
 }
 
 /** "LOCK: COLUMN_3" for the locked word's lane, or null when nothing is locked. */

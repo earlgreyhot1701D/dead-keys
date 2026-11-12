@@ -1,11 +1,17 @@
 // The play screen (play Req 2 to 7): engine + loop + renderer + keys + dialogs + moments. Keys go
-// to the engine one character at a time, only while no dialog is open. Escape follows the
-// engine's layered rule (drop the lock, else pause). The loop stops when the round ends or the
-// screen is gone. An ended round is recorded through app.finishRound and shown on results.
+// to the engine one at a time, only while no dialog is open. The loop stops when the round ends
+// or the screen is gone; an ended round is recorded (app.finishRound) and shown on results.
 import pack from "../../../packs/general.json" with { type: "json" };
 import { announceAll } from "../../a11y/announce.js";
 import { LIVES_MAX } from "../../engine/config.js";
-import { endRound, pause, resolveOutOfLives, resume, tick } from "../../engine/lifecycle.js";
+import {
+  backspace,
+  endRound,
+  pause,
+  resolveOutOfLives,
+  resume,
+  tick,
+} from "../../engine/lifecycle.js";
 import { toResult } from "../../engine/result.js";
 import { createRound, key, pressEscape } from "../../engine/round.js";
 import { liveWpm } from "../../render/hud.js";
@@ -119,15 +125,11 @@ export const roundScreen = {
     if (!live || live.dialogOpen()) return false;
     // Caps Lock makes every lowercase word miss, so the footer says so (Shara, Nov 12).
     if (typeof e.getModifierState === "function") live.setCaps(e.getModifierState("CapsLock"));
-    if (e.key === "Escape") {
-      live.step(pressEscape(live.state));
-      return true;
-    }
-    // Backspace does nothing in a round: misses never move a word on, so there is nothing to
-    // delete, and the habit of fixing a typo must not throw a word away (Shara, Nov 12).
-    if (e.key === "Backspace") return true;
-    if (!isTyping(e)) return false;
-    live.step(key(live.state, e.key));
+    // Escape: let go, else pause. Backspace clears a wrong key shown on the word, never the word.
+    const special = { Escape: pressEscape, Backspace: backspace }[e.key];
+    if (special) live.step(special(live.state));
+    else if (isTyping(e)) live.step(key(live.state, e.key));
+    else return false;
     return true;
   },
 };

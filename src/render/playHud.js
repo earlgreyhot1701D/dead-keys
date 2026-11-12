@@ -26,9 +26,8 @@ const setText = (node, text) => {
 };
 
 /**
- * The footer both play screens share (mocks 3 and 4): starting speed, save, the pause button,
- * the hint, CRT-SCAN. `update` sets the hint each frame: Caps Lock first (every key would
- * miss), then how to let go of a locked word, else nothing. `setCaps` is told by each key press.
+ * The footer both play screens share (mocks 3 and 4): starting speed, save, pause, the hint,
+ * CRT-SCAN. `update` sets the hint each frame, Caps Lock first; `setCaps` is told by each key.
  * @param {Function} el
  * @param {{ onPause: () => void, persist: boolean, speed: number }} o
  * @returns {{ node: HTMLElement, update: (state: object) => void, setCaps: (on: boolean) => void }}
@@ -55,20 +54,16 @@ export function playFooter(el, { onPause, persist, speed }) {
   };
 }
 
-/** The footer hint lines (play copy table, Shara, Nov 12). */
+// The footer hint lines (play copy table, Shara, Nov 12). Caps Lock: every key would miss.
 export const LET_GO_HINT = "LOCKED: [ESC] LETS GO";
 export const WRONG_HINT = "TYPE THE AMBER LETTER. [ESC] LETS GO";
 export const COACH = Object.freeze({
   pick: "TYPE A WORD'S FIRST LETTER TO LOCK IT",
   finish: "FINISH IT BEFORE IT LANDS. [ESC] LETS GO",
 });
-/** Shown while Caps Lock is on: the words are lowercase, so every key would miss. */
 export const CAPS_HINT = "CAPS LOCK IS ON";
 
-/**
- * What the footer says: during the warm-up and in Practice it coaches every step; later only how
- * to let go, and which letter a word waits on after a wrong key.
- */
+/** The footer line: coaching in the warm-up and Practice, later only let-go and the amber key. */
 export function lockHint(state) {
   const t = state.targets.find((x) => x.id === state.lockId);
   const coach = state.warmup > 0 || state.mode === "practice";
@@ -97,6 +92,7 @@ export function createPlayHud(el, { onPause, persist, speed, practice = false })
     time: span("hud-strong"),
     station: span("station-tag"),
     typed: span("stream-typed"),
+    wrong: span("stream-wrong"),
     target: span("stream-target"),
   };
   const header = el("header", { class: "play-hud" }, [
@@ -119,6 +115,7 @@ export function createPlayHud(el, { onPause, persist, speed, practice = false })
         el("span", { class: "stream-label" }, "INPUT_STREAM:"),
         el("span", { class: "stream-text" }, [
           v.typed,
+          v.wrong,
           el("span", { class: "stream-cursor", "aria-hidden": "true" }, "█"),
         ]),
       ]),
@@ -142,6 +139,7 @@ export function createPlayHud(el, { onPause, persist, speed, practice = false })
     setText(v.station, col ? `STATION_ID: TER-84 // ${col}` : "STATION_ID: TER-84");
     const t = locked(state);
     setText(v.typed, t ? lockParts(t).typed : "");
+    setText(v.wrong, t ? lockParts(t).wrong : "");
     setText(v.target, t ? t.text : "");
     foot.update(state);
   }

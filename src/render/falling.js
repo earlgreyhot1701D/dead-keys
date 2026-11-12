@@ -40,6 +40,7 @@ function makeCard(el, target) {
     tag: el("div", { class: "fw-tag" }),
     word: el("div", { class: "fw-word" }, target.text),
     typed: el("span", { class: "fw-typed" }),
+    wrong: el("span", { class: "fw-wrong" }),
     rest: el("span", { class: "fw-rest" }),
   };
   const node = el("div", { class: "fw" }, [
@@ -51,6 +52,7 @@ function makeCard(el, target) {
           el("span", { class: "fw-bracket" }, "["),
           parts.typed,
           el("span", { class: "fw-caret" }, "|"),
+          parts.wrong,
           parts.rest,
           el("span", { class: "fw-bracket" }, "]"),
         ]),
@@ -106,8 +108,9 @@ export function createFalling(el) {
       if (c.cls !== cls) c.node.setAttribute("class", cls);
       c.cls = cls;
       setText(c.parts.tag, dangerMark(t));
-      const { typed, rest } = lockParts(t);
+      const { typed, wrong, rest } = lockParts(t);
       setText(c.parts.typed, typed);
+      setText(c.parts.wrong, wrong);
       setText(c.parts.rest, rest);
       const near = nearness(t.progress);
       if (c.near !== near && c.node.style) c.node.style.setProperty("--near", String(near));

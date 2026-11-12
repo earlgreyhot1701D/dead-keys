@@ -84,6 +84,19 @@ export function endRound(state) {
 }
 
 /**
+ * Backspace: clear the wrong key shown on the locked word. Nothing else: a miss never went into
+ * the word, so there is nothing to delete (Shara, Nov 12). Ignored with no mark to clear.
+ * @param {object} state
+ * @returns {{ state: object, events: object[] }}
+ */
+export function backspace(state) {
+  const t = state.targets.find((x) => x.id === state.lockId);
+  if (!t?.wrong || state.paused || state.held || state.ended) return same(state);
+  const targets = state.targets.map((x) => (x === t ? { ...x, wrong: false } : x));
+  return { state: { ...state, targets }, events: [] };
+}
+
+/**
  * Pause without dropping the lock (auto-pause when the tab is hidden or the window loses focus;
  * Escape pauses only with nothing locked). Ignored if already paused, held or ended.
  * @param {object} state

@@ -106,7 +106,8 @@ test("the lock: its lane, its typed and remaining parts; nothing when unlocked",
   s = key(key(key(s, "h").state, "a").state, "r").state;
   const t = s.targets.find((x) => x.id === s.lockId);
   assert.equal(lockColumn(s), `LOCK: COLUMN_${t.slot + 1}`);
-  assert.deepEqual(lockParts(t), { typed: "har", rest: "bor" });
+  assert.deepEqual(lockParts(t), { typed: "har", wrong: "", rest: "bor" });
+  assert.equal(lockParts({ ...t, wrong: "x" }).wrong, "x");
 });
 
 test("danger from 80% of the way: [!], otherwise [·]", () => {

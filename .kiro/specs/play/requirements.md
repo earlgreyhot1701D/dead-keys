@@ -45,7 +45,7 @@ This is the first block where Dead Keys plays. A player picks falling words or f
 
 ## Requirement 5: Pause, out of lives, end
 
-1. Escape SHALL follow the layered rule: drop the lock first; with nothing locked, pause. Backspace SHALL do nothing during a round. A wrong key SHALL never move a word on; the letter it waits on SHALL be marked amber until typed (Shara, Nov 12: strict but clear).
+1. Escape SHALL follow the layered rule: drop the lock first; with nothing locked, pause. A wrong key SHALL never move a word on. It SHALL show in red on the word, and the letter it waits on SHALL be marked amber, until the right key. Backspace SHALL clear the red key and nothing else (Shara, Nov 12: strict but clear).
 2. Pause SHALL open a real dialog (native `<dialog>`, focus inside, Escape resumes) with "Resume" and "End round".
 3. WHEN the engine emits `outOfLives`, THE SYSTEM SHALL open a dialog that shows the round so far (WPM, words cleared, wave) and says plainly what Continue and End round each do, and that the round is saved either way.
 4. Ending the round, by choice or by running out, SHALL go to results.

@@ -35,6 +35,7 @@ export function createCornersHud(el, o) {
     hostiles: span("cn-hud-hostiles"),
     time: span("cn-hud-time"),
     typed: span("cn-buffer-typed"),
+    wrong: span("cn-buffer-wrong"),
   };
   const stat = (label, nodes) =>
     el("div", { class: "cn-hud-stat" }, [el("span", { class: "cn-hud-label" }, label), ...nodes]);
@@ -55,6 +56,7 @@ export function createCornersHud(el, o) {
   const station = el("section", { class: "cn-buffer", "aria-label": "Your station" }, [
     el("span", { class: "cn-buffer-label" }, "ACTIVE_BUFFER >"),
     v.typed,
+    v.wrong,
     el("span", { class: "cn-buffer-cursor", "aria-hidden": "true" }),
   ]);
   function update(state) {
@@ -68,6 +70,7 @@ export function createCornersHud(el, o) {
     setText(v.time, `TIME: ${timeText(state.activeMs)}`);
     const t = locked(state);
     setText(v.typed, t ? lockParts(t).typed : "");
+    setText(v.wrong, t ? lockParts(t).wrong : "");
     foot.update(state);
   }
   const foot = playFooter(el, o);

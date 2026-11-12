@@ -13,6 +13,7 @@ export function makeCard(el, target) {
     dist: el("span", { class: "cw-dist" }),
     lockDist: el("span", { class: "cw-lock-dist" }),
     typed: el("span", { class: "cw-typed" }),
+    wrong: el("span", { class: "cw-wrong" }),
     rest: el("span", { class: "cw-rest" }),
     vector: el("span", { class: "cw-vector" }),
   };
@@ -35,6 +36,7 @@ export function makeCard(el, target) {
             el("span", {}, "["),
             p.typed,
             el("span", { class: "cw-caret" }, "|"),
+            p.wrong,
             p.rest,
             el("span", {}, "]"),
           ]),

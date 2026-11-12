@@ -507,6 +507,15 @@ Second round of playtest fixes (Claude, Nov 12; approved by Shara): Backspace no
 | `round.test.js` header still says "Backspace letting go" | Open: comment only | `round.test.js` |
 | Falling cards now cache `c.cls`; anything still reading `c.locked` / `c.danger`? | Checked: nothing does | `src/render/` |
 
+Third round (Claude, Nov 12; approved by Shara): Wrong key shown in red, waiting letter amber, Backspace clears the red key only; footer coaching; results Main menu button. Block 8 note: first-visit nudge 'New to typing? Start with Lesson 1.'
+
+| Reviewer flagged (third round) | Status | Where |
+|---|---|---|
+| Req 4.3, 7.4, 8.1, 8.2 not in the diff | Checked: 7.4, 8.1 and 8.2 landed in `92070fa` and match the code; Backspace clearing the red key is in Req 5.1; 4.3 ("never reaches `key`") is still true | `requirements.md` |
+| Test gaps: `backspace` while paused, held, ended; corners card, input stream and corners buffer red key; "<" as the key; `wrong` absent from `toResult` | Open: for Shara | `wrongKey.test.js`, `playHud.test.js` |
+| `round.js` key map `{ Escape, Backspace }[e.key]` reads the prototype ("toString", "__proto__") | Open: one-line `Object.hasOwn` fix, for Shara | `src/ui/screens/round.js:130` |
+| A wrong space key may collapse in the card | No action: Req 8.2 ignores every space, so a space is never the wrong key | n/a |
+
 ### v2 list (from the playtest)
 
 - Per-corner shields in Four corners.
