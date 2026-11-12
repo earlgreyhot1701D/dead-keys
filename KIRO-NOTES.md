@@ -531,11 +531,19 @@ Fifth round (Claude, Nov 12; approved by Shara): the locked card's top bar reads
 
 | Reviewer flagged (fifth round) | Status | Where |
 |---|---|---|
-| Fix-bar copy tested thinly: only "x" against "b"; no quote, "<", capital, or `wrong: false` case; nothing pins the revert | Open: for Shara | `hud.test.js` |
+| Fix-bar copy tested thinly: only "x" against "b"; no quote, "<", capital, or `wrong: false` case; nothing pins the revert | Fixed (Nov 12): tests for a capital, "<", and the bar back to normal once cleared | `hud.test.js` |
 | `lockBar` indexes the waiting letter by code point, the rest of the HUD by UTF-16 unit (differs only for astral characters; no pack has any) | Open: for Shara | `src/render/hud.js` |
-| `config.js` comment still says the speed default is 1 | Open: comment only | `src/engine/config.js` |
+| `config.js` comment still says the speed default is 1 | Fixed (Nov 12): it says new players start at 0.7 | `src/engine/config.js` |
 | Escape that only drops a lock, and resume, leave `lostTail` alone (untested) | No action: safe, since `key()` drops a tail before it locks and a pause already cleared it | `lostTail.test.js` |
 | Diff showed mojibake in ×, ═, ✓ | Checked: only in the exported diff file; the sources are UTF-8 | n/a |
+
+Sixth round (Claude, Nov 12; approved by Shara): falling ship slides to the locked lane (Shara, Nov 12). It uses the locked card's x (`cardX`), keeps its last lane when the lock drops, slides over 180 ms, and jumps under reduced motion. One lint fix (the `shipAt` assignment on its own line) went in before the commit.
+
+| Reviewer flagged (sixth round) | Status | Where |
+|---|---|---|
+| Edge lanes 0 and 5 not checked in the `shipX` test | Fixed (Nov 12): both asserted | `falling.test.js` |
+| Beam snaps to the new lane while the ship takes 180 ms to follow (they agree at rest) | Accepted (Shara, Nov 12) | `falling.js`, `playFalling.css` |
+| The write-only-on-change `--ship-x` path is untested (the fake page has no `style`) | Accepted (Shara, Nov 12) | `falling.js` |
 
 ### v2 list (from the playtest)
 

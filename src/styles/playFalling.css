@@ -57,11 +57,13 @@
   letter-spacing: 0.12em;
   color: var(--shaky);
 }
+/* The ship slides under the locked word's lane (--ship-x, set by falling.js; Shara, Nov 12). */
 .fall-station {
   position: absolute;
   z-index: 2;
   bottom: 2px;
-  left: 50%;
+  left: var(--ship-x, 50%);
+  transition: left 180ms ease-out;
   width: 120px;
   font-size: 14px;
   line-height: 1.2;
@@ -126,4 +128,11 @@
 .is-danger .fw-tag,
 .is-danger .fw-word {
   color: var(--shaky);
+}
+
+/* Reduced motion: the ship jumps to the word instead of sliding. */
+@media (prefers-reduced-motion: reduce) {
+  .fall-station {
+    transition: none;
+  }
 }

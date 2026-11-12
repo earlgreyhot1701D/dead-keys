@@ -111,6 +111,14 @@ test("the lock: its lane, its typed and remaining parts; nothing when unlocked",
   assert.equal(lockParts({ ...t, wrong: "x" }).wrong, "x");
   assert.equal(lockBar(t, "LOCKED"), "LOCKED");
   assert.equal(lockBar({ ...t, wrong: "x" }, "LOCKED"), 'TYPE "b" TO FIX');
+  const odd = { ...t, text: "A<'b", typed: 1, wrong: "x" };
+  assert.equal(lockBar(odd, "LOCKED"), 'TYPE "<" TO FIX'); // shown as text, never markup
+  assert.equal(lockBar({ ...odd, typed: 0 }, "LOCKED"), 'TYPE "A" TO FIX');
+  assert.equal(
+    lockBar({ ...odd, wrong: false }, "LOCKED"),
+    "LOCKED",
+    "back to normal once cleared",
+  );
 });
 
 test("danger from 80% of the way: [!], otherwise [·]", () => {

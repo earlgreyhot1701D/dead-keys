@@ -81,6 +81,7 @@ Everything a screen shows is decided below: the map says what each mock element 
 | Results, no records | No new records this round. |
 | Results, new best | New best: <n> WPM. Your old best was <m>. (first best: "New best: <n> WPM.") |
 | Wave banner | WAVE <nn> |
+| Falling station (Shara, Nov 12) | The ship slides along the bottom (180 ms) to sit under the locked word's lane, so the beam lands on it; it stays there until the next lock. Reduced motion: it jumps, no slide. Four corners is unchanged. |
 | Live region | Cleared <word>. / Life lost. <n> left. / Wave <n>. / Warm-up done. Wave 1. / Out of lives. / Paused. |
 | HUD during the warm-up (Shara, Nov 12) | Sector box reads "WARM-UP · <n> LEFT" (warm-up words still to come). When it ends, the WAVE 01 banner plays. |
 | Share card button | Share card, with "Not built yet" under it |

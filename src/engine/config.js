@@ -16,7 +16,7 @@ export const WAVE_ADD_EVERY = 3;
 /** Characters that count as one word for WPM (PRD G5). */
 export const CHARS_PER_WORD = 5;
 
-/** Lowest and highest value of the speed slider. Default is 1. */
+/** Lowest and highest value of the speed slider. New players start at 0.7 (storage/settings.js). */
 export const SPEED_MIN = 0.5;
 export const SPEED_MAX = 2;
 

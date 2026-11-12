@@ -19,6 +19,11 @@ export const LOCK_W = 220;
 export const laneX = (slot) => ((slot + 0.5) * FIELD.w) / LANES;
 /** Where a card's center goes: its lane, pulled in so a locked card is never cut off. */
 export const cardX = (slot) => Math.min(FIELD.w - LOCK_W / 2, Math.max(LOCK_W / 2, laneX(slot)));
+/** Where the ship sits: under the locked word's lane, or where it last was (Shara, Nov 12). */
+export const shipX = (state, last = FIELD.w / 2) => {
+  const t = state.targets.find((x) => x.id === state.lockId);
+  return t ? cardX(t.slot) : last;
+};
 /** A card's top edge for its progress: 0 at the top, landing on the station line at 1. */
 export const cardY = (progress) => progress * (FIELD.h - FIELD.cardH);
 
@@ -77,6 +82,13 @@ export function createFalling(el) {
   const layer = el("div", { class: "fall-cards" });
   const beam = el("div", { class: "fall-beam" });
   const banner = el("div", { class: "m-wave" });
+  const station = el("div", { class: "fall-station" }, [
+    el("div", { class: "st-1" }, "▲"),
+    el("div", { class: "st-2" }, "[ ╨ ]"),
+    el("div", { class: "st-3" }, "╔═══╩═══╗"),
+    el("div", { class: "st-4" }, "▓▓▓▓▓▓▓▓▓▓▓"),
+  ]);
+  let shipAt = FIELD.w / 2;
   const node = el("div", { class: "fall-field", "aria-hidden": "true" }, [
     el(
       "div",
@@ -85,12 +97,7 @@ export function createFalling(el) {
     ),
     el("div", { class: "fall-danger" }),
     el("span", { class: "fall-danger-label" }, "DANGER ZONE"),
-    el("div", { class: "fall-station" }, [
-      el("div", { class: "st-1" }, "▲"),
-      el("div", { class: "st-2" }, "[ ╨ ]"),
-      el("div", { class: "st-3" }, "╔═══╩═══╗"),
-      el("div", { class: "st-4" }, "▓▓▓▓▓▓▓▓▓▓▓"),
-    ]),
+    station,
     beam,
     layer,
     banner,
@@ -121,6 +128,11 @@ export function createFalling(el) {
       c.near = near;
       move(c.node, cardX(t.slot), cardY(t.progress));
       if (isLocked) move(beam, cardX(t.slot), cardY(t.progress) + FIELD.cardH);
+    }
+    const x = shipX(state, shipAt); // the ship slides under the locked word (CSS transition)
+    if (x !== shipAt) {
+      shipAt = x;
+      station.style?.setProperty("--ship-x", `${x}px`);
     }
     for (const [id, c] of cards) {
       if (!live.has(id) && !c.leaving) {

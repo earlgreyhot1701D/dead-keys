@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { createEl } from "../ui/dom.js";
 import { makeFakeDoc } from "../ui/fakeDom.js";
-import { cardX, cardY, createFalling, FIELD, LANES, LOCK_W, laneX } from "./falling.js";
+import { cardX, cardY, createFalling, FIELD, LANES, LOCK_W, laneX, shipX } from "./falling.js";
 import { nearness } from "./hud.js";
 
 const target = (id, text, slot, progress, typed = 0) => ({ id, text, slot, progress, typed });
@@ -62,4 +62,14 @@ test("cards come and go with their targets; lock and beam follow lockId", () => 
   draw(f, { targets: [target(2, "the", 3, 0.9)], lockId: null });
   assert.deepEqual([...f.cards.keys()], [2]);
   assert.equal(beam.getAttribute("class"), "fall-beam");
+});
+
+test("the ship sits under the locked word's lane, and stays put when nothing is locked", () => {
+  const word = (id, slot) => ({ id, text: "cat", typed: 0, progress: 0.2, slot });
+  const s = { lockId: 2, targets: [word(1, 0), word(2, 4)] };
+  assert.equal(shipX(s), cardX(4));
+  assert.equal(shipX({ ...s, lockId: null }, 123), 123);
+  assert.equal(shipX({ ...s, lockId: null }), FIELD.w / 2);
+  for (const slot of [0, LANES - 1]) // the edge lanes line up with their cards too
+    assert.equal(shipX({ lockId: 1, targets: [word(1, slot)] }), cardX(slot));
 });
