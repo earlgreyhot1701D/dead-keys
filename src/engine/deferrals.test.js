@@ -12,19 +12,22 @@ import { wpm } from "./score.js";
 import { advance } from "./targets.js";
 
 const items = [{ id: "w1", text: "cat" }];
-const round = () =>
-  createRound({ mode: "falling", mechanic: "falling", items, seed: 1, speed: 1 }).state;
+// Past the warm-up, so the travel and lock rules are the wave's own.
+const round = () => ({
+  ...createRound({ mode: "falling", mechanic: "falling", items, seed: 1, speed: 1 }).state,
+  warmup: 0,
+});
 
-test("waves stop speeding up after wave 12", () => {
-  assert.equal(WAVE_SPEEDUP_MAX_WAVE, 12);
+test("waves stop speeding up after wave 10", () => {
+  assert.equal(WAVE_SPEEDUP_MAX_WAVE, 10);
   const t = { id: 0, itemId: "w1", text: "cat", typed: 0, progress: 0, slot: 0 };
   const moved = (wave) =>
     advance({ ...round(), wave, targets: [t] }, 100).state.targets[0].progress;
-  const at12 = moved(12);
-  assert.ok(moved(11) < at12, "still speeding up before the cap");
-  assert.equal(moved(13), at12);
-  assert.equal(moved(40), at12);
-  assert.ok(Math.abs(at12 - (100 * WAVE_SPEEDUP ** 11) / BASE_TRAVEL_MS) < 1e-12);
+  const at10 = moved(10);
+  assert.ok(moved(9) < at10, "still speeding up before the cap");
+  assert.equal(moved(11), at10);
+  assert.equal(moved(40), at10);
+  assert.ok(Math.abs(at10 - (100 * WAVE_SPEEDUP ** 9) / BASE_TRAVEL_MS) < 1e-12);
 });
 
 test("a space with no word locked is ignored, not counted", () => {
@@ -39,11 +42,11 @@ test("a space with no word locked is ignored, not counted", () => {
   assert.equal(z.state.strayKeys, 1);
 });
 
-test("a space while a word is locked is still a miss against its next letter", () => {
+test("a space while a word is locked is ignored too: no miss, no keystroke (Shara, Nov 12)", () => {
   const locked = key(round(), "c").state;
   const r = key(locked, " ");
-  assert.deepEqual(r.events, [{ type: "miss", expected: "a", typed: " " }]);
-  assert.equal(r.state.keyDeltas.a.misses, 1);
+  assert.equal(r.state, locked);
+  assert.deepEqual(r.events, []);
 });
 
 test("pause keeps the lock (auto-pause); Escape pauses only with nothing locked", () => {

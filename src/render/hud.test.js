@@ -45,8 +45,15 @@ test("lives: one heart per life, five at most, filled for lives left", () => {
   assert.equal(livesLabel(2), "2 of 5 lives left");
 });
 
+test("the warm-up shows WARM-UP and the warm-up words left (Shara, Nov 12)", () => {
+  const s = { wave: 1, clearedThisWave: 0, warmup: 2 };
+  assert.equal(waveText(s), "WARM-UP");
+  assert.equal(leftText(s), "· 2 LEFT");
+  assert.equal(waveText({ ...s, warmup: 0 }), "WAVE 01");
+});
+
 test("wave and words left in it", () => {
-  const s = { ...start(), wave: 4, clearedThisWave: 3 };
+  const s = { ...start(), wave: 4, clearedThisWave: 3, warmup: 0 };
   assert.equal(waveText(s), "WAVE 04");
   assert.equal(leftText(s), `· ${WAVE_SIZE - 3} LEFT`);
   assert.equal(waveText({ ...s, wave: 12 }), "WAVE 12");

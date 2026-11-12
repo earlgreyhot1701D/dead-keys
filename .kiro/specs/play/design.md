@@ -61,9 +61,12 @@ Everything a screen shows is decided below: the map says what each mock element 
 |---|---|
 | Mode picker h1 and line | h1 "Play". Line under it: "Pick how the words come at you." |
 | Mode picker, Falling words | Name "Falling words". How it plays: "Words drop down six lanes toward your station. Type the first letter to lock a word, then finish it before it lands." |
-| Mode picker, Four corners | Name "Four corners". How it plays: "Words close in from four corners toward the core. Type the first letter to lock the closest one, then finish it before it reaches the ring." |
-| Mode picker, both (one panel under the choices) | "Lives are the arcade part. A word that lands costs one; a wrong key never does. Words speed up each wave, and you get one free continue. Running out just ends the round, and it's still saved. Want no pressure? Try Practice from the menu." Then: "Escape pauses." |
-| Mode picker, speed (Shara, Nov 11) | A speed slider on the picker, labelled "Speed", same range and steps as Settings (0.5× to 2×), showing the value like "1.2×". It starts at the saved speed, and changing it saves it (the same setting Settings shows). Hint under it: "Slower words give you more time. You can change this any time." |
+| Mode picker, Four corners | Name "Four corners". How it plays: "Words close in from four corners toward the core. Type the first letter to lock a word, then finish it before it reaches the ring." |
+| Mode picker, both (one panel under the choices) | "The first three words are a slow warm-up and never cost a life. Lives are the arcade part. A word that lands costs one; a wrong key never does. Words speed up each wave, and you get one free continue. Running out just ends the round, and it's still saved. Want no pressure? Try Practice from the menu." Then: "Type a word's first letter to lock it, then finish it. Backspace or Escape lets go, so you can pick another word. Escape with nothing locked pauses." (Shara, Nov 12) |
+| Mode picker, speed (Shara, Nov 11; relabelled Nov 12) | A speed slider on the picker, labelled "Starting speed", same range and steps as Settings (0.5× to 2×), showing the value like "1.2×". It starts at the saved speed, and changing it saves it (the same setting Settings shows). Next to the value, a pace line: "About N WPM keeps up at wave 1." (N from `src/engine/pace.js`, live as the slider moves; the slider speaks "1.2×, about 30 WPM"). Hint under it: "This is where wave 1 starts. Each wave gets a little faster, and every third wave adds a word. You can change it any time." |
+| Settings, speed (Shara, Nov 12) | Label "Starting speed". The "Not built yet" line goes; in its place: "Where wave 1 starts in Falling words and Four corners. Each wave gets a little faster." Footer on both play screens reads "START SPEED: 1×". |
+| Play footer, while a word is locked (Shara, Nov 12) | "LOCKED: [BKSP] OR [ESC] LETS GO". Hidden when nothing is locked. |
+| Play footer, while Caps Lock is on (Shara, Nov 12) | "CAPS LOCK IS ON". Shown in place of the LOCKED hint, read from each key press. |
 | Mode picker badge | SELECT |
 | Practice h1 | Practice |
 | Practice HUD note | No lives, no clock pressure. End the round from the pause menu. |
@@ -77,7 +80,8 @@ Everything a screen shows is decided below: the map says what each mock element 
 | Results, no records | No new records this round. |
 | Results, new best | New best: <n> WPM. Your old best was <m>. (first best: "New best: <n> WPM.") |
 | Wave banner | WAVE <nn> |
-| Live region | Cleared <word>. / Life lost. <n> left. / Wave <n>. / Out of lives. / Paused. |
+| Live region | Cleared <word>. / Life lost. <n> left. / Wave <n>. / Warm-up done. Wave 1. / Out of lives. / Paused. |
+| HUD during the warm-up (Shara, Nov 12) | Sector box reads "WARM-UP · <n> LEFT" (warm-up words still to come). When it ends, the WAVE 01 banner plays. |
 | Share card button | Share card, with "Not built yet" under it |
 
 ## Files

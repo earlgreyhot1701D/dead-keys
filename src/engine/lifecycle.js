@@ -8,7 +8,8 @@ const same = (state) => ({ state, events: [] });
 
 /**
  * Move time forward. Targets that reach danger are removed, each takes a life (never below 0)
- * and releases the lock if it held it. At 0 lives the round is held, or ended if the free
+ * and releases the lock if it held it. A warm-up word that lands takes no life: it only counts
+ * the warm-up down ("warmupLanded", then "warmupDone" after the last one). At 0 lives the round is held, or ended if the free
  * continue is already used. Ignored while paused, held or ended; practice only counts time.
  * @param {object} state
  * @param {number} dtMs Milliseconds since the last call.
@@ -21,6 +22,18 @@ export function tick(state, dtMs) {
   const { state: moved, arrived } = advance(state, dtMs);
   let s = { ...cool(moved, dtMs), activeMs: state.activeMs + dtMs };
   if (arrived.length === 0) return { state: fill(s), events: [] }; // a word after the spawn gap
+  if (s.warmup > 0) {
+    const left = Math.max(0, s.warmup - arrived.length);
+    const events = arrived.map((targetId) => ({ type: "warmupLanded", targetId }));
+    if (left === 0) events.push({ type: "warmupDone" });
+    s = {
+      ...s,
+      targets: s.targets.filter((t) => !arrived.includes(t.id)),
+      lockId: arrived.includes(s.lockId) ? null : s.lockId,
+      warmup: left,
+    };
+    return { state: fill(s), events };
+  }
   s = {
     ...s,
     targets: s.targets.filter((t) => !arrived.includes(t.id)),

@@ -1,6 +1,5 @@
-// Round lifecycle: create a round, take keys, handle Escape. Pure: every call returns a new
-// { state, events } and never changes the state it was given, reads a clock, or uses Math.random.
-import { LIVES_MAX, SLOTS, SPEED_MAX, SPEED_MIN, WAVE_SIZE } from "./config.js";
+// Create a round, take keys, handle Escape. Pure: a new { state, events } per call, no clock.
+import { LIVES_MAX, SLOTS, SPEED_MAX, SPEED_MIN, WARMUP_WORDS, WAVE_SIZE } from "./config.js";
 import { applyKey, pickLock } from "./match.js";
 import { createRng } from "./rng.js";
 import { spawn } from "./targets.js";
@@ -8,7 +7,7 @@ import { spawn } from "./targets.js";
 /** Every mode a RoundResult can carry (contract/schemas/roundResult.json). */
 export const MODES = ["corners", "falling", "practice", "lesson", "testout", "daily", "specwave"];
 
-/** The result for an ignored input: the very same state, no events. */
+/** An ignored input: the very same state, no events. */
 const same = (state) => ({ state, events: [] });
 
 /** Spawn up to the wave's limit; the spawn gap stops it after one (tick brings the rest). */
@@ -47,6 +46,7 @@ export function createRound({ mode, mechanic, items, seed, speed }) {
     speed,
     lives: LIVES_MAX,
     wave: 1, // practice has no waves; toResult reports 0 for it
+    warmup: mode === "falling" || mode === "corners" ? WARMUP_WORDS : 0, // Shara, Nov 12
     clearedThisWave: 0,
     cleared: 0,
     targets: [],
@@ -70,7 +70,7 @@ export function createRound({ mode, mechanic, items, seed, speed }) {
  * one character, so Backspace and Shift never count (Req 2.7).
  * @param {object} state
  * @param {string} char
- * The keystroke is logged at `activeMs`, so its time moves only with `tick` (one tick resolution).
+ * Logged at `activeMs`, so its time moves only with `tick`.
  * @returns {{ state: object, events: object[] }}
  */
 export function key(state, char) {
@@ -79,8 +79,8 @@ export function key(state, char) {
   const events = [];
   let s = state;
   let lock = s.targets.find((t) => t.id === s.lockId);
-  // A space with no word locked is ignored, not counted: words have no spaces (Block 7, Req 8.2).
-  if (!lock && char === " ") return same(state);
+  // A space is never a miss, locked or not: words have no spaces (Req 8.2; Shara, Nov 12).
+  if (char === " ") return same(state);
   if (!lock) {
     lock = pickLock(s.targets, char);
     // Nothing expects this key: it counts as a keystroke but there is no expected key to blame.
@@ -110,14 +110,17 @@ export function key(state, char) {
     return { state: s, events };
   }
   if (!r.cleared) return { state: s, events };
+  const warm = s.warmup > 0; // a warm-up word counts as cleared, not toward wave 1
   s = {
     ...s,
     targets: s.targets.filter((t) => t.id !== lock.id),
     lockId: null,
     cleared: s.cleared + 1,
-    clearedThisWave: s.clearedThisWave + 1,
+    clearedThisWave: s.clearedThisWave + (warm ? 0 : 1),
+    warmup: warm ? s.warmup - 1 : (s.warmup ?? 0),
   };
   events.push({ type: "cleared", targetId: lock.id });
+  if (warm && s.warmup === 0) events.push({ type: "warmupDone" });
   if (s.mode !== "practice" && s.clearedThisWave === WAVE_SIZE) {
     s = { ...s, wave: s.wave + 1, clearedThisWave: 0, lives: Math.min(LIVES_MAX, s.lives + 1) };
     events.push({ type: "waveUp", wave: s.wave });
@@ -126,8 +129,7 @@ export function key(state, char) {
 }
 
 /**
- * Escape is layered: drop the lock if one is held, otherwise pause. Escape while paused resumes.
- * Ignored when held or ended.
+ * Escape: drop a held lock, else pause; while paused, resume. Ignored when held or ended.
  * @param {object} state
  * @returns {{ state: object, events: object[] }}
  */

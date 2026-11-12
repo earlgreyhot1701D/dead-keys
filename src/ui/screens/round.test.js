@@ -1,10 +1,10 @@
 // The round screen (Req 3 to 5): the dialogs' copy word for word, which keys reach the engine,
-// Escape's layers (drop the lock, else pause), keys ignored under a dialog, and the loop driving
+// Escape's layers (drop the lock, else pause), Backspace letting go, keys ignored under a dialog, and the loop driving
 // time. A fake window gives the frames, so the round runs under node.
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
-import { PRACTICE_NOTE } from "../../render/playHud.js";
+import { CAPS_HINT, LET_GO_HINT, PRACTICE_NOTE } from "../../render/playHud.js";
 import { findAll, makeFakeDoc, textOf } from "../fakeDom.js";
 import { chooseRound } from "./play.js";
 import { isTyping, outOfLivesLines, PAUSE, practiceScreen, roundScreen } from "./round.js";
@@ -121,6 +121,44 @@ test("a typed key locks a word; Escape drops the lock, then pauses", () => {
     assert.ok(dialog);
     assert.ok(textOf(dialog).includes(PAUSE.title));
     assert.ok(r.log.said.some((l) => l.includes("Paused.")));
+  } finally {
+    cleanup();
+  }
+});
+
+test("Backspace lets go of a locked word and shows the hint only while locked; unlocked, it never pauses", () => {
+  const r = start();
+  const hint = () => findAll(r.node, (n) => n.attrs?.class === "foot-hint")[0].textContent ?? "";
+  try {
+    r.frame(16);
+    const first = textOf(findAll(r.node, (n) => n.attrs?.class === "fw-word")[0]);
+    assert.equal(hint(), "");
+    r.press(first[0]);
+    r.frame(16);
+    assert.equal(hint(), LET_GO_HINT);
+    assert.equal(r.press("Backspace"), true);
+    r.frame(16);
+    assert.equal(lockWord(r.node), "");
+    assert.equal(hint(), "");
+    assert.equal(r.press("Backspace"), false);
+    assert.equal(r.doc.querySelector("dialog[open]"), null);
+  } finally {
+    cleanup();
+  }
+});
+
+test("Caps Lock on shows its hint; off hides it. A space is taken and never a miss", () => {
+  const r = start();
+  const hint = () => findAll(r.node, (n) => n.attrs?.class === "foot-hint")[0].textContent ?? "";
+  const caps = (on) => ({ key: "q", getModifierState: (k) => k === "CapsLock" && on });
+  try {
+    r.frame(16);
+    roundScreen.onKey({}, caps(true));
+    assert.equal(hint(), CAPS_HINT);
+    roundScreen.onKey({}, caps(false));
+    assert.equal(hint(), "");
+    assert.equal(r.press(" "), true);
+    assert.equal(r.doc.querySelector("dialog[open]"), null);
   } finally {
     cleanup();
   }

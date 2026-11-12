@@ -5,7 +5,7 @@ import { test } from "node:test";
 import { SPEED_MAX, SPEED_MIN } from "../../engine/config.js";
 import { DEFAULTS } from "../../storage/settings.js";
 import { findAll, textOf, withFakeDocument } from "../fakeDom.js";
-import { AI_HINT, settingsScreen } from "./settings.js";
+import { AI_HINT, SPEED_SETTING_HINT, settingsScreen } from "./settings.js";
 
 function ctxFor(settings = {}, extra = {}) {
   const log = [];
@@ -132,11 +132,20 @@ test("the AI switch says what leaves the browser, and Back goes back", () => {
 test("every setting that saves but does nothing yet says Not built yet, tied to its control", () => {
   withFakeDocument(() => {
     const node = settingsScreen.render(ctxFor());
-    for (const id of ["st-ai", "st-sound", "st-speed", "st-fingerColors"]) {
+    for (const id of ["st-ai", "st-sound", "st-fingerColors"]) {
       const control = byId(node, id);
       assert.ok(control.attrs["aria-describedby"].split(" ").includes(`${id}-later`), id);
       assert.equal(textOf(byId(node, `${id}-later`)), "Not built yet");
     }
+  });
+});
+
+test("speed works now (Block 7): Starting speed, with its hint and no Not built yet", () => {
+  withFakeDocument(() => {
+    const node = settingsScreen.render(ctxFor());
+    assert.equal(byId(node, "st-speed").attrs["aria-describedby"], "st-speed-hint");
+    assert.equal(textOf(byId(node, "st-speed-hint")), SPEED_SETTING_HINT);
+    assert.equal(byId(node, "st-speed-later"), undefined);
   });
 });
 

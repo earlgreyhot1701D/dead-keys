@@ -37,7 +37,7 @@ function round(list, over = {}, o = {}) {
     progress,
     slot: i,
   }));
-  return freeze({ ...state, targets, nextId: 100, ...over });
+  return freeze({ ...state, targets, nextId: 100, warmup: 0, ...over }); // past the warm-up
 }
 
 test("time moves targets by the travel formula and adds to activeMs", () => {

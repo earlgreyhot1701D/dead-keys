@@ -54,6 +54,7 @@ export function playMoments(m, field, events, before) {
   for (const e of events) {
     if (e.type === "miss" && e.expected !== null) m.miss(field.cards.get(before.lockId)?.node);
     if (e.type === "waveUp") m.wave(field.banner, e.wave);
+    if (e.type === "warmupDone") m.wave(field.banner, 1); // wave 1 starts for real
     if (e.type !== "cleared") continue;
     const c = field.cards.get(e.targetId);
     if (!c) continue;

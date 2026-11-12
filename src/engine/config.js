@@ -7,9 +7,11 @@ export const LIVES_MAX = 5;
 export const WAVE_SIZE = 10;
 
 /** Each wave, travel is this many times faster than the wave before... */
-export const WAVE_SPEEDUP = 1.1;
-/** ...up to this wave; later waves keep its speed (Block 7: wave 20 was about 1.3 s a word). */
-export const WAVE_SPEEDUP_MAX_WAVE = 12;
+export const WAVE_SPEEDUP = 1.05;
+/** ...up to this wave; later waves keep its speed (Shara, Nov 12: a gentler curve). */
+export const WAVE_SPEEDUP_MAX_WAVE = 10;
+/** One more target on screen every this many waves (Shara, Nov 12: was every wave). */
+export const WAVE_ADD_EVERY = 3;
 
 /** Characters that count as one word for WPM (PRD G5). */
 export const CHARS_PER_WORD = 5;
@@ -18,12 +20,23 @@ export const CHARS_PER_WORD = 5;
 export const SPEED_MIN = 0.5;
 export const SPEED_MAX = 2;
 
-/** Targets allowed on screen in wave 1, one more each wave, never above the max. */
+/** Targets allowed on screen in wave 1, one more every WAVE_ADD_EVERY waves, never above the max. */
 export const TARGETS_START = 3;
 export const TARGETS_MAX = 8;
 
-/** Milliseconds for a target to reach danger at speed 1 in wave 1. Tuned in Block 7. */
-export const BASE_TRAVEL_MS = 8000;
+/**
+ * Milliseconds for a target to reach danger at speed 1 in wave 1. Tuned Nov 12 so 1× asks about
+ * 30 WPM at wave 1 with the general pack's words (src/engine/pace.js shows the math).
+ */
+export const BASE_TRAVEL_MS = 6800;
+
+/**
+ * The warm-up before wave 1 in Falling words and Four corners: this many words, one at a time,
+ * at WARMUP_SLOW of the round's speed. A warm-up word that lands never costs a life, and
+ * warm-up words don't count toward wave 1 (Shara, Nov 12).
+ */
+export const WARMUP_WORDS = 3;
+export const WARMUP_SLOW = 0.6;
 
 /** Where a target can appear: corners for the four-corner mechanic, lanes for falling. */
 export const SLOTS = Object.freeze({ corners: 4, falling: 6 });

@@ -1,6 +1,6 @@
 // What the live region says during a round (play Req 6.3), as a pure function of an engine event
-// and the states before and after it. Only five kinds of line, from the approved copy table:
-// a cleared word, a lost life, a new wave, out of lives, paused. Keystrokes, misses, locks and
+// and the states before and after it. Only six kinds of line, from the approved copy table:
+// a cleared word, a lost life, a new wave, the warm-up ending, out of lives, paused. Keystrokes, misses, locks and
 // unlocks are never spoken: a screen reader user would hear nothing else.
 
 /**
@@ -19,6 +19,8 @@ export function announce(event, before, after) {
       return `Life lost. ${after.lives} left.`;
     case "waveUp":
       return `Wave ${event.wave}.`;
+    case "warmupDone":
+      return "Warm-up done. Wave 1.";
     case "outOfLives":
       return "Out of lives.";
     case "paused":

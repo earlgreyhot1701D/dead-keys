@@ -9,13 +9,20 @@
   color: var(--text);
   font-family: var(--mono);
 }
-/* The scanline layer over everything (the mock's overlay). Off under reduced motion. */
+/* The scanline layer (the mock's overlay). It sits behind the screen's content, so the lines
+   show in the gaps and never cross a letter (Shara, Nov 12: lines through text were hard to
+   read). Off under reduced motion. */
 .scan {
   position: absolute;
-  z-index: 5;
+  z-index: 0;
   inset: 0;
   pointer-events: none;
   background: var(--scanlines);
+}
+/* Every part of a screen sits above the lines. The frame is flex, so its children take a
+   z-index without a position (absolutely placed children keep theirs). */
+.screen-frame > :not(.scan) {
+  z-index: 1;
 }
 .scan-fine {
   background: var(--scanlines-fine);

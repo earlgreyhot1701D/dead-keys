@@ -7,6 +7,8 @@ import {
   SPEED_MIN,
   TARGETS_MAX,
   TARGETS_START,
+  WARMUP_SLOW,
+  WAVE_ADD_EVERY,
   WAVE_SPEEDUP,
   WAVE_SPEEDUP_MAX_WAVE,
 } from "./config.js";
@@ -26,12 +28,20 @@ const { next } = createRng(0); // `next` takes the state as an argument, so any 
  * @property {number} wave 1 or more.
  * @property {import("./match.js").Target[]} targets
  * @property {number} nextId
+ * @property {number} [warmup] Warm-up words still to come or on screen (0 or missing: none).
  * @property {number} [spawnWaitMs] Time left before the next spawn may happen (0 or missing: now).
  */
 
-/** How many targets may be on screen: the wave's limit, but never more than there are slots. */
-function cap(state) {
-  const waveCap = Math.min(TARGETS_START + state.wave - 1, TARGETS_MAX);
+/**
+ * How many targets may be on screen: one during the warm-up, otherwise the wave's limit, but
+ * never more than there are slots.
+ */
+export function cap(state) {
+  if (state.warmup > 0) return 1;
+  const waveCap = Math.min(
+    TARGETS_START + Math.floor((state.wave - 1) / WAVE_ADD_EVERY),
+    TARGETS_MAX,
+  );
   return Math.min(waveCap, SLOTS[state.mechanic]);
 }
 
@@ -47,16 +57,21 @@ function check(state) {
     throw new RangeError(`unknown mechanic "${state.mechanic}"`);
 }
 
+/** The first character of a word. Case counts, as in the lock rule. */
+const firstChar = (text) => [...text][0] ?? "";
+
 /** The wait after a spawn before the next one: SPAWN_GAP_MS divided by the speed. */
 export const spawnGap = (speed) => SPAWN_GAP_MS / speed;
 
 /**
  * Add one target if fewer are on screen than the wave allows and the spawn gap has passed
  * (`spawnWaitMs` is 0 or missing). The new target starts the gap again; `cool` runs it down.
- * The item is picked uniformly (Block 9 swaps in weighted sampling here), then a free slot.
+ * The item is picked uniformly (Block 9 swaps in weighted sampling here) from the items whose
+ * first letter no on-screen word starts with, then a free slot. One word per first letter means
+ * the first key always locks the word the player is looking at (ZType's rule).
  * @param {TargetState} state
- * @returns {{ state: TargetState, events: [] }} The same state, untouched, when at the limit
- *   or still inside the gap.
+ * @returns {{ state: TargetState, events: [] }} The same state, untouched, when at the limit,
+ *   still inside the gap, or every item shares a first letter with a word on screen.
  * @throws {Error} If there are no items to spawn from.
  */
 export function spawn(state) {
@@ -67,9 +82,12 @@ export function spawn(state) {
   const free = Array.from({ length: SLOTS[state.mechanic] }, (_, i) => i).filter(
     (i) => !taken.has(i),
   );
+  const used = new Set(state.targets.map((t) => firstChar(t.text)));
+  const pool = state.items.filter((it) => !used.has(firstChar(it.text)));
+  if (pool.length === 0) return { state, events: [] };
   const a = next(state.rng);
   const b = next(a.state);
-  const item = state.items[Math.floor(a.value * state.items.length)];
+  const item = pool[Math.floor(a.value * pool.length)];
   const target = {
     id: state.nextId,
     itemId: item.id,
@@ -103,8 +121,8 @@ export const cool = (state, dtMs) => ({
 
 /**
  * Move every target toward danger by `dtMs`. A target takes
- * BASE_TRAVEL_MS / (speed x WAVE_SPEEDUP^(min(wave, WAVE_SPEEDUP_MAX_WAVE)-1)) to get there.
- * Practice never moves.
+ * BASE_TRAVEL_MS / (speed x WAVE_SPEEDUP^(min(wave, WAVE_SPEEDUP_MAX_WAVE)-1)) to get there,
+ * and WARMUP_SLOW of that speed during the warm-up. Practice never moves.
  * Targets stop at progress 1; the caller (round.tick) removes them and takes the life.
  * @param {TargetState} state
  * @param {number} dtMs Milliseconds since the last call.
@@ -118,7 +136,8 @@ export function advance(state, dtMs) {
   }
   if (state.mode === "practice") return { state, arrived: [] };
   const waves = Math.min(state.wave, WAVE_SPEEDUP_MAX_WAVE) - 1; // no faster after the cap
-  const travelMs = BASE_TRAVEL_MS / (state.speed * WAVE_SPEEDUP ** waves);
+  const slow = state.warmup > 0 ? WARMUP_SLOW : 1;
+  const travelMs = BASE_TRAVEL_MS / (state.speed * slow * WAVE_SPEEDUP ** waves);
   const targets = state.targets.map((t) => ({
     ...t,
     progress: Math.min(1, t.progress + dtMs / travelMs),

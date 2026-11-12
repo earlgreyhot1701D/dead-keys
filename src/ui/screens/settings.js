@@ -18,9 +18,13 @@ export const SOUND_LABELS = Object.freeze({
 /** The speed as the player reads it, and as the slider announces it: "1.2×". */
 export const speedText = (v) => `${v}×`;
 
+/** Speed works from Block 7: the same words as the picker's hint. */
+export const SPEED_SETTING_HINT =
+  "Where wave 1 starts in Falling words and Four corners. Each wave gets a little faster.";
+
 /**
  * The small "Not built yet" line under a setting that saves now but does nothing until a later
- * block (sound: Block 14, speed and finger colors: Blocks 7 and 8, AI drills: Block 10).
+ * block (sound: Block 14, finger colors: Block 8, AI drills: Block 10). Speed works since Block 7.
  */
 const later = (id) => el("span", { id: `${id}-later`, class: "hint later-hint" }, NOT_BUILT);
 
@@ -81,7 +85,7 @@ export const settingsScreen = {
         later("st-sound"),
       ]),
       el("p", { class: "set-row" }, [
-        el("label", { for: "st-speed" }, "Speed "),
+        el("label", { for: "st-speed" }, "Starting speed "),
         el("input", {
           type: "range",
           id: "st-speed",
@@ -91,7 +95,7 @@ export const settingsScreen = {
           step: 0.1,
           value: s.speed,
           "aria-valuetext": speedText(s.speed),
-          "aria-describedby": "st-speed-later",
+          "aria-describedby": "st-speed-hint",
           onInput: (e) => {
             const text = speedText(Number(e.target.value));
             shown.textContent = text;
@@ -101,7 +105,7 @@ export const settingsScreen = {
         }),
         ` `,
         shown,
-        later("st-speed"),
+        el("span", { id: "st-speed-hint", class: "hint" }, SPEED_SETTING_HINT),
       ]),
       checkbox(ctx, "fingerColors", "Finger colors"),
     ]);

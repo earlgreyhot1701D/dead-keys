@@ -87,6 +87,10 @@ function begin(ctx) {
   const openOut = () =>
     ask("out", "Out of lives", outOfLivesLines(run.state), "Continue", goOn(true), goOn(false));
   run.step = step;
+  run.setCaps = (on) => {
+    stage.setCaps(on);
+    stage.show([], run.state, run.state); // show or hide the hint now, even while paused
+  };
   run.dialogOpen = () => !!doc.querySelector?.("dialog[open]");
   run.node = stage.node;
   stage.show([], run.state, run.state);
@@ -113,7 +117,16 @@ export const roundScreen = {
   },
   onKey(_ctx, e) {
     if (!live || live.dialogOpen()) return false;
+    // Caps Lock makes every lowercase word miss, so the footer says so (Shara, Nov 12).
+    if (typeof e.getModifierState === "function") live.setCaps(e.getModifierState("CapsLock"));
     if (e.key === "Escape") {
+      live.step(pressEscape(live.state));
+      return true;
+    }
+    // Backspace lets go of a locked word (the same engine call as Escape), so a player who
+    // locked the wrong word can start over. With nothing locked it does nothing: it never pauses.
+    if (e.key === "Backspace") {
+      if (live.state.lockId === null || live.state.paused) return false;
       live.step(pressEscape(live.state));
       return true;
     }

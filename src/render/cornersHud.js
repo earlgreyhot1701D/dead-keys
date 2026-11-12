@@ -22,7 +22,7 @@ const setText = (node, text) => {
 /**
  * @param {Function} el
  * @param {{ onPause: () => void, persist: boolean, speed: number }} o
- * @returns {{ header: HTMLElement, station: HTMLElement, footer: HTMLElement, update: (state: object) => void }}
+ * @returns {{ header: HTMLElement, station: HTMLElement, footer: HTMLElement, update: (state: object) => void, setCaps: (on: boolean) => void }}
  */
 export function createCornersHud(el, o) {
   const span = (cls) => el("span", { class: cls });
@@ -68,6 +68,8 @@ export function createCornersHud(el, o) {
     setText(v.time, `TIME: ${timeText(state.activeMs)}`);
     const t = locked(state);
     setText(v.typed, t ? lockParts(t).typed : "");
+    foot.update(state);
   }
-  return { header, station, footer: playFooter(el, o), update };
+  const foot = playFooter(el, o);
+  return { header, station, footer: foot.node, update, setCaps: foot.setCaps };
 }

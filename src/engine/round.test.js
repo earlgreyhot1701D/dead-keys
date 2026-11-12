@@ -2,7 +2,14 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import * as fc from "fast-check";
-import { LIVES_MAX, SLOTS, SPAWN_GAP_MS, TARGETS_MAX, TARGETS_START } from "./config.js";
+import {
+  LIVES_MAX,
+  SLOTS,
+  SPAWN_GAP_MS,
+  TARGETS_MAX,
+  TARGETS_START,
+  WARMUP_WORDS,
+} from "./config.js";
 import { tick } from "./lifecycle.js";
 import { createRound, key, pressEscape } from "./round.js";
 
@@ -42,7 +49,9 @@ function withTargets(list, over = {}) {
 }
 
 test("createRound starts with one word; the rest come one spawn gap apart, up to the limit", () => {
-  const { state, events } = createRound(opts());
+  const { state: fresh, events } = createRound(opts());
+  assert.equal(fresh.warmup, WARMUP_WORDS);
+  const state = { ...fresh, warmup: 0 }; // past the warm-up, wave 1's own limit
   assert.deepEqual(events, []);
   assert.equal(state.targets.length, 1);
   let s = state;

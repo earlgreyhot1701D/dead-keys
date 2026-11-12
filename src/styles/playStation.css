@@ -87,6 +87,15 @@
 .foot-crt {
   color: var(--muted);
 }
+.foot-hint {
+  min-width: 0;
+  color: var(--text);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.foot-hint:empty {
+  display: none;
+}
 .play-pause {
   min-height: 36px;
   padding: 0 16px;

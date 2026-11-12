@@ -12,6 +12,7 @@ import {
   ESCAPE_LINE,
   nextRound,
   PICK_LINE,
+  paceLine,
   playScreen,
   RULES,
   SPEED_HINT,
@@ -65,15 +66,27 @@ test("the speed slider: labelled, Settings' range and steps, starts at the saved
   const { node, text } = draw(0.8);
   const s = slider(node);
   const label = findAll(node, (n) => n.tag === "label" && n.attrs.for === "pick-speed")[0];
-  assert.equal(textOf(label).trim(), "Speed");
+  assert.equal(textOf(label).trim(), "Starting speed");
   assert.equal(s.attrs.type, "range");
   assert.equal(s.attrs.min, String(SPEED_MIN));
   assert.equal(s.attrs.max, String(SPEED_MAX));
   assert.equal(s.attrs.step, "0.1");
   assert.equal(s.value, 0.8);
-  assert.equal(s.attrs["aria-valuetext"], "0.8×");
+  assert.match(s.attrs["aria-valuetext"], /^0\.8×, about \d+ WPM$/);
   assert.ok(text.includes("0.8×"));
+  assert.ok(text.includes(paceLine(0.8)));
   assert.equal(s.attrs["aria-describedby"], "pick-speed-hint");
+});
+
+test("the pace line follows the slider while it moves", () => {
+  const { node, text } = draw(1);
+  const s = slider(node);
+  const before = paceLine(1);
+  assert.ok(text.includes(before));
+  s.listeners.input({ target: { value: "2", setAttribute() {} } });
+  const pace = findAll(node, (n) => n.attrs?.class === "pick-speed-pace")[0];
+  assert.equal(pace.textContent, paceLine(2));
+  assert.notEqual(paceLine(2), before);
 });
 
 test("moving the slider saves the speed; a bad value is never saved", () => {

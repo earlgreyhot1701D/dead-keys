@@ -26,27 +26,46 @@ const setText = (node, text) => {
 };
 
 /**
- * The footer both play screens share (mocks 3 and 4): speed, save, the pause button, CRT-SCAN.
+ * The footer both play screens share (mocks 3 and 4): starting speed, save, the pause button,
+ * the hint, CRT-SCAN. `update` sets the hint each frame: Caps Lock first (every key would
+ * miss), then how to let go of a locked word, else nothing. `setCaps` is told by each key press.
  * @param {Function} el
  * @param {{ onPause: () => void, persist: boolean, speed: number }} o
+ * @returns {{ node: HTMLElement, update: (state: object) => void, setCaps: (on: boolean) => void }}
  */
 export function playFooter(el, { onPause, persist, speed }) {
-  return el("footer", { class: "term-footer play-footer" }, [
+  const hint = el("span", { class: "foot-hint" }, "");
+  const node = el("footer", { class: "term-footer play-footer" }, [
     el("span", { class: "foot-left" }, [
-      el("span", { class: "foot-speed" }, `SPEED: ${speedText(speed)}`),
+      el("span", { class: "foot-speed" }, `START SPEED: ${speedText(speed)}`),
       el("span", { class: "foot-sep", "aria-hidden": "true" }, "|"),
       el("span", { class: "foot-save" }, `SYS.84 // SAVE: ${persist ? "THIS BROWSER" : "OFF"}`),
     ]),
     el("button", { type: "button", class: "play-pause", onClick: onPause }, "[ESC] PAUSE"),
+    hint,
     el("span", { class: "foot-crt" }, `CRT-SCAN ${crtOn() ? "ON" : "OFF"}`),
   ]);
+  let caps = false;
+  return {
+    node,
+    update: (state) => setText(hint, caps ? CAPS_HINT : lockHint(state)),
+    setCaps: (on) => {
+      caps = on === true;
+    },
+  };
 }
+
+/** The footer hint: how to let go of a locked word, or nothing when no word is locked. */
+export const LET_GO_HINT = "LOCKED: [BKSP] OR [ESC] LETS GO";
+/** Shown while Caps Lock is on: the words are lowercase, so every key would miss. */
+export const CAPS_HINT = "CAPS LOCK IS ON";
+export const lockHint = (state) => (state.lockId === null ? "" : LET_GO_HINT);
 
 /**
  * @param {Function} el
  * @param {{ onPause: () => void, persist: boolean, speed: number, practice?: boolean }} o
  *   Practice has no lives and no waves, so the note takes their place (play copy table).
- * @returns {{ header: HTMLElement, station: HTMLElement, footer: HTMLElement, update: (state: object) => void }}
+ * @returns {{ header: HTMLElement, station: HTMLElement, footer: HTMLElement, update: (state: object) => void, setCaps: (on: boolean) => void }}
  */
 export function createPlayHud(el, { onPause, persist, speed, practice = false }) {
   const span = (cls) => el("span", { class: cls });
@@ -93,7 +112,7 @@ export function createPlayHud(el, { onPause, persist, speed, practice = false })
       ]),
     ]),
   ]);
-  const footer = playFooter(el, { onPause, persist, speed });
+  const foot = playFooter(el, { onPause, persist, speed });
   function update(state) {
     setText(v.lives, livesText(state.lives));
     v.lives.setAttribute("aria-label", livesLabel(state.lives));
@@ -108,6 +127,7 @@ export function createPlayHud(el, { onPause, persist, speed, practice = false })
     const t = locked(state);
     setText(v.typed, t ? lockParts(t).typed : "");
     setText(v.target, t ? t.text : "");
+    foot.update(state);
   }
-  return { header, station, footer, update };
+  return { header, station, footer: foot.node, update, setCaps: foot.setCaps };
 }

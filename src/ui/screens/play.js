@@ -2,7 +2,9 @@
 // one shared panel with the rules both games use, and the speed slider (the same setting
 // Settings shows). Enter on a choice starts that round; Escape goes back. Every word here is the
 // copy table's (play design.md). No mock screen of its own, so it uses the Block 6 page pieces.
+import pack from "../../../packs/general.json" with { type: "json" };
 import { SPEED_MAX, SPEED_MIN } from "../../engine/config.js";
+import { averageLength, paceWpm } from "../../engine/pace.js";
 import { isValidSetting } from "../../storage/settings.js";
 import { termPage } from "../components/chrome.js";
 import { el } from "../dom.js";
@@ -28,6 +30,8 @@ export function chooseRound(kind) {
 /** The round the round screen will start. */
 export const nextRound = () => ROUND_KINDS[next];
 
+const AVG = averageLength(pack.pools.words);
+
 export const PICK_LINE = "Pick how the words come at you.";
 export const BADGE = "SELECT";
 export const CHOICES = Object.freeze([
@@ -39,13 +43,20 @@ export const CHOICES = Object.freeze([
   {
     kind: "corners",
     name: "Four corners",
-    how: "Words close in from four corners toward the core. Type the first letter to lock the closest one, then finish it before it reaches the ring.",
+    how: "Words close in from four corners toward the core. Type the first letter to lock a word, then finish it before it reaches the ring.",
   },
 ]);
 export const RULES =
-  "Lives are the arcade part. A word that lands costs one; a wrong key never does. Words speed up each wave, and you get one free continue. Running out just ends the round, and it's still saved. Want no pressure? Try Practice from the menu.";
-export const ESCAPE_LINE = "Escape pauses.";
-export const SPEED_HINT = "Slower words give you more time. You can change this any time.";
+  "The first three words are a slow warm-up and never cost a life. Lives are the arcade part. A word that lands costs one; a wrong key never does. Words speed up each wave, and you get one free continue. Running out just ends the round, and it's still saved. Want no pressure? Try Practice from the menu.";
+export const ESCAPE_LINE =
+  "Type a word's first letter to lock it, then finish it. Backspace or Escape lets go, so you can pick another word. Escape with nothing locked pauses.";
+export const SPEED_HINT =
+  "This is where wave 1 starts. Each wave gets a little faster, and every third wave adds a word. You can change it any time.";
+/** The pace line under the slider: what the speed asks of the player at wave 1. */
+export const paceLine = (speed) =>
+  `About ${paceWpm({ speed, avgLength: AVG })} WPM keeps up at wave 1.`;
+/** The slider's spoken value: the speed and the pace together. */
+const spoken = (speed) => `${speedText(speed)}, about ${paceWpm({ speed, avgLength: AVG })} WPM`;
 
 function choice(ctx, { kind, name, how }) {
   const howId = `pick-${kind}-how`;
@@ -74,8 +85,9 @@ function speedRow(ctx) {
   const speed = ctx.state.settings.speed;
   // The slider speaks its own value, so the visible readout is hidden from a screen reader.
   const shown = el("span", { class: "pick-speed-out", "aria-hidden": "true" }, speedText(speed));
+  const pace = el("span", { class: "pick-speed-pace", "aria-hidden": "true" }, paceLine(speed));
   return el("p", { class: "set-row picker-speed" }, [
-    el("label", { for: "pick-speed" }, "Speed "),
+    el("label", { for: "pick-speed" }, "Starting speed "),
     el("input", {
       type: "range",
       id: "pick-speed",
@@ -84,12 +96,13 @@ function speedRow(ctx) {
       max: SPEED_MAX,
       step: 0.1,
       value: speed,
-      "aria-valuetext": speedText(speed),
+      "aria-valuetext": spoken(speed),
       "aria-describedby": "pick-speed-hint",
       onInput: (e) => {
-        const text = speedText(Number(e.target.value));
-        shown.textContent = text;
-        e.target.setAttribute?.("aria-valuetext", text);
+        const v = Number(e.target.value);
+        shown.textContent = speedText(v);
+        pace.textContent = paceLine(v);
+        e.target.setAttribute?.("aria-valuetext", spoken(v));
       },
       onChange: (e) => {
         const v = Number(e.target.value);
@@ -99,6 +112,8 @@ function speedRow(ctx) {
     }),
     " ",
     shown,
+    " ",
+    pace,
     el("span", { id: "pick-speed-hint", class: "hint" }, SPEED_HINT),
   ]);
 }

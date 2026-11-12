@@ -28,10 +28,11 @@ export const livesText = (lives) => `[ ${heartsText(lives)} ]`;
 /** The same, in words for a screen reader (the mock's label). */
 export const livesLabel = (lives) => `${lives} of ${LIVES_MAX} lives left`;
 
-/** "WAVE 04". */
-export const waveText = (state) => `WAVE ${two(state.wave)}`;
-/** "· 12 LEFT": words still to clear in this wave. */
-export const leftText = (state) => `· ${WAVE_SIZE - state.clearedThisWave} LEFT`;
+/** "WAVE 04", or "WARM-UP" before wave 1 (Shara, Nov 12). */
+export const waveText = (state) => (state.warmup > 0 ? "WARM-UP" : `WAVE ${two(state.wave)}`);
+/** "· 12 LEFT": words still to clear in this wave, or warm-up words still to come. */
+export const leftText = (state) =>
+  `· ${state.warmup > 0 ? state.warmup : WAVE_SIZE - state.clearedThisWave} LEFT`;
 
 /** Live words per minute, whole. */
 export function liveWpm(state) {

@@ -49,6 +49,8 @@ export function createStage(el, { mechanic, practice, title, persist, speed, onP
       field.update(state);
       hud.update(state);
     },
+    /** Tell the footer whether Caps Lock is on (the round screen reads it from each key). */
+    setCaps: (on) => hud.setCaps(on),
     /** The word log so far: the last 8 words and every breach. */
     log: () => log,
     /** Clear every moment's timer (the screen is closing). */

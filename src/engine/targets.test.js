@@ -10,6 +10,7 @@ import {
   SPEED_MIN,
   TARGETS_MAX,
   TARGETS_START,
+  WAVE_ADD_EVERY,
   WAVE_SPEEDUP,
   WAVE_SPEEDUP_MAX_WAVE,
 } from "./config.js";
@@ -19,6 +20,8 @@ const items = [
   { id: "w1", text: "fad" },
   { id: "w2", text: "sad" },
   { id: "w3", text: "flask" },
+  // One per first letter past "f" and "s", so every lane can fill (spawn keeps first letters unique).
+  ...["tab", "cup", "dot", "hen", "kit", "map"].map((text, i) => ({ id: `w${i + 4}`, text })),
 ];
 
 /** Freeze deep, so any mutation by the engine throws. */
@@ -54,7 +57,8 @@ function fill(s) {
   throw new Error("spawn never stopped");
 }
 
-const wantCap = (m, w) => Math.min(Math.min(TARGETS_START + w - 1, TARGETS_MAX), SLOTS[m]);
+const wantCap = (m, w) =>
+  Math.min(TARGETS_START + Math.floor((w - 1) / WAVE_ADD_EVERY), TARGETS_MAX, SLOTS[m]);
 
 test("spawns fill up to min(wave limit, slots) and never past it", () => {
   fc.assert(
@@ -70,10 +74,13 @@ test("corners never holds more than 4 targets, even in a late wave", () => {
   assert.equal(s.targets.length, 4);
 });
 
-test("falling starts at 3 and grows by one a wave up to its 6 lanes", () => {
+test("falling starts at 3 and adds one every 3 waves up to its 6 lanes", () => {
   assert.equal(SLOTS.falling, 6); // as the mock draws (Shara, Nov 12)
+  assert.equal(WAVE_ADD_EVERY, 3); // Shara, Nov 12: was every wave
   assert.equal(fill(state({ wave: 1 })).targets.length, 3);
-  assert.equal(fill(state({ wave: 2 })).targets.length, 4);
+  assert.equal(fill(state({ wave: 3 })).targets.length, 3);
+  assert.equal(fill(state({ wave: 4 })).targets.length, 4);
+  assert.equal(fill(state({ wave: 7 })).targets.length, 5);
   assert.equal(fill(state({ wave: 20 })).targets.length, 6);
 });
 
@@ -205,4 +212,20 @@ test("bad input is a programmer error", () => {
   for (const m of ["sideways", "constructor", "toString"]) {
     assert.throws(() => spawn(state({ mechanic: m })), RangeError);
   }
+});
+
+test("a new word never shares a first letter with a word on screen", () => {
+  let s = state({ wave: 6 });
+  for (let i = 0; i < 40; i++) {
+    s = spawn({ ...s, spawnWaitMs: 0 }).state;
+    const firsts = s.targets.map((t) => t.text[0]);
+    assert.equal(new Set(firsts).size, firsts.length, firsts.join());
+    if (s.targets.length > 2) s = { ...s, targets: s.targets.slice(1) };
+  }
+});
+
+test("when every item's first letter is taken, spawn waits and changes nothing", () => {
+  const onScreen = { id: 0, itemId: "w1", text: "fad", typed: 0, progress: 0, slot: 0 };
+  const s = state({ items: [{ id: "w3", text: "flask" }], targets: [onScreen], nextId: 1 });
+  assert.equal(spawn(s).state, s);
 });
