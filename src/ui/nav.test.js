@@ -93,3 +93,21 @@ test("Escape goes back, unless a screen or a dialog already used it", () => {
     );
   }
 });
+
+test("replace swaps the current screen, so back skips it (the first-run privacy card)", () => {
+  const nav = createNav("title");
+  nav.go("privacy");
+  nav.replace("menu");
+  assert.deepEqual(nav.stack, ["title", "menu"]);
+  assert.equal(nav.back(), true);
+  assert.equal(nav.current(), "title");
+});
+
+test("replace on the first screen adds rather than loses it, and a repeat returns to it", () => {
+  const nav = createNav("title");
+  nav.replace("menu");
+  assert.deepEqual(nav.stack, ["title", "menu"]);
+  nav.go("settings");
+  nav.replace("menu");
+  assert.deepEqual(nav.stack, ["title", "menu"]);
+});

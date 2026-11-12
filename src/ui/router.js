@@ -56,6 +56,7 @@ export function mountRouter({ root, live, screens, app, start = "title", doc = d
     app,
     root: screenSlot,
     go,
+    replace,
     back,
     refresh,
     announce,
@@ -93,6 +94,10 @@ export function mountRouter({ root, live, screens, app, start = "title", doc = d
   }
   function go(id) {
     nav.go(has(id) ? id : start);
+    draw({ focusHeading: true });
+  }
+  function replace(id) {
+    nav.replace(has(id) ? id : start);
     draw({ focusHeading: true });
   }
   function back() {

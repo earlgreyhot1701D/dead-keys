@@ -28,8 +28,13 @@ export function importLines({ incoming, current }) {
   ];
 }
 
+// data-focus-id lets the router put focus back after the screen redraws (a clear or an import).
 const button = (label, onClick, extra = "") =>
-  el("button", { type: "button", class: `btn ${extra}`.trim(), onClick }, label);
+  el(
+    "button",
+    { type: "button", class: `btn ${extra}`.trim(), "data-focus-id": label, onClick },
+    label,
+  );
 
 /** Start the clear flow: ask first, then clear. */
 export function askClear(ctx) {
@@ -86,6 +91,7 @@ export function renderDataSection(ctx) {
   const input = el("input", {
     type: "file",
     id: "import-file",
+    "data-focus-id": "import-file",
     accept: ".json,application/json",
     onChange: () => chooseFile(ctx, input, status),
   });

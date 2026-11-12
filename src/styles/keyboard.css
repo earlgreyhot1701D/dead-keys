@@ -59,7 +59,7 @@
 }
 .band-shaky {
   border: 2px solid var(--shaky);
-  background-image: radial-gradient(rgba(242, 193, 78, 0.45) 1.5px, transparent 1.5px);
+  background-image: radial-gradient(rgba(242, 193, 78, 0.3) 1.5px, transparent 1.5px);
   background-size: 7px 7px;
 }
 .band-uneven {

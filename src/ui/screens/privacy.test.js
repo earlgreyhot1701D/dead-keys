@@ -33,6 +33,7 @@ function ctxFor(privacySeen) {
     log,
     state: { settings: { privacySeen } },
     go: (id) => log.push(["go", id]),
+    replace: (id) => log.push(["replace", id]),
     back: () => log.push(["back"]),
     app: { dismissPrivacy: () => log.push(["dismiss"]) },
   };
@@ -66,7 +67,7 @@ test("the first time, Continue remembers it was seen and opens the menu", () => 
     const [b] = findAll(privacyScreen.render(ctx), (n) => n.tag === "button");
     assert.equal(textOf(b), "Continue");
     b.click();
-    assert.deepEqual(ctx.log, [["dismiss"], ["go", "menu"]]);
+    assert.deepEqual(ctx.log, [["dismiss"], ["replace", "menu"]]);
   });
 });
 

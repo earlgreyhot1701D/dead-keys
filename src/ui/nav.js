@@ -10,14 +10,20 @@ const MAX_STACK = 12;
  */
 export function createNav(start) {
   let stack = [start];
+  const push = (id) => {
+    const at = stack.indexOf(id);
+    stack = at >= 0 ? stack.slice(0, at + 1) : [...stack, id].slice(-MAX_STACK);
+  };
   return {
     get stack() {
       return [...stack];
     },
     current: () => stack.at(-1),
-    go(id) {
-      const at = stack.indexOf(id);
-      stack = at >= 0 ? stack.slice(0, at + 1) : [...stack, id].slice(-MAX_STACK);
+    go: push,
+    /** Swap the current screen for another, so Escape skips it (the first-run privacy card). */
+    replace(id) {
+      if (stack.length > 1) stack = stack.slice(0, -1);
+      push(id);
     },
     /** @returns {boolean} False at the first screen, where there is nothing to go back to. */
     back() {

@@ -29,7 +29,7 @@ export const privacyScreen = {
                 class: "btn",
                 onClick: () => {
                   ctx.app.dismissPrivacy(); // remembered in settings (Req 4.2)
-                  ctx.go("menu");
+                  ctx.replace("menu"); // Escape from the menu skips the card
                 },
               },
               "Continue",
