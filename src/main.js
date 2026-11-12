@@ -24,6 +24,7 @@ import "./styles/progressWeak.css";
 import "./styles/pages.css";
 import { createApp } from "./ui/app.js";
 import { downloadText } from "./ui/download.js";
+import { mountFit } from "./ui/fit.js";
 import { mountRouter } from "./ui/router.js";
 import { aboutScreen } from "./ui/screens/about.js";
 import { howWeCountScreen } from "./ui/screens/howWeCount.js";
@@ -44,6 +45,7 @@ const app = createApp({
   reload: () => window.location.reload(),
 });
 app.start();
+mountFit();
 
 // Screens not listed here are not built yet; the menu shows them as such.
 const screens = Object.fromEntries(

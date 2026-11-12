@@ -97,19 +97,28 @@ export function bestsBlock(bests) {
   ]);
 }
 
-/** A future button: its label alone, styled disabled, with "Not built yet" as a line under it. */
-const comingSoon = (label, id) =>
+/**
+ * A future button: its label alone, styled disabled, with "Not built yet" as a line under it.
+ * It stays focusable; pressing it only says "<label>: not built yet" through the live region.
+ */
+const comingSoon = (label, id, announce) =>
   el("div", { class: "later" }, [
     el(
       "button",
-      { type: "button", class: "btn btn-term", "aria-disabled": "true", "aria-describedby": id },
+      {
+        type: "button",
+        class: "btn btn-term",
+        "aria-disabled": "true",
+        "aria-describedby": id,
+        onClick: announce ? () => announce(`${label}: not built yet`) : null,
+      },
       label,
     ),
     el("span", { id, class: "later-note" }, NOT_BUILT),
   ]);
 
 /** The weak keys, drawn as caps, and the drill and lesson buttons that come later. */
-export function weakPanel(weakKeys, heat) {
+export function weakPanel(weakKeys, heat, announce = null) {
   const byKey = new Map(heat.map((h) => [h.key, h]));
   return el("section", { class: "weak-panel", "aria-labelledby": "pg-weak" }, [
     el("h2", { id: "pg-weak", class: "weak-title" }, "Your top weak keys"),
@@ -126,8 +135,8 @@ export function weakPanel(weakKeys, heat) {
         )
       : null,
     el("div", { class: "weak-actions" }, [
-      comingSoon("Drill these keys", "later-drill"),
-      comingSoon("Lessons", "later-lessons"),
+      comingSoon("Drill these keys", "later-drill", announce),
+      comingSoon("Lessons", "later-lessons", announce),
     ]),
   ]);
 }

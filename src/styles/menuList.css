@@ -42,9 +42,9 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  min-height: 46px;
+  min-height: 56px;
   padding: 0 14px;
-  border: 1px solid transparent;
+  border: 3px double transparent; /* same box focused or not, so the list never shifts */
   background: transparent;
   color: var(--soft);
   font-family: var(--mono);
@@ -61,8 +61,7 @@
   content: "\00a0]" / "";
 }
 .menu-item:focus {
-  min-height: 56px;
-  border: 3px double var(--text);
+  border-color: var(--text);
   background: var(--panel-hi);
   box-shadow: inset 0 0 12px rgba(79, 227, 209, 0.15);
   color: var(--text);

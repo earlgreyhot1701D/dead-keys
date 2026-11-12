@@ -84,6 +84,7 @@
 }
 /* A button that reads as a link, as the mock's footer links do. */
 .link-btn {
+  min-height: 24px; /* WCAG 2.2 target size */
   padding: 0;
   border: 0;
   background: none;

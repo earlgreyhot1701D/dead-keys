@@ -3,7 +3,6 @@
 // shows "Not built yet" and stays focusable but does nothing, so the menu reads the same in every
 // build. The focused item takes the mock's raised look; that look is also its focus indicator.
 import { hints, pill, scanlines, sysLine, TERMINAL, terminalIcon } from "../components/chrome.js";
-import { liveClock } from "../components/clock.js";
 import { renderMenuSide } from "../components/menuSide.js";
 import { renderPhoneNotice } from "../components/phoneNotice.js";
 import { el } from "../dom.js";
@@ -73,7 +72,6 @@ export const menuScreen = {
           el("span", {}, TERMINAL),
           pill("BUILD v1"),
         ]),
-        liveClock(),
       ]),
       el("main", { id: "main", class: "menu-main" }, [
         el("div", { class: "menu-title-row" }, [

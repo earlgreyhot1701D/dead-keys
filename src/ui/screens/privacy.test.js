@@ -60,7 +60,8 @@ test("it shows a heading, the paragraphs as text, the header's Back, and Continu
     assert.equal(textOf(findAll(node, (n) => n.tag === "h1")[0]), "Privacy");
     assert.deepEqual(findAll(node, (n) => n.tag === "p").map(textOf), [...PRIVACY_PARAGRAPHS]);
     assert.deepEqual(buttons(false), ["Back", "Continue"]);
-    assert.deepEqual(buttons(true), ["Back"]); // one way out, not two
+    // once seen (from Settings): the way home, then Back
+    assert.deepEqual(buttons(true), ["Dead Keys // Terminal 84 (main menu)", "Main menu", "Back"]);
   });
 });
 
@@ -78,8 +79,11 @@ test("the first time, Continue remembers it was seen and opens the menu", () => 
 test("from Settings, once seen, the button just goes back and remembers nothing new", () => {
   withFakeDocument(() => {
     const ctx = ctxFor(true);
-    const [b] = findAll(privacyScreen.render(ctx), (n) => n.tag === "button");
-    assert.equal(textOf(b), "Back");
+    const b = findAll(
+      privacyScreen.render(ctx),
+      (n) => n.tag === "button" && textOf(n) === "Back",
+    )[0];
+    assert.ok(b, "a Back button");
     b.click();
     assert.deepEqual(ctx.log, [["back"]]);
   });
@@ -88,4 +92,20 @@ test("from Settings, once seen, the button just goes back and remembers nothing 
 test("the screen's id and announced title", () => {
   assert.equal(privacyScreen.id, "privacy");
   assert.equal(privacyScreen.title, "Privacy");
+});
+
+test("from Settings, Main menu and the wordmark both go home; the first-launch card has neither", () => {
+  withFakeDocument(() => {
+    const ctx = ctxFor(true);
+    const node = privacyScreen.render(ctx);
+    for (const label of ["Main menu", "Dead Keys // Terminal 84 (main menu)"]) {
+      findAll(node, (n) => n.tag === "button" && textOf(n) === label)[0].click();
+    }
+    assert.deepEqual(ctx.log, [
+      ["go", "menu"],
+      ["go", "menu"],
+    ]);
+    const first = privacyScreen.render(ctxFor(false));
+    assert.equal(findAll(first, (n) => n.tag === "button" && textOf(n) === "Main menu").length, 0);
+  });
 });

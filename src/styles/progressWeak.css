@@ -49,7 +49,8 @@
   color: var(--dim);
   text-align: center;
 }
-@media (max-width: 1400px) {
+/* Only below the fit range (fit.js); from 1100px up the page is zoomed to fit instead. */
+@media (max-width: 1099px) {
   .progress-main {
     grid-template-columns: 1fr;
   }

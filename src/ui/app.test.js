@@ -127,11 +127,11 @@ test("when persist is true a setting is saved with the whole progress", () => {
   assert.equal(JSON.parse(data.get(KEY)).settings.privacySeen, true);
 });
 
-test("a save that fails keeps the change in memory and shows saveFailed", () => {
+test("a settings save that fails keeps the change in memory and shows settingsFailed", () => {
   const { app, data } = boot({ initial: { [KEY]: GOOD }, failSet: [KEY] });
   app.setSetting("fingerColors", false);
   assert.equal(app.state.settings.fingerColors, false);
-  assert.equal(app.state.notice, "saveFailed");
+  assert.equal(app.state.notice, "settingsFailed"); // not "That round didn't save"
   assert.equal(data.get(KEY), GOOD);
   app.dismissNotice();
   assert.equal(app.state.notice, null);

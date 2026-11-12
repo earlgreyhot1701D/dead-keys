@@ -7,9 +7,19 @@
   align-content: start;
   align-items: start; /* panels size to their content */
 }
+/* How we count: six panels in three columns, so the whole rulebook fits on one screen. */
+.page-grid-3 {
+  display: block;
+  column-count: 3;
+  column-gap: 20px;
+}
+.page-grid-3 > * {
+  margin: 0 0 14px;
+  break-inside: avoid;
+}
 .page-narrow {
   display: flex;
-  align-items: flex-start; /* the panel sizes to its content */
+  align-items: center; /* the panel sizes to its content, centered in the page */
   justify-content: center;
 }
 .page-narrow .term-panel {
@@ -25,6 +35,10 @@
   font-size: 15px;
   line-height: 1.6;
   color: var(--soft);
+}
+.page-grid-3 .prose-panel p {
+  font-size: 14px;
+  line-height: 1.55;
 }
 .set-row .hint {
   flex-basis: 100%;
@@ -103,7 +117,8 @@
   font-size: 18px;
 }
 @media (max-width: 1000px) {
-  .page-grid {
+  .page-grid,
+  .page-grid-3 {
     grid-template-columns: 1fr;
   }
 }

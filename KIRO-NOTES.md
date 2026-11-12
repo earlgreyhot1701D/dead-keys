@@ -440,3 +440,26 @@ Both ran `check:build` first (clean: 13 files, 216 fixture ids, 32 sample string
 | The title strip sat outside any landmark (axe "region", moderate) | Fixed: both bars sit in the page's `<header>` | `chrome.js` |
 | New CSS reached 307 lines in one file | Fixed: split by concern, every stylesheet under 150 | `src/styles/` |
 | The mock's chart labels are SVG text, not allowed in the builder | Known limit: gridline labels are HTML text placed over the chart; x labels are OLDEST and LATEST instead of every few rounds | `speedChart.js` |
+
+## Block 6 final round (Nov 11, evening): made by Claude in a copy of the repo, to save Kiro credits
+
+Shara asked Claude to make this round's changes directly, then have Kiro review, commit and deploy. Claude worked in a copy of the repo at ebf924d, ran `npm test`, `biome check .`, the full Playwright suite (with axe) and the screenshot spec there, then wrote the changed files back. Kiro has not run anything yet for this round.
+
+| Item | What changed | Status |
+|---|---|---|
+| Way home | Every page but title, menu and the first-launch privacy card has a "Main menu" button; the wordmark goes home too (screen-reader name "Dead Keys // Terminal 84 (main menu)", no aria-label, so WCAG 2.5.3 holds) | Fixed |
+| No page scrolls | New `src/ui/fit.js`: from 1100x600 up to 1440x900 the page is drawn at the design size and zoomed as one piece; below that it reflows, so browser zoom and text resize still work. How we count is three columns. Progress's right column is capped at 480px so the chart keeps its size on wide screens. e2e checks 1440x900, 1366x768 and 1280x720 | Fixed |
+| Known limit of fit | Browser zoom from 100% to about 130% on a 1440x900 screen is absorbed by the fit; past that, the page reflows and text grows | Known limit |
+| Privacy | Panel centered vertically | Fixed |
+| Settings | "Not built yet" under Sound, Speed, Finger colors and AI drills, tied by aria-describedby; still saving | Fixed |
+| Chart title | "SPEED // LAST n ROUNDS", n real | Fixed |
+| Title footer | "Progress isn't being saved right now." while not saving | Fixed |
+| Settings save failure | New `settingsFailed` notice instead of "That round didn't save" | Fixed |
+| Clock | Removed (auto-updating with no stop, WCAG 2.2.2); `src/ui/components/clock.js` deleted | Fixed |
+| Menu focus | Every item has the focused box size, so the list never shifts | Fixed |
+| Link buttons | At least 24px | Fixed |
+| Future buttons | Pressing "Drill these keys" or "Lessons" says "<label>: not built yet" | Fixed |
+| e2e | `fit.spec.js` (no scroll at three sizes, the way home), `failures.spec.js` (blocked storage, refused download) | Fixed |
+| Screenshots | 1366x768 set added (`built-<screen>-1366.png`) | Fixed |
+| Privacy-card claims, scanline contrast, build check short strings, Vercel rebuild, menu screenshot focus | Shara's decisions and eye checks | No action |
+| Lockfile out of sync | `npm ci` failed: @emnapi/core and @emnapi/runtime 2.0.0-beta.2 were missing from package-lock.json (the "extraneous" packages from Block 6 task 5). Vercel runs `npm install`, so deploys worked, but `npm ci` did not | Fixed (Kiro, Nov 12): `npm install` refreshed the lockfile (it dropped 11 stale `"peer": true` lines; no package added or changed), and `npm ci` now succeeds (exit 0). npm still does not write the two @emnapi packages: they are optional peers of the extraneous wasm fallback `@emnapi/wasi-threads`, which this Windows install never uses, so `npm ls --all` still lists them as unmet under that helper |

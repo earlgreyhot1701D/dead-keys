@@ -33,6 +33,7 @@ export const privacyScreen = {
       badgeText: "NOTICE",
       flavor: "WHAT STAYS, WHAT LEAVES",
       title: "Privacy",
+      home: !first,
       body: el("main", { id: "main", class: "term-main page-narrow" }, [
         el("section", { class: "term-panel prose-panel", "aria-label": "Privacy card" }, [
           panelHead(el("span", { class: "panel-title" }, "FIRST-LAUNCH CARD"), null),

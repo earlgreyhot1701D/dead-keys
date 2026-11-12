@@ -14,7 +14,7 @@ One file, one responsibility. Soft cap 150 lines, hard cap 250. Over 250, split 
 | `src/storage/` | store, saveClear, migrate, exportImport, vet, notices, settings | localStorage only, every call in try/catch |
 | `src/packs/` | load, validate | Validator also runs as a CLI |
 | `src/net/` | drillClient | The only fetch. Timeout, try/catch, built-in fallback |
-| `src/ui/` | app, router, dom, download, `screens/` (one per screen), `components/` | Rendering only, `textContent` only. Only `app.js` calls storage. |
+| `src/ui/` | app, router, fit, dom, download, `screens/` (one per screen), `components/` | Rendering only, `textContent` only. Only `app.js` calls storage. |
 | `src/styles/` | tokens, base, screens CSS | Locked look; self-hosted fonts |
 | `e2e/` | Playwright flows and axe | Runs against the built site |
 | `src/render/` | corners, falling, playback | The two mechanics and replay |

@@ -16,7 +16,7 @@ export const howWeCountScreen = {
       badgeText: "RULEBOOK",
       flavor: "THE NUMBERS, IN PLAIN WORDS",
       title: "How we count",
-      body: el("main", { id: "main", class: "term-main page-grid" }, [
+      body: el("main", { id: "main", class: "term-main page-grid page-grid-3" }, [
         ...buildSections().map((s) =>
           el("section", { class: "term-panel prose-panel", "aria-labelledby": `hwc-${s.id}` }, [
             panelHead(el("h2", { id: `hwc-${s.id}` }, s.heading), null),

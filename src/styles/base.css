@@ -43,6 +43,17 @@ a {
   color: var(--label);
 }
 
+/* Fit (fit.js): on a laptop smaller than the 1440x900 design, the page is drawn at the design
+   size and zoomed down as one piece, so no screen scrolls. */
+html.fit body {
+  width: calc(100vw / var(--fit));
+  min-height: calc(100vh / var(--fit));
+  zoom: var(--fit);
+}
+html.fit .screen-frame {
+  min-height: calc(100vh / var(--fit));
+}
+
 /* Visible focus on every control (WCAG 2.4.7, 2.4.13). Drawn outside the box so it never
    changes the layout. */
 :focus-visible {

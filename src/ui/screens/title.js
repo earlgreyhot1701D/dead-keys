@@ -13,6 +13,9 @@ export const SUBLINE = "1980s typing games // rebuilt as a real trainer";
 export const INTERCEPT = "PARANORMAL INTERCEPT // PID 0xDEAD";
 export const PRESS = "Press any key to start.";
 export const FOOTER_LINE = "Keyboard required. No account. Your progress stays in this browser.";
+/** Shown instead while this browser is not saving, so the footer never claims a save. */
+export const FOOTER_NOT_SAVING =
+  "Keyboard required. No account. Progress isn't being saved right now.";
 
 /** Keys that never start the game: the ones you use to move around, and browser shortcuts. */
 const NOT_A_START = new Set([
@@ -87,7 +90,7 @@ export const titleScreen = {
         ]),
       ]),
       el("footer", { class: "title-footer" }, [
-        el("span", {}, FOOTER_LINE),
+        el("span", {}, ctx.state?.persist === false ? FOOTER_NOT_SAVING : FOOTER_LINE),
         hints(["[ANY KEY] START", "[TAB] MOVE"]),
       ]),
     ]);

@@ -19,6 +19,7 @@ export const ACTIONS = Object.freeze({
   importFailed: "goSettings", // import lives on the Settings screen
   otherTab: "reload",
   exportFailed: "retry",
+  settingsFailed: "exportBackup",
 });
 
 /**

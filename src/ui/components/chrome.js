@@ -69,10 +69,22 @@ export function notBuiltPanel(title, extra = null) {
   ]);
 }
 
-/** The standard header bar: icon and terminal name on the left, `right` on the right. */
-export function termBar(right = [], cls = "") {
+/** Header bar: the terminal name (a home button with `onHome`), then `right`. */
+export function termBar(right = [], cls = "", onHome = null) {
+  const name = [terminalIcon(20), el("span", {}, TERMINAL)];
   return el("div", { class: `term-header ${cls}`.trim() }, [
-    el("span", { class: "term-name" }, [terminalIcon(20), el("span", {}, TERMINAL)]),
+    onHome
+      ? el(
+          "button",
+          {
+            type: "button",
+            class: "term-name term-home",
+            onClick: onHome,
+          },
+          // visible words, then where it goes (no aria-label, so WCAG 2.5.3 holds)
+          [...name, el("span", { class: "sr-only" }, " (main menu)")],
+        )
+      : el("span", { class: "term-name" }, name),
     el("span", { class: "term-header-right" }, right),
   ]);
 }
@@ -89,16 +101,33 @@ export function termFooter(state, rest = [], cls = "") {
 export const backButton = (ctx) =>
   el("button", { type: "button", class: "btn btn-term", onClick: () => ctx.back() }, "Back");
 
+/** The way home from any page. */
+export const MAIN_MENU = "Main menu";
+export const menuButton = (ctx) =>
+  el("button", { type: "button", class: "btn btn-term", onClick: () => ctx.go("menu") }, MAIN_MENU);
+
 /**
  * A full page in the mock's diagnostic-log style (progress, and the screens with no mock of
  * their own): header, a title strip with a badge and the h1, the main area, and the footer.
  */
-export function termPage(ctx, { badgeText, flavor, title, meta = null, body, footerExtra = [] }) {
+export function termPage(
+  ctx,
+  { badgeText, flavor, title, meta = null, body, footerExtra = [], home = true },
+) {
   return el("div", { class: "screen-frame term-page" }, [
     scanlines(),
     // Both bars sit in the page's one <header>, so everything is inside a landmark.
     el("header", { class: "term-page-head" }, [
-      termBar([el("span", { class: "save-note" }, saveNote(ctx.state)), backButton(ctx)]),
+      // no way home on the first-launch privacy card: Continue is the way through it
+      termBar(
+        [
+          el("span", { class: "save-note" }, saveNote(ctx.state)),
+          home ? menuButton(ctx) : null,
+          backButton(ctx),
+        ],
+        "",
+        home ? () => ctx.go("menu") : null,
+      ),
       el("div", { class: "title-strip" }, [
         el("span", { class: "title-strip-left" }, [
           badge(badgeText),

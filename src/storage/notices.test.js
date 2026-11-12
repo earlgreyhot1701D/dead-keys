@@ -1,4 +1,4 @@
-// Notice wording: the seven notices exist, each has a line and a button, and the wording is exactly
+// Notice wording: the eight notices exist, each has a line and a button, and the wording is exactly
 // what was approved. The first five are in the storage requirements table; `otherTab` and
 // `exportFailed` are in the shell design's copy table. The test reads both, so the code and the docs cannot drift apart.
 import assert from "node:assert/strict";
@@ -7,7 +7,7 @@ import { test } from "node:test";
 import { NOTICES } from "./notices.js";
 
 const FROM_STORAGE = ["blocked", "corrupt", "newer", "saveFailed", "importFailed"];
-const FROM_SHELL = ["otherTab", "exportFailed"];
+const FROM_SHELL = ["otherTab", "exportFailed", "settingsFailed"];
 const IDS = [...FROM_STORAGE, ...FROM_SHELL];
 
 /** A `notice` row of the shell design's copy table: its line and its button. */
@@ -41,7 +41,7 @@ function approved() {
   );
 }
 
-test("there are exactly the seven approved notice ids", () => {
+test("there are exactly the eight approved notice ids", () => {
   assert.deepEqual(Object.keys(NOTICES).sort(), [...IDS].sort());
 });
 

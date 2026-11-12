@@ -43,7 +43,7 @@ export const progressScreen = {
         ]),
         el("div", { class: "progress-right" }, [
           renderSpeedPanel(rounds, [bestsBlock(bests)]),
-          weakPanel(d.weakKeys, heat),
+          weakPanel(d.weakKeys, heat, ctx.announce),
         ]),
       ]),
       footerExtra: [

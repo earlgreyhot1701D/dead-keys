@@ -123,8 +123,19 @@ test("the AI switch says what leaves the browser, and Back goes back", () => {
     const ctx = ctxFor();
     const node = settingsScreen.render(ctx);
     assert.match(textOf(node), /which keys you miss and your recent speed/);
-    assert.equal(byId(node, "st-ai").attrs["aria-describedby"], "st-ai-hint");
+    assert.equal(byId(node, "st-ai").attrs["aria-describedby"], "st-ai-hint st-ai-later");
     findAll(node, (n) => n.tag === "button" && textOf(n) === "Back")[0].click();
     assert.deepEqual(ctx.log, [["back"]]);
+  });
+});
+
+test("every setting that saves but does nothing yet says Not built yet, tied to its control", () => {
+  withFakeDocument(() => {
+    const node = settingsScreen.render(ctxFor());
+    for (const id of ["st-ai", "st-sound", "st-speed", "st-fingerColors"]) {
+      const control = byId(node, id);
+      assert.ok(control.attrs["aria-describedby"].split(" ").includes(`${id}-later`), id);
+      assert.equal(textOf(byId(node, `${id}-later`)), "Not built yet");
+    }
   });
 });

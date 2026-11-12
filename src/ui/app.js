@@ -44,10 +44,11 @@ export function createApp(env) {
   const hasOldData = () => readCorrupt(storage) !== null;
 
   /** Save only when allowed; a failed save keeps the game running and shows its notice. */
-  function persistNow(progress) {
+  /** Save now. `failNotice` replaces saveFailed when what failed was a setting, not a round. */
+  function persistNow(progress, failNotice = null) {
     if (!state.persist) return false;
     const r = save(storage, progress);
-    if (r.notice) set({ notice: r.notice });
+    if (r.notice) set({ notice: r.notice === "saveFailed" && failNotice ? failNotice : r.notice });
     return r.notice === null;
   }
 
@@ -105,7 +106,7 @@ export function createApp(env) {
     setSetting(key, value) {
       const progress = { ...state.progress, settings: withSetting(state.settings, key, value) };
       adopt(progress);
-      persistNow(progress);
+      persistNow(progress, "settingsFailed");
     },
     dismissPrivacy() {
       app.setSetting("privacySeen", true);

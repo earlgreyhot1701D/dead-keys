@@ -2,7 +2,7 @@
 // change is saved at once through app.js. The data half (backup, import, clear) is settingsData.js.
 import { SPEED_MAX, SPEED_MIN } from "../../engine/config.js";
 import { isValidSetting, SOUND_SETS } from "../../storage/settings.js";
-import { panelHead, termPage } from "../components/chrome.js";
+import { NOT_BUILT, panelHead, termPage } from "../components/chrome.js";
 import { el } from "../dom.js";
 import { renderDataSection } from "./settingsData.js";
 
@@ -18,6 +18,12 @@ export const SOUND_LABELS = Object.freeze({
 /** The speed as the player reads it, and as the slider announces it: "1.2×". */
 export const speedText = (v) => `${v}×`;
 
+/**
+ * The small "Not built yet" line under a setting that saves now but does nothing until a later
+ * block (sound: Block 14, speed and finger colors: Blocks 7 and 8, AI drills: Block 10).
+ */
+const later = (id) => el("span", { id: `${id}-later`, class: "hint later" }, NOT_BUILT);
+
 /** Change a setting only if the value is allowed; the screen never offers anything else. */
 function change(ctx, key, value) {
   if (isValidSetting(key, value)) ctx.app.setSetting(key, value);
@@ -32,11 +38,12 @@ function checkbox(ctx, key, label, hint) {
       id,
       "data-focus-id": id,
       checked: ctx.state.settings[key],
-      "aria-describedby": hint ? `${id}-hint` : null,
+      "aria-describedby": hint ? `${id}-hint ${id}-later` : `${id}-later`,
       onChange: (e) => change(ctx, key, e.target.checked === true),
     }),
     el("label", { for: id }, ` ${label}`),
     hint ? el("span", { id: `${id}-hint`, class: "hint" }, ` ${hint}`) : null,
+    later(id),
   ]);
 }
 
@@ -64,12 +71,14 @@ export const settingsScreen = {
           {
             id: "st-sound",
             "data-focus-id": "st-sound",
+            "aria-describedby": "st-sound-later",
             onChange: (e) => change(ctx, "sound", e.target.value),
           },
           SOUND_SETS.map((v) =>
             el("option", { value: v, selected: v === s.sound }, SOUND_LABELS[v]),
           ),
         ),
+        later("st-sound"),
       ]),
       el("p", { class: "set-row" }, [
         el("label", { for: "st-speed" }, "Speed "),
@@ -82,6 +91,7 @@ export const settingsScreen = {
           step: 0.1,
           value: s.speed,
           "aria-valuetext": speedText(s.speed),
+          "aria-describedby": "st-speed-later",
           onInput: (e) => {
             const text = speedText(Number(e.target.value));
             shown.textContent = text;
@@ -91,6 +101,7 @@ export const settingsScreen = {
         }),
         ` `,
         shown,
+        later("st-speed"),
       ]),
       checkbox(ctx, "fingerColors", "Finger colors"),
     ]);

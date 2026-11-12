@@ -56,6 +56,12 @@ main.js -> app.js (state + storage actions + tab sync)
 |---|---|
 | `otherTab` notice | Your progress changed in another Dead Keys tab. To keep both tabs from overwriting each other, this one has stopped saving. Reload to pick up the latest. Button: Reload |
 | `exportFailed` notice | We couldn't make a backup file just now. Your progress is still saved in this browser. Try again in a moment. Button: Try again |
+| Header home (approved Nov 11) | Main menu (button on every page but title, menu and the first-launch privacy card; the wordmark goes home too, read as "Dead Keys // Terminal 84 (main menu)") |
+| Title footer, not saving (approved Nov 11) | Keyboard required. No account. Progress isn't being saved right now. |
+| Settings, under Sound, Speed, Finger colors, AI drills (approved Nov 11) | Not built yet |
+| Speed chart title (approved Nov 11) | SPEED // LAST n ROUNDS (n is the real count, up to 14; "SPEED" alone with none) |
+| Future buttons, pressed (approved Nov 11) | <label>: not built yet (spoken only) |
+| `settingsFailed` notice | That change didn't save. Your browser's storage may be full. Your other settings are still in place. Button: Download backup |
 | Clear confirm, extra line when a newer save is present | This also deletes progress saved by a newer version of Dead Keys. |
 | Phone notice (approved) | Dead Keys needs a physical keyboard to play. You can still look around the menus here. To type, open this page on a computer. |
 | Notice bar, quiet button (approved, replaces "Dismiss") | Got it |

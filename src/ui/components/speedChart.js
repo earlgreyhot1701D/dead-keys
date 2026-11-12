@@ -1,4 +1,4 @@
-// The speed line panel (locked mock, screen 6, right column): WPM over the last 14 saved rounds,
+// The speed line panel (locked mock, screen 6, right column): WPM over the last saved rounds (up to 14),
 // drawn with the safe SVG builder, gridline labels as text beside it, and the same numbers in
 // words for a screen reader. The gain pill shows only a rise, never a drop (PRD G5: the early
 // speed dip is never punished).
@@ -7,7 +7,10 @@ import { svg } from "../svg.js";
 import { panelHead, pill } from "./chrome.js";
 import { BOX, SPEED_ROUNDS, speedLine, speedWords } from "./speedLine.js";
 
-export const SPEED_TITLE = `SPEED // LAST ${SPEED_ROUNDS} ROUNDS`;
+/** "SPEED // LAST n ROUNDS", with n the rounds actually drawn (never more than SPEED_ROUNDS). */
+export const speedTitle = (n) =>
+  n > 0 ? `SPEED // LAST ${n} ROUND${n === 1 ? "" : "S"}` : "SPEED";
+export { SPEED_ROUNDS };
 export const NO_ROUNDS = "No rounds yet.";
 
 function chart(s) {
@@ -57,7 +60,7 @@ export function renderSpeedPanel(rounds, after = []) {
   return el("section", { class: "term-panel speed-panel", "aria-labelledby": "pg-speed" }, [
     panelHead(
       el("span", { class: "speed-head" }, [
-        el("h2", { id: "pg-speed" }, SPEED_TITLE),
+        el("h2", { id: "pg-speed" }, speedTitle(s ? s.wpms.length : 0)),
         el("span", { class: "speed-sub" }, "WPM BY ROUND"),
       ]),
       s && s.gain > 0 ? pill(`+${s.gain} WPM`, "pill-gain") : null,

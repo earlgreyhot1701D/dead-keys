@@ -30,6 +30,15 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
 }
+/* The terminal name as a home button: looks like the wordmark, acts like a link home. */
+.term-home {
+  min-height: 40px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
 /* Header bar (the progress screen's, used by every page with no mock of its own). */
 .term-header {
   display: flex;

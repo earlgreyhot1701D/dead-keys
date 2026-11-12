@@ -38,7 +38,19 @@ const OPEN = {
 test.skip(!process.env.SCREENSHOTS, "set SCREENSHOTS=1 to refresh docs/screens/");
 test.use({ viewport: { width: 1440, height: 900 } });
 
+/** Shara's Chromebook size: the same screens, fitted (fit.js), saved as built-<name>-1366.png. */
+const SMALL = { width: 1366, height: 768 };
+
 for (const { name, mock } of PAIRS) {
+  test(`built at 1366x768: ${name}`, async ({ page }) => {
+    await page.setViewportSize(SMALL);
+    if (name !== "privacy") await seed(page, seededText(BIG));
+    await OPEN[name](page);
+    await page.getByRole("heading", { level: 1 }).waitFor();
+    await page.evaluate(() => document.fonts.ready);
+    await page.evaluate(() => document.activeElement?.blur?.());
+    await page.screenshot({ path: `${OUT}built-${name}-1366.png` });
+  });
   test(`built: ${name}`, async ({ page }) => {
     if (name !== "privacy") await seed(page, seededText(BIG));
     await OPEN[name](page);

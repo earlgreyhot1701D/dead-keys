@@ -4,7 +4,16 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { PHONE_NOTICE } from "../components/phoneNotice.js";
 import { findAll, textOf, withFakeDocument } from "../fakeDom.js";
-import { FOOTER_LINE, INTERCEPT, PRESS, SUBLINE, startKey, TAGLINE, titleScreen } from "./title.js";
+import {
+  FOOTER_LINE,
+  FOOTER_NOT_SAVING,
+  INTERCEPT,
+  PRESS,
+  SUBLINE,
+  startKey,
+  TAGLINE,
+  titleScreen,
+} from "./title.js";
 
 /** A ctx that records where the screen goes. */
 function ctxFor({ privacySeen = false, phone = false } = {}) {
@@ -180,4 +189,18 @@ test("the phone notice shows only when asked for", () => {
 test("the screen's id and announced title", () => {
   assert.equal(titleScreen.id, "title");
   assert.equal(titleScreen.title, "Dead Keys");
+});
+
+test("the footer never claims a save while this browser is not saving", () => {
+  withFakeDocument(() => {
+    const off = textOf(
+      titleScreen.render({ ...ctxFor(), state: { persist: false, settings: {} } }),
+    );
+    assert.ok(off.includes(FOOTER_NOT_SAVING));
+    assert.ok(!off.includes(FOOTER_LINE));
+    assert.equal(
+      FOOTER_NOT_SAVING,
+      "Keyboard required. No account. Progress isn't being saved right now.",
+    );
+  });
 });

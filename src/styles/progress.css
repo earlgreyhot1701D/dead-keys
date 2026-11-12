@@ -6,7 +6,8 @@
 }
 .progress-main {
   display: grid;
-  grid-template-columns: 920px minmax(0, 1fr);
+  grid-template-columns: 920px minmax(0, 480px); /* the chart keeps its 1440 size on wider pages */
+  justify-content: center;
   gap: 20px;
 }
 .progress-left,
