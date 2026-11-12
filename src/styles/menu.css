@@ -56,9 +56,13 @@
   background: var(--panel);
   color: var(--text);
 }
+.menu-title-name {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+}
 .menu-title-left .flavor {
-  display: block;
-  font-size: 12px;
+  font-size: 14px;
 }
 .menu-title-left h1 {
   font-size: 26px;

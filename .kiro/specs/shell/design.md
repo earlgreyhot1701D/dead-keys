@@ -62,7 +62,7 @@ main.js -> app.js (state + storage actions + tab sync)
 | Progress, no rounds (approved) | Play a round and your keys will show up here. |
 | Progress, too little data (approved) | Not enough typing yet to say anything about your keys. Keep playing. |
 | Progress, nothing flagged (approved) | Nothing stands out. Your keys look even. |
-| Personal bests, none (approved) | No personal bests yet. Play a round to set one. |
+| Personal bests, none (approved Nov 12; 90 read from config) | No personal bests yet. A best needs 90% accuracy or better. |
 | Progress headings (approved) | Your keys / What we notice / Personal bests / Heat map in words |
 | Personal best names (approved) | corners: Four corners; falling: Falling words; lesson: Lessons; testout: Test outs; daily: Daily drill; specwave: Spec Wave |
 | Personal best date (approved) | set Nov 11 (short month and day, local time) |
@@ -79,7 +79,10 @@ main.js -> app.js (state + storage actions + tab sync)
 | About, Office Keys line (approved) | Dead Keys also grew from Office Keys, my first Lovable build (August 2025), a typing practice app. This game carries over its ideas, not its code. |
 | How we count and About, the rest (approved) | The other paragraphs live in `src/ui/screens/howWeCountText.js` (numbers read from config) and `about.js`, approved as written in the Block 6 report. |
 | Title lines (approved Nov 12) | 1980s typing games // rebuilt as a real trainer / PARANORMAL INTERCEPT // PID 0xDEAD / Keyboard required. No account. Your progress stays in this browser. |
-| Mock rebuild, new copy (DRAFT, Shara to approve) | Listed word for word in the Nov 12 fix-round report |
+| Mock rebuild, new copy (approved Nov 12) | Listed word for word in the Nov 12 fix-round report, approved as written |
+| Progress, no group flagged (approved Nov 12) | No group of keys stands out. Single keys to work on are listed under Keys to practice. |
+| Key lists (approved Nov 12) | Keys separated by " · "; named: comma, period, space, semicolon, apostrophe, backtick |
+| Settings import button (approved Nov 12) | [ IMPORT A BACKUP ] |
 | Reason: not text | That isn't a backup file. |
 | Reason: over 2 MB | That file is too big to be a Dead Keys backup. The limit is 2 MB. |
 | Reason: not JSON | That file isn't a Dead Keys backup. It can't be read. |

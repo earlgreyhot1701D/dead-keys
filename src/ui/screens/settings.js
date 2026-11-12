@@ -96,7 +96,7 @@ export const settingsScreen = {
     ]);
     return termPage(ctx, {
       badgeText: "CONFIG",
-      flavor: "DEAD KEYS // SETTINGS",
+      flavor: "PREFERENCES & DATA",
       title: "Settings",
       body: el("main", { id: "main", class: "term-main page-grid" }, [
         prefs,

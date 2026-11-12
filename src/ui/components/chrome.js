@@ -103,6 +103,7 @@ export function termPage(ctx, { badgeText, flavor, title, meta = null, body, foo
         el("span", { class: "title-strip-left" }, [
           badge(badgeText),
           flavor ? el("span", { class: "flavor" }, flavor) : null,
+          flavor ? el("span", { class: "strip-sep", "aria-hidden": "true" }, "//") : null,
           el("h1", {}, title),
         ]),
         meta ? el("span", { class: "title-strip-meta" }, meta) : null,

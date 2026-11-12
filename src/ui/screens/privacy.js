@@ -20,7 +20,7 @@ export const privacyScreen = {
           "button",
           {
             type: "button",
-            class: "btn btn-term btn-primary",
+            class: "btn btn-term btn-primary btn-big",
             onClick: () => {
               ctx.app.dismissPrivacy(); // remembered in settings (Req 4.2)
               ctx.replace("menu"); // Escape from the menu skips the card
@@ -30,8 +30,8 @@ export const privacyScreen = {
         )
       : null; // from Settings, the header's Back is the way out
     return termPage(ctx, {
-      badgeText: "PRIVACY",
-      flavor: "DEAD KEYS // WHAT STAYS, WHAT LEAVES",
+      badgeText: "NOTICE",
+      flavor: "WHAT STAYS, WHAT LEAVES",
       title: "Privacy",
       body: el("main", { id: "main", class: "term-main page-narrow" }, [
         el("section", { class: "term-panel prose-panel", "aria-label": "Privacy card" }, [

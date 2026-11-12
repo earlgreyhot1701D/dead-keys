@@ -14,7 +14,7 @@ export const howWeCountScreen = {
   render(ctx) {
     return termPage(ctx, {
       badgeText: "RULEBOOK",
-      flavor: "DEAD KEYS // THE NUMBERS, IN PLAIN WORDS",
+      flavor: "THE NUMBERS, IN PLAIN WORDS",
       title: "How we count",
       body: el("main", { id: "main", class: "term-main page-grid" }, [
         ...buildSections().map((s) =>

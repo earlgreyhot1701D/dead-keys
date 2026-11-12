@@ -44,7 +44,7 @@ export const aboutScreen = {
   render(ctx) {
     return termPage(ctx, {
       badgeText: "CREDITS",
-      flavor: "DEAD KEYS // WHO MADE THIS, AND WITH WHAT",
+      flavor: "WHO MADE THIS, AND WITH WHAT",
       title: "About",
       body: el("main", { id: "main", class: "term-main page-grid" }, [
         el("section", { class: "term-panel prose-panel", "aria-label": "About Dead Keys" }, [

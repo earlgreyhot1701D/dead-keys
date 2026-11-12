@@ -2,6 +2,7 @@
 // Bands, glyphs and labels come from the engine, so the picture and "How we count" cannot differ.
 import { heatmap } from "../../engine/heatmap.js";
 import { BANDS, MIN_KEY_ATTEMPTS } from "../../engine/progressConfig.js";
+import { keyList } from "./progressText.js";
 
 /** Unshifted keys, row by row, as in the locked mock. Space is drawn as a wide key on its own row. */
 export const ROWS = Object.freeze(
@@ -66,19 +67,18 @@ export function keyboardModel(keys) {
   return ROWS.map((row) => row.map((k) => known.get(k) ?? empty(k)));
 }
 
-const name = (k) => (k === " " ? "space" : k);
-
 /**
- * Plain sentences for a screen reader, one per band that has keys, worst band first. Every
- * layout key is placed in exactly one band, so the lines add up to the whole keyboard.
- * @returns {string[]} For example "Focus here: f, j." or "Not enough yet: 12 keys."
+ * Plain sentences for eyes and a screen reader, one per band that has keys, worst band first.
+ * Every layout key is placed in exactly one band, so the lines add up to the whole keyboard.
+ * Keys are separated by " · ", and hard-to-see keys are named ("comma", "space").
+ * @returns {string[]} For example "Focus here: f · comma." or "Not enough yet: 12 keys."
  */
 export function summarizeKeyboard(model) {
   const caps = model.flat();
   return BANDS.flatMap((b) => {
-    const inBand = caps.filter((c) => c.band === b.name).map((c) => name(c.key));
+    const inBand = caps.filter((c) => c.band === b.name).map((c) => c.key);
     if (!inBand.length) return [];
     if (b.min === null) return [`${b.label}: ${inBand.length} keys.`];
-    return [`${b.label}: ${inBand.join(", ")}.`];
+    return [`${b.label}: ${keyList(inBand)}.`];
   });
 }

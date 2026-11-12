@@ -47,7 +47,10 @@ test("no saved data: dashes and the approved no-bests line, a zero streak", () =
   withFakeDocument(() => {
     const node = renderMenuSide({ state: { progress: {}, settings: {} } }, NOW);
     const text = textOf(node);
-    assert.match(text, /Best speed--WPMNo personal bests yet\. Play a round to set one\./);
+    assert.match(
+      text,
+      /Best speed--WPMNo personal bests yet\. A best needs 90% accuracy or better\./,
+    );
     assert.match(text, /Current streak0DAYS/);
     assert.equal(findAll(node, (n) => n.tag === "button").length, 0);
   });

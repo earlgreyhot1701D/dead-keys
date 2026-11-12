@@ -145,8 +145,15 @@ test("the mock's lines are the approved copy, and only true tiles show", () => {
       FOOTER_LINE,
       "Keyboard required. No account. Your progress stays in this browser.",
     );
-    assert.match(text, /Accounts needed0/);
-    for (const gone of ["LESSONS", "GAME MODES", "60-SEC", "[ESC] PAUSE", "KEYBOARD READY"]) {
+    // the stat tile row is gone (Shara, Nov 12)
+    for (const gone of [
+      "Accounts needed",
+      "LESSONS",
+      "GAME MODES",
+      "60-SEC",
+      "[ESC] PAUSE",
+      "KEYBOARD READY",
+    ]) {
       assert.ok(!text.includes(gone), gone);
     }
   });

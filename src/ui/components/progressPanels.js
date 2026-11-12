@@ -11,8 +11,10 @@ import {
   EVEN_LINE,
   FEW_LINE,
   findingsText,
+  keyList,
   modeName,
   NO_BESTS_LINE,
+  NO_GROUP_LINE,
   setOn,
 } from "./progressText.js";
 
@@ -42,8 +44,19 @@ export function keysPanel(keys, rounds) {
   ]);
 }
 
+/**
+ * The line shown when no group is flagged. "Your keys look even" only when no single key is in
+ * Focus here or Practicing either; otherwise it points to Keys to practice.
+ * @param {{ sufficientData: boolean }} d
+ * @param {{ band: string }[]} heat
+ */
+export function quietLine(d, heat) {
+  if (!d.sufficientData) return FEW_LINE;
+  return heat.some((h) => h.band === "missed" || h.band === "shaky") ? NO_GROUP_LINE : EVEN_LINE;
+}
+
 /** Up to three findings, worst first, with their keys; or the plain line when there are none. */
-export function diagnosisPanel(d, goHowWeCount) {
+export function diagnosisPanel(d, goHowWeCount, heat = []) {
   const findings = d.sentences.map((s) =>
     el("p", { class: "finding" }, [
       el("span", { class: `find-mark sev-${s.severity}`, "aria-hidden": "true" }, "►"),
@@ -56,9 +69,7 @@ export function diagnosisPanel(d, goHowWeCount) {
       el("h2", { id: "pg-diag" }, "What we notice"),
       findings.length ? pill(findingsText(findings.length), "pill-dim") : null,
     ),
-    ...(findings.length
-      ? findings
-      : [el("p", { class: "finding-none" }, d.sufficientData ? EVEN_LINE : FEW_LINE)]),
+    ...(findings.length ? findings : [el("p", { class: "finding-none" }, quietLine(d, heat))]),
     el("div", { class: "diag-foot" }, [
       el("button", { type: "button", class: "link-btn", onClick: goHowWeCount }, "How we count"),
     ]),
@@ -86,10 +97,15 @@ export function bestsBlock(bests) {
   ]);
 }
 
-const comingSoon = (label) =>
-  el("button", { type: "button", class: "btn btn-term", "aria-disabled": "true" }, [
-    label,
-    el("span", { class: "btn-note" }, ` ${NOT_BUILT}`),
+/** A future button: its label alone, styled disabled, with "Not built yet" as a line under it. */
+const comingSoon = (label, id) =>
+  el("div", { class: "later" }, [
+    el(
+      "button",
+      { type: "button", class: "btn btn-term", "aria-disabled": "true", "aria-describedby": id },
+      label,
+    ),
+    el("span", { id, class: "later-note" }, NOT_BUILT),
   ]);
 
 /** The weak keys, drawn as caps, and the drill and lesson buttons that come later. */
@@ -98,7 +114,7 @@ export function weakPanel(weakKeys, heat) {
   return el("section", { class: "weak-panel", "aria-labelledby": "pg-weak" }, [
     el("h2", { id: "pg-weak", class: "weak-title" }, "Your top weak keys"),
     weakKeys.length
-      ? el("p", { class: "weak-line" }, `Keys to practice: ${weakKeys.join(", ")}`)
+      ? el("p", { class: "weak-line" }, `Keys to practice: ${keyList(weakKeys)}`)
       : null,
     weakKeys.length
       ? el(
@@ -109,6 +125,9 @@ export function weakPanel(weakKeys, heat) {
           ),
         )
       : null,
-    el("div", { class: "weak-actions" }, [comingSoon("Drill these keys"), comingSoon("Lessons")]),
+    el("div", { class: "weak-actions" }, [
+      comingSoon("Drill these keys", "later-drill"),
+      comingSoon("Lessons", "later-lessons"),
+    ]),
   ]);
 }

@@ -57,33 +57,6 @@
   padding-top: 8px;
   border-top: 1px dashed var(--rule);
 }
-.title-tiles {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  align-self: stretch;
-}
-.stat-tile {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 8px 12px;
-  border: 1px solid var(--rule);
-  background: var(--bg);
-}
-.title-tiles .stat-tile {
-  grid-column: 3;
-}
-.stat-label {
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.stat-value {
-  font-size: 22px;
-  font-weight: 700;
-}
 .title-footer {
   position: absolute;
   z-index: 7;
@@ -127,9 +100,15 @@
   .title-footer {
     padding: 0 16px;
   }
+  /* In the flow, so a wrapped footer never covers the Start button. */
   .title-footer {
+    position: static;
     flex-wrap: wrap;
     height: auto;
     padding: 8px 16px;
+  }
+  .title-panel {
+    top: 0; /* in the flow here, so the base 104px offset would push it under the footer */
+    margin-bottom: 24px;
   }
 }

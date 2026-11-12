@@ -30,16 +30,24 @@
   flex-wrap: wrap;
   gap: 10px;
 }
-.weak-actions .btn-term {
+/* A future button: its label alone, styled disabled, and "Not built yet" as a line under it. */
+.later {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.later:first-child {
+  flex: 1;
+}
+.later .btn-term {
+  width: 100%;
   font-size: 14px;
   white-space: nowrap;
 }
-.weak-actions .btn-term:first-child {
-  flex: 1;
-}
-.btn-note {
+.later-note {
   font-size: 12px;
-  text-transform: none;
+  color: var(--dim);
+  text-align: center;
 }
 @media (max-width: 1400px) {
   .progress-main {

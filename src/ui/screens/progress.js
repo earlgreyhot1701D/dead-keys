@@ -13,8 +13,10 @@ export {
   EMPTY_LINE,
   EVEN_LINE,
   FEW_LINE,
+  keyList,
   MODE_NAMES,
   NO_BESTS_LINE,
+  NO_GROUP_LINE,
   setOn,
 } from "../components/progressText.js";
 
@@ -25,22 +27,23 @@ export const progressScreen = {
   render(ctx) {
     const { keys = [], bests = {}, rounds = [] } = ctx.state.progress ?? {};
     const d = diagnose(keys);
+    const heat = heatmap(keys);
     const exportBackup = () => {
       if (ctx.app?.exportBackup?.().ok) ctx.announce?.("Backup downloaded.");
     };
     return termPage(ctx, {
       badgeText: "DIAGNOSTIC LOG",
-      flavor: "DEAD KEYS // DIAGNOSTICS & KEYBOARD HEAT MAP",
+      flavor: "KEYBOARD HEAT MAP",
       title: "Progress",
       meta: `ROUNDS: ${rounds.length} \u00a0•\u00a0 A KEY IS COLORED AFTER ${MIN_KEY_ATTEMPTS} TRIES`,
       body: el("main", { id: "main", class: "term-main progress-main" }, [
         el("div", { class: "progress-left" }, [
           keysPanel(keys, rounds.length),
-          diagnosisPanel(d, () => ctx.go("howWeCount")),
+          diagnosisPanel(d, () => ctx.go("howWeCount"), heat),
         ]),
         el("div", { class: "progress-right" }, [
           renderSpeedPanel(rounds, [bestsBlock(bests)]),
-          weakPanel(d.weakKeys, heatmap(keys)),
+          weakPanel(d.weakKeys, heat),
         ]),
       ]),
       footerExtra: [

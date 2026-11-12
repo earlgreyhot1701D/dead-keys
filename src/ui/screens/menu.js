@@ -79,8 +79,9 @@ export const menuScreen = {
         el("div", { class: "menu-title-row" }, [
           el("div", { class: "menu-title-left" }, [
             pill("SYSTEM 84", "pill-text"),
-            el("div", {}, [
-              el("span", { class: "flavor" }, "DEAD KEYS // MAIN TERMINAL"),
+            el("div", { class: "menu-title-name" }, [
+              el("span", { class: "flavor" }, "DEAD KEYS"),
+              el("span", { class: "strip-sep", "aria-hidden": "true" }, "//"),
               el("h1", {}, "Main menu"),
             ]),
           ]),

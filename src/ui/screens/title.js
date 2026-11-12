@@ -85,12 +85,6 @@ export const titleScreen = {
             ),
           ]),
         ]),
-        el("div", { class: "title-tiles" }, [
-          el("div", { class: "stat-tile" }, [
-            el("span", { class: "stat-label" }, "Accounts needed"),
-            el("span", { class: "stat-value" }, "0"),
-          ]),
-        ]),
       ]),
       el("footer", { class: "title-footer" }, [
         el("span", {}, FOOTER_LINE),

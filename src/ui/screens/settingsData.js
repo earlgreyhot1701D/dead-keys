@@ -92,6 +92,7 @@ export function renderDataSection(ctx) {
   const input = el("input", {
     type: "file",
     id: "import-file",
+    class: "file-input",
     "data-focus-id": "import-file",
     accept: ".json,application/json",
     onChange: () => chooseFile(ctx, input, status),
@@ -108,9 +109,11 @@ export function renderDataSection(ctx) {
       ctx.state.oldData ? button("Download old data", () => ctx.app.downloadOldData()) : null,
       button("Clear all progress", () => askClear(ctx), "btn-danger"),
     ]),
+    // The native input stays in the page (focusable, named by its label) but is drawn as the
+    // label, a bracket button; focus on the input shows on the label next to it.
     el("div", { class: "set-row" }, [
-      el("label", { for: "import-file" }, "Import a backup"),
       input,
+      el("label", { for: "import-file", class: "btn btn-term file-btn" }, "Import a backup"),
     ]),
     status,
     el("div", { class: "actions" }, [button("Read the privacy card", () => ctx.go("privacy"))]),

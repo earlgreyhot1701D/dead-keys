@@ -2,13 +2,16 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
+import { quietLine } from "../components/progressPanels.js";
 import { findAll, textOf, withFakeDocument } from "../fakeDom.js";
 import {
   EMPTY_LINE,
   EVEN_LINE,
   FEW_LINE,
+  keyList,
   MODE_NAMES,
   NO_BESTS_LINE,
+  NO_GROUP_LINE,
   progressScreen,
   setOn,
 } from "./progress.js";
@@ -42,7 +45,7 @@ test("zero rounds: the empty line, the few-data line, no bests, no crash", () =>
   const { text } = draw(fixture("ugly/progress.zero-rounds.json"));
   assert.ok(text.includes(EMPTY_LINE));
   assert.ok(text.includes(FEW_LINE));
-  assert.ok(text.includes("No personal bests yet. Play a round to set one."));
+  assert.ok(text.includes("No personal bests yet. A best needs 90% accuracy or better."));
   assert.ok(text.includes("Not enough yet:"));
 });
 
@@ -79,7 +82,12 @@ test("the lines are the approved copy, word for word, and match the design table
   assert.equal(EMPTY_LINE, "Play a round and your keys will show up here.");
   assert.equal(FEW_LINE, "Not enough typing yet to say anything about your keys. Keep playing.");
   assert.equal(EVEN_LINE, "Nothing stands out. Your keys look even.");
-  assert.equal(NO_BESTS_LINE, "No personal bests yet. Play a round to set one.");
+  assert.equal(NO_BESTS_LINE, "No personal bests yet. A best needs 90% accuracy or better.");
+  assert.equal(
+    NO_GROUP_LINE,
+    "No group of keys stands out. Single keys to work on are listed under Keys to practice.",
+  );
+  assert.equal(rowText("| Progress, no group flagged"), NO_GROUP_LINE);
   assert.equal(rowText("| Progress, no rounds"), EMPTY_LINE);
   assert.equal(rowText("| Progress, too little data"), FEW_LINE);
   assert.equal(rowText("| Progress, nothing flagged"), EVEN_LINE);
@@ -102,8 +110,43 @@ test("the approved four headings are visible, in order, among the mock's panel t
 test("the drill and lesson buttons are there, marked Not built yet, and do nothing", () => {
   const { node } = draw(fixture("ugly/progress.200-rounds-all-keys.json"));
   const later = findAll(node, (n) => n.tag === "button" && n.attrs?.["aria-disabled"] === "true");
-  assert.deepEqual(later.map(textOf), ["Drill these keys Not built yet", "Lessons Not built yet"]);
-  for (const b of later) assert.equal(b.listeners.click, undefined);
+  // the label alone in the button; "Not built yet" is a line under it, tied by aria-describedby
+  assert.deepEqual(later.map(textOf), ["Drill these keys", "Lessons"]);
+  for (const b of later) {
+    assert.equal(b.listeners.click, undefined);
+    const note = findAll(node, (n) => n.attrs?.id === b.attrs["aria-describedby"])[0];
+    assert.equal(textOf(note), "Not built yet");
+    assert.ok(!b.children.includes(note));
+  }
+});
+
+test("no group flagged: 'even' only when no single key is Focus here or Practicing", () => {
+  const sufficient = { sufficientData: true };
+  assert.equal(quietLine(sufficient, [{ band: "steady" }, { band: "uneven" }]), EVEN_LINE);
+  assert.equal(quietLine(sufficient, [{ band: "steady" }, { band: "missed" }]), NO_GROUP_LINE);
+  assert.equal(quietLine(sufficient, [{ band: "shaky" }]), NO_GROUP_LINE);
+  assert.equal(quietLine({ sufficientData: false }, [{ band: "missed" }]), FEW_LINE);
+  // the 200-round fixture has Focus-here keys and no flagged group
+  const { text } = draw(fixture("ugly/progress.200-rounds-all-keys.json"));
+  assert.ok(text.includes(NO_GROUP_LINE));
+  assert.ok(!text.includes(EVEN_LINE));
+});
+
+test("key lists use ' · ' and name the hard keys, for eyes and screen readers", () => {
+  assert.equal(
+    keyList(["a", ",", ".", " ", ";", "'", "`", "q"]),
+    "a · comma · period · space · semicolon · apostrophe · backtick · q",
+  );
+  assert.equal(rowText("| Key lists").includes('" · "'), true);
+  const { node } = draw(fixture("ugly/progress.200-rounds-all-keys.json"));
+  const line = textOf(findAll(node, (n) => n.attrs?.class === "weak-line")[0]);
+  assert.match(line, /^Keys to practice: \S+( · \S+)+$/);
+  assert.ok(!line.includes(","), line); // no bare commas: a comma key is spelled "comma"
+  const words = findAll(node, (n) => n.tag === "li").map(textOf);
+  assert.ok(
+    words.some((w) => w.startsWith("Focus here:") && w.includes("comma")),
+    words.join("|"),
+  );
 });
 
 test("mode names are the approved ones, and the design table lists them", () => {
