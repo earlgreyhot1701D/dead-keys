@@ -69,6 +69,10 @@ main.js -> app.js (state + storage actions + tab sync)
 | Clear confirm title (approved) | Clear all progress? |
 | Clear confirm line (approved) | This deletes your rounds, heat map, personal bests and milestones from this browser. It can't be undone, so download a backup first if you might want them back. |
 | Clear confirm buttons (approved) | Clear everything (confirm) / Keep my progress (cancel) |
+| Settings, AI hint (DRAFT) | When on, we send which keys you miss and your recent speed so the AI can write practice lines. Nothing you type is sent. |
+| Settings, labels (DRAFT) | Settings / AI drills / Sound (Off, Typewriter, Arcade) / Speed (shown as 1×) / Finger colors / Your data / Download backup / Download old data / Clear all progress / Import a backup / Read the privacy card / Back |
+| Import confirm (DRAFT) | Replace your progress? / This backup has 12 rounds and 3 lessons passed. / You have 5 rounds and 1 lesson passed now. / Importing replaces what you have in this browser. / Buttons: Replace my progress, Keep what I have |
+| Announcements (DRAFT) | Backup downloaded. / Backup imported. / Progress cleared. |
 | Reason: not text | That isn't a backup file. |
 | Reason: over 2 MB | That file is too big to be a Dead Keys backup. The limit is 2 MB. |
 | Reason: not JSON | That file isn't a Dead Keys backup. It can't be read. |

@@ -12,7 +12,7 @@ One task at a time. Never "run all." Touch only the files a task names. Tick eac
 - [x] 7. Screens: `title.js`, `menu.js`, `privacy.js`, plus the phone notice. _Req 1.4, 1.5, 4._
 - [x] 8. `components/keyboard.js`, `keyboardLayout.js` + layout test. _Req 6.1._
 - [x] 9. `screens/progress.js`. _Req 6._
-- [ ] 10. `screens/settings.js`. _Req 5._
+- [x] 10. `screens/settings.js`. _Req 5._
 - [ ] 11. `screens/howWeCount.js`, `howWeCountText.js` + test that every number comes from config; `screens/about.js`. _Req 7._
 - [ ] 12. `scripts/check-build.js`, `.kiro/agents/a11y-auditor.md`, `playwright.config.js`, `e2e/` flows and axe. _Req 8.1, 8.2._
 - [ ] 13. Run `npm run lint`, `npm test`, `npm run test:e2e`, `node scripts/check-fixtures.js`, `npm run build && node scripts/check-build.js`. Report all and line counts.

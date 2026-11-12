@@ -16,6 +16,7 @@ import { mountRouter } from "./ui/router.js";
 import { menuScreen } from "./ui/screens/menu.js";
 import { privacyScreen } from "./ui/screens/privacy.js";
 import { progressScreen } from "./ui/screens/progress.js";
+import { settingsScreen } from "./ui/screens/settings.js";
 import { titleScreen } from "./ui/screens/title.js";
 
 const app = createApp({
@@ -32,7 +33,7 @@ app.start();
 
 // Screens not listed here are not built yet; the menu shows them as such.
 const screens = Object.fromEntries(
-  [titleScreen, menuScreen, privacyScreen, progressScreen].map((s) => [s.id, s]),
+  [titleScreen, menuScreen, privacyScreen, progressScreen, settingsScreen].map((s) => [s.id, s]),
 );
 mountRouter({
   root: document.getElementById("app"),
