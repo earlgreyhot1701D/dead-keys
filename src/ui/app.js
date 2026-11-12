@@ -26,6 +26,7 @@ export function createApp(env) {
     persist: false,
     oldData: false,
     newerSave: false,
+    retry: null, // which action the exportFailed notice's "Try again" repeats
   };
 
   const set = (patch) => {

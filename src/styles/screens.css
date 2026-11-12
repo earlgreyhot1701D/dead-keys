@@ -18,3 +18,259 @@ main > h1 {
   padding: 0.5rem 0;
   text-align: center;
 }
+
+/* Buttons: double rule, uppercase condensed. The label always says what it does; color is never
+   the only difference between buttons. */
+.btn {
+  min-height: 44px;
+  padding: 0 1.1rem;
+  background: var(--bg);
+  color: var(--text);
+  border: var(--rule-double);
+  font-family: var(--head);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: var(--panel-hi);
+}
+
+.btn-quiet {
+  border: var(--rule-thin);
+  color: var(--label);
+  font-weight: 400;
+}
+
+.btn-danger {
+  border-color: var(--missed);
+  color: var(--missed);
+}
+
+/* The notice bar: one plain line and its buttons, above the screen. */
+.notice-slot {
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.notice-slot:not(:empty) {
+  margin-bottom: 1rem;
+}
+
+.notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.notice-line {
+  flex: 1 1 24rem;
+  margin: 0;
+}
+
+.notice-actions,
+.confirm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+/* The confirm dialog. The browser traps focus and dims the page behind it. */
+dialog.confirm {
+  max-width: 36rem;
+  color: var(--text);
+}
+
+dialog.confirm::backdrop {
+  background: rgba(7, 21, 24, 0.85);
+}
+
+dialog.confirm h2 {
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+}
+
+.confirm-actions {
+  margin-top: 1.25rem;
+}
+
+/* Shared by screens */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.prose p {
+  max-width: 62ch;
+  margin: 0 0 1rem;
+}
+
+.prose p:last-child {
+  margin-bottom: 0;
+}
+
+.hint {
+  margin: 1.5rem 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.phone-notice {
+  margin: 1rem 0;
+  color: var(--shaky);
+}
+
+/* Title */
+.title-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.title-main > h1 {
+  align-self: stretch;
+  font-size: clamp(2.5rem, 8vw, 5rem);
+}
+
+.tagline {
+  margin: 0;
+  font-family: var(--head);
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--label);
+}
+
+.press {
+  margin: 0;
+  font-family: var(--head);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+/* The still frame of the title scene: falling words, one locked, a station below. Decoration only. */
+.frame {
+  position: relative;
+  width: 100%;
+  max-width: 44rem;
+  height: 18rem;
+  overflow: hidden;
+  background: var(--bg-deep) var(--scanlines);
+  border: var(--rule-thin);
+  text-align: left;
+}
+
+.card {
+  position: absolute;
+  padding: 0.15rem 0.6rem;
+  background: var(--panel);
+  border: var(--rule-thin);
+  color: var(--label);
+}
+
+.card-1 {
+  left: 6%;
+  top: 8%;
+}
+
+.card-2 {
+  left: 30%;
+  top: 28%;
+}
+
+.card-3 {
+  left: 68%;
+  top: 12%;
+}
+
+.card-4 {
+  left: 12%;
+  top: 52%;
+}
+
+.card-5 {
+  left: 50%;
+  top: 46%;
+}
+
+/* The locked word: heavier outline, bold typed letters. Shape and weight, not just color. */
+.locked {
+  border: var(--rule-double);
+  background: var(--panel-hi);
+  color: var(--text);
+}
+
+.danger-band {
+  position: absolute;
+  right: 0;
+  bottom: 2.6rem;
+  left: 0;
+  padding: 0.2rem 0.6rem;
+  border-top: 1px dashed var(--shaky);
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(242, 193, 78, 0.1) 0,
+    rgba(242, 193, 78, 0.1) 2px,
+    transparent 2px,
+    transparent 10px
+  );
+  color: var(--shaky);
+  font-size: 0.85rem;
+}
+
+.station {
+  position: absolute;
+  bottom: 0.4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--text);
+}
+
+/* Menu */
+.menu-list {
+  display: grid;
+  gap: 0.5rem;
+  max-width: 32rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  text-align: left;
+}
+
+.menu-item[aria-disabled="true"] {
+  border-style: dashed;
+  color: var(--dim);
+  font-weight: 400;
+}
+
+.menu-note {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+/* Progress */
+.plain-list {
+  margin: 0.5rem 0 1rem;
+  padding-left: 1.2rem;
+  font-family: var(--mono);
+}

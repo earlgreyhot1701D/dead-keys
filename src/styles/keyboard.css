@@ -1,0 +1,102 @@
+/* Keyboard heat map. Each band has its own pattern, border and glyph, so color is never alone. */
+.kb-grid {
+  display: grid;
+  gap: 0.3rem;
+  justify-content: start;
+  margin: 1rem 0;
+}
+.kb-row {
+  display: flex;
+  gap: 0.3rem;
+}
+.kb-row:nth-child(2) {
+  margin-left: 1rem;
+}
+.kb-row:nth-child(3) {
+  margin-left: 1.6rem;
+}
+.kb-row:nth-child(4) {
+  margin-left: 2.2rem;
+}
+.kb-row:nth-child(5) {
+  margin-left: 6rem;
+}
+.kb-key {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 2.6rem;
+  height: 2.8rem;
+  background-color: var(--panel);
+  border: 2px solid var(--rule);
+  color: var(--soft);
+  font-family: var(--mono);
+  line-height: 1.1;
+}
+.kb-space {
+  width: 14rem;
+}
+.kb-glyph {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.kb-swatch {
+  width: 1.8rem;
+  height: 1.8rem;
+  vertical-align: middle;
+}
+.band-missed {
+  border: 3px solid var(--missed);
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 122, 107, 0.28) 0,
+    rgba(255, 122, 107, 0.28) 3px,
+    transparent 3px,
+    transparent 7px
+  );
+}
+.band-shaky {
+  border: 2px solid var(--shaky);
+  background-image: radial-gradient(rgba(242, 193, 78, 0.45) 1.5px, transparent 1.5px);
+  background-size: 7px 7px;
+}
+.band-uneven {
+  border: 2px dashed var(--rule);
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(60, 168, 156, 0.3) 0,
+    rgba(60, 168, 156, 0.3) 2px,
+    transparent 2px,
+    transparent 6px
+  );
+}
+.band-steady {
+  border: 2px solid var(--text);
+}
+.band-noData {
+  border: 1px solid var(--muted);
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(155, 176, 173, 0.25) 0,
+    rgba(155, 176, 173, 0.25) 1px,
+    transparent 1px,
+    transparent 5px
+  );
+  color: var(--muted);
+}
+.kb-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--mono);
+}
+@media (max-width: 700px) {
+  .kb-grid {
+    overflow-x: auto;
+  }
+}

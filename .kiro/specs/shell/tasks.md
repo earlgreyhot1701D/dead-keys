@@ -8,10 +8,10 @@ One task at a time. Never "run all." Touch only the files a task names. Tick eac
 - [x] 3. `index.html`, `src/main.js`, `src/ui/dom.js`, `src/styles/*.css` with fonts and tokens. Contrast test for every text token pair. `npm run dev` shows a blank styled page. _Req 1.1, 1.3, 2._
 - [x] 4. `src/storage/settings.js` + test: defaults and check. _Req 5.1, 5.2._
 - [x] 5. `src/ui/app.js` + test: storage lookup wrapped, `load`, save never when `persist` is false, export, import, clear, old data, tab sync. _Req 3, 5.3, 5.4._
-- [ ] 6. `src/ui/router.js`, `components/noticeBar.js`, `components/confirmDialog.js`, `download.js`. _Req 1.2, 3.3._
-- [ ] 7. Screens: `title.js`, `menu.js`, `privacy.js`, plus the phone notice. _Req 1.4, 1.5, 4._
-- [ ] 8. `components/keyboard.js`, `keyboardLayout.js` + layout test. _Req 6.1._
-- [ ] 9. `screens/progress.js`. _Req 6._
+- [x] 6. `src/ui/router.js`, `components/noticeBar.js`, `components/confirmDialog.js`, `download.js`. _Req 1.2, 3.3._
+- [x] 7. Screens: `title.js`, `menu.js`, `privacy.js`, plus the phone notice. _Req 1.4, 1.5, 4._
+- [x] 8. `components/keyboard.js`, `keyboardLayout.js` + layout test. _Req 6.1._
+- [x] 9. `screens/progress.js`. _Req 6._
 - [ ] 10. `screens/settings.js`. _Req 5._
 - [ ] 11. `screens/howWeCount.js`, `howWeCountText.js` + test that every number comes from config; `screens/about.js`. _Req 7._
 - [ ] 12. `scripts/check-build.js`, `.kiro/agents/a11y-auditor.md`, `playwright.config.js`, `e2e/` flows and axe. _Req 8.1, 8.2._

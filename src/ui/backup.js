@@ -37,7 +37,7 @@ export function createBackup({ getState, set, adopt, persistNow, getStorage, env
         env.download("dead-keys-backup.json", exportText(getState().progress));
         return { ok: true };
       } catch {
-        set({ notice: "exportFailed" });
+        set({ notice: "exportFailed", retry: "exportBackup" });
         return { ok: false, reason: "export" };
       }
     },
@@ -75,7 +75,7 @@ export function createBackup({ getState, set, adopt, persistNow, getStorage, env
         env.download("dead-keys-old-data.json", text);
         return { ok: true };
       } catch {
-        set({ notice: "exportFailed" });
+        set({ notice: "exportFailed", retry: "downloadOldData" });
         return { ok: false, reason: "download" };
       }
     },
