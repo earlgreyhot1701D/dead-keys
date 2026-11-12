@@ -19,7 +19,7 @@ This is the first block where Dead Keys plays. A player picks falling words or f
 
 1. `packs/general.json` SHALL be a valid Pack (contract) with id `general`, built by `scripts/build-pack.js` from the top-english-wordlists list (github.com/david47k/top-english-wordlists, CC BY 3.0), with the attribution line from PRD G6.
 2. Its `words` pool SHALL hold 1,500 words, most frequent first, each 3 to 8 letters, lowercase a to z only.
-3. The build SHALL drop every word on `packs/blocklist.txt` (offensive words and common proper nouns that appear lowercase in the source). The pack's charset is `abcdefghijklmnopqrstuvwxyz`.
+3. The build SHALL drop every word on `packs/blocklist.txt`, which has four sections: offensive words; common proper nouns that appear lowercase in the source; non-words (abbreviations, numerals, acronyms); and words about sex, violence, death, illness or drugs, so the game stays encouraging for every player. The pack's charset is `abcdefghijklmnopqrstuvwxyz`. (Updated Nov 12, Shara.)
 4. A test SHALL check the pack passes the contract, every word is in the charset and 3 to 8 letters, no word is on the blocklist, and there are no duplicates.
 
 ## Requirement 2: Choosing a round

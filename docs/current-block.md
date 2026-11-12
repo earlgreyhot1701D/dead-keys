@@ -11,6 +11,7 @@ Blocks 1 to 4 and 6 passed Nov 11 (tags `block-1` to `block-4`, `block-6`). Bloc
 ## Files this block may touch
 
 - `packs/**`, `scripts/build-pack.js`
+- `biome.json` (one change, Nov 12: lint `packs/**/*.js`)
 - `src/engine/config.js`, `targets.js`, `round.js`, `lifecycle.js`, `score.js`, `diagnose.js`, `progressConfig.js` and their tests (Req 8 only)
 - `src/render/**`, `src/a11y/**`
 - `src/ui/screens/play.js`, `round.js`, `results.js`, `howWeCountText.js`, `settings.js`; `src/ui/components/resultsPanels.js`; `src/ui/app.js`; `src/main.js`; and their tests

@@ -13,6 +13,7 @@
       "api/**",
       "evals/**",
       "mcp/**",
+      "packs/**/*.js",
       "package.json",
       "biome.json"
     ]
