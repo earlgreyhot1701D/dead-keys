@@ -13,6 +13,8 @@ import "./styles/keyboard.css";
 import { createApp } from "./ui/app.js";
 import { downloadText } from "./ui/download.js";
 import { mountRouter } from "./ui/router.js";
+import { aboutScreen } from "./ui/screens/about.js";
+import { howWeCountScreen } from "./ui/screens/howWeCount.js";
 import { menuScreen } from "./ui/screens/menu.js";
 import { privacyScreen } from "./ui/screens/privacy.js";
 import { progressScreen } from "./ui/screens/progress.js";
@@ -33,7 +35,15 @@ app.start();
 
 // Screens not listed here are not built yet; the menu shows them as such.
 const screens = Object.fromEntries(
-  [titleScreen, menuScreen, privacyScreen, progressScreen, settingsScreen].map((s) => [s.id, s]),
+  [
+    titleScreen,
+    menuScreen,
+    privacyScreen,
+    progressScreen,
+    settingsScreen,
+    howWeCountScreen,
+    aboutScreen,
+  ].map((s) => [s.id, s]),
 );
 mountRouter({
   root: document.getElementById("app"),

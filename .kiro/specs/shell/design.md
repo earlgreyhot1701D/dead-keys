@@ -73,6 +73,7 @@ main.js -> app.js (state + storage actions + tab sync)
 | Settings, labels (DRAFT) | Settings / AI drills / Sound (Off, Typewriter, Arcade) / Speed (shown as 1×) / Finger colors / Your data / Download backup / Download old data / Clear all progress / Import a backup / Read the privacy card / Back |
 | Import confirm (DRAFT) | Replace your progress? / This backup has 12 rounds and 3 lessons passed. / You have 5 rounds and 1 lesson passed now. / Importing replaces what you have in this browser. / Buttons: Replace my progress, Keep what I have |
 | Announcements (DRAFT) | Backup downloaded. / Backup imported. / Progress cleared. |
+| How we count and About (DRAFT) | The words live in `src/ui/screens/howWeCountText.js` (numbers read from config) and `about.js` (paragraphs and links). Shara reads them there; the plain-text list is in the Block 6 report. |
 | Reason: not text | That isn't a backup file. |
 | Reason: over 2 MB | That file is too big to be a Dead Keys backup. The limit is 2 MB. |
 | Reason: not JSON | That file isn't a Dead Keys backup. It can't be read. |
