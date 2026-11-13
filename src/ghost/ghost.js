@@ -12,6 +12,7 @@ export const GHOST_MAX_KEYS = 2000;
 export const GHOST_COPY = Object.freeze({
   passed: "You passed your ghost.",
   saved: "New ghost saved. Race it next time.",
+  hint: "Beat your best at 90% accuracy or better and it becomes your ghost. Next round, you race it.",
 });
 
 /** One run as a GhostRun, or null when the mode has no ghost. */

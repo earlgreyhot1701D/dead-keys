@@ -108,17 +108,19 @@ test("it has the wordmark, the tagline, the still frame and a Start button", () 
       findAll(node, (n) => n.attrs?.class === "tagline").some((n) => textOf(n) === TAGLINE),
     );
     assert.match(textOf(node), /Press any key to start\./);
-    assert.deepEqual(findAll(node, (n) => n.tag === "button").map(textOf), ["Start"]);
+    const main = findAll(node, (n) => n.tag === "main")[0];
+    assert.deepEqual(findAll(main, (n) => n.tag === "button").map(textOf), ["Start"]);
   });
 });
 
 test("the Start button does what the key does", () => {
   withFakeDocument(() => {
     const first = ctxFor();
-    findAll(titleScreen.render(first), (n) => n.tag === "button")[0].click();
+    const start = (node) => findAll(node, (n) => n.tag === "button" && textOf(n) === "Start")[0];
+    start(titleScreen.render(first)).click();
     assert.deepEqual(first.went, ["privacy"]);
     const later = ctxFor({ privacySeen: true });
-    findAll(titleScreen.render(later), (n) => n.tag === "button")[0].click();
+    start(titleScreen.render(later)).click();
     assert.deepEqual(later.went, ["menu"]);
   });
 });
@@ -135,10 +137,14 @@ test("the still frame is decoration: hidden from a screen reader and nothing in 
     assert.equal(findAll(frame, (n) => n.attrs?.tabindex !== undefined).length, 0);
     assert.match(textOf(frame), /harbor|bor/); // the locked word, as in the mock
     assert.equal(findAll(frame, (n) => n.attrs?.class === "locked-box").length, 1);
-    // Shara's Nov 12 calls: none of the labels that read as data, or as a live demo
-    for (const gone of ["SHIELD", "CAPACITOR", "LANT_", "Pause demo", "Demo playing", "ATTRACT"]) {
+    // Shara's Nov 12 calls: none of the labels that read as data. The demo's controls exist but
+    // stay hidden until the demo plays (Block 13b, attract Req 1.2).
+    for (const gone of ["SHIELD", "CAPACITOR", "LANT_", "ATTRACT"]) {
       assert.doesNotMatch(textOf(node), new RegExp(gone), gone);
     }
+    const controls = findAll(node, (n) => n.attrs?.class === "demo-controls")[0];
+    assert.equal(controls.attrs.hidden, "");
+    assert.doesNotMatch(textOf(frame), /Pause demo|Demo playing/);
   });
 });
 

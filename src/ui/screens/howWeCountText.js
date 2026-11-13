@@ -117,7 +117,7 @@ export function buildSections(c = CONFIG) {
       id: "bests",
       heading: "Bests and milestones",
       paragraphs: [
-        `A personal best only counts at ${pct(c.BEST_ACCURACY)} accuracy or better, so speed never beats accuracy.`,
+        `A personal best only counts at ${pct(c.BEST_ACCURACY)} accuracy or better, so speed never beats accuracy. Each new best becomes your ghost: AHEAD and BEHIND count letters typed right at the same moment.`, // ghost Req 5
         `Milestones are a speed band every ${c.WPM_BAND} words per minute, ${c.STREAK_ROUNDS} rounds in a row at ${pct(c.STREAK_ACCURACY)} accuracy or better, ${c.STREAK_DAYS} days in a row with a round, and each lesson passed. We never tell you that you got slower.`,
       ],
     },

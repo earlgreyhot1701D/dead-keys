@@ -20,6 +20,9 @@ export function makeFakeDoc() {
       getAttribute(k) {
         return this.attrs[k] ?? null;
       },
+      removeAttribute(k) {
+        delete this.attrs[k];
+      },
       appendChild(c) {
         c.parent = this;
         this.children.push(c);

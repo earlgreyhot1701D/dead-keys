@@ -184,3 +184,10 @@ test("the Lessons section is the lessons copy table, word for word (lessons Req 
   assert.equal(s.heading, "Lessons");
   assert.deepEqual(s.paragraphs, lines);
 });
+
+test("Bests says each new best becomes your ghost, and what AHEAD and BEHIND count (ghost Req 5)", () => {
+  const bests = buildSections().find((s) => s.id === "bests");
+  assert.ok(
+    bests.paragraphs[0].includes("Each new best becomes your ghost: AHEAD and BEHIND count"),
+  );
+});

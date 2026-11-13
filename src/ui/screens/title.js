@@ -1,10 +1,10 @@
-// The title screen (shell Req 1.1, 1.5; design 6), laid out as the locked mock's screen 1. STUB:
-// the live attract demo arrives in Block 13 and the `kiro` easter egg in Block 14. Today the scene
-// is a still frame, which is also what a reduced-motion player will always see. The demo
-// controls, sound button and "first run" labels come back in the blocks that make them true.
+// The title screen (shell Req 1.1, 1.5; design 6), laid out as the locked mock's screen 1. The
+// scene is a still frame until the attract demo starts (src/attract/demo.js, Block 13b); any key,
+// click or scroll stops it. STUB: the `kiro` easter egg and the sound button (Block 14).
+
+import { createDemo } from "../../attract/demo.js";
 import { ghostIcon, hints, scanlines, TERMINAL } from "../components/chrome.js";
 import { renderPhoneNotice } from "../components/phoneNotice.js";
-import { titleScene } from "../components/titleScene.js";
 import { el } from "../dom.js";
 import { isControl } from "../nav.js";
 
@@ -52,6 +52,8 @@ export function startKey(e) {
 /** Where "start" goes: the privacy card the first time, the menu after. */
 const begin = (ctx) => ctx.go(ctx.state.settings.privacySeen ? "menu" : "privacy");
 
+let demo = null; // the attract demo on the screen now (one title screen at a time)
+
 const corner = (c, cls) => el("span", { class: `corner ${cls}`, "aria-hidden": "true" }, c);
 
 /** @type {import("../router.js").Screen} */
@@ -59,10 +61,15 @@ export const titleScreen = {
   id: "title",
   title: "Dead Keys",
   render(ctx) {
-    return el("div", { class: "screen-frame title-frame" }, [
-      titleScene(),
+    demo = createDemo(el);
+    const stop = (e) => demo?.input(e); // a click or scroll stops the demo (attract Req 1.3)
+    return el("div", { class: "screen-frame title-frame", onPointerdown: stop, onWheel: stop }, [
+      demo.scene,
       scanlines(),
-      el("header", { class: "title-header" }, el("span", { class: "term-name" }, TERMINAL)),
+      el("header", { class: "title-header" }, [
+        el("span", { class: "term-name" }, TERMINAL),
+        demo.controls,
+      ]),
       el("main", { id: "main", class: "title-panel" }, [
         el("div", { class: "intercept" }, [ghostIcon(28, 31), el("span", {}, INTERCEPT)]),
         el("div", { class: "wordmark" }, el("h1", {}, "Dead Keys")),
@@ -96,6 +103,7 @@ export const titleScreen = {
     ]);
   },
   onKey(ctx, e) {
+    demo?.input(e); // any key stops the demo first
     // Enter and Space on a focused button (a notice, "Got it", Start) press that button.
     if (isControl(e.target) && (e.key === "Enter" || e.key === " ")) return false;
     if (!startKey(e)) return false;

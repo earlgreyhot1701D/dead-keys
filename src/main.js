@@ -13,6 +13,7 @@ import "./styles/title.css";
 import "./styles/titleScene.css";
 import "./styles/titlePanel.css";
 import "./styles/titlePress.css";
+import "./styles/attract.css";
 import "./styles/menu.css";
 import "./styles/menuList.css";
 import "./styles/menuSide.css";

@@ -1,0 +1,46 @@
+/* The title's attract mode (attract Reqs 1 and 3): the live field in the scene's place, and the
+   header's status and Pause demo button (locked mock, screen 1). The field is the game's own. */
+.attract-field {
+  position: absolute;
+  top: 72px;
+  right: 0;
+  left: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  height: 772px;
+  overflow: hidden;
+}
+.attract-falling .fall-field {
+  margin-top: 20px;
+}
+.attract-field .station-id {
+  top: 712px;
+  right: 32px;
+}
+.demo-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.demo-controls[hidden] {
+  display: none;
+}
+.demo-status {
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  font-size: 14px;
+  color: var(--label);
+}
+.demo-pause {
+  min-height: 44px;
+  padding: 0 20px;
+  border: var(--rule-double);
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--head);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}

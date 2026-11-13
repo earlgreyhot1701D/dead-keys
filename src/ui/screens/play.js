@@ -4,6 +4,7 @@ import pack from "../../../packs/general.json" with { type: "json" };
 import { DAILY_MS } from "../../drills/daily.js";
 import { SPEED_MAX, SPEED_MIN } from "../../engine/config.js";
 import { averageLength, paceWpm } from "../../engine/pace.js";
+import { GHOST_COPY } from "../../ghost/ghost.js";
 import { isValidSetting } from "../../storage/settings.js";
 import { termPage } from "../components/chrome.js";
 import { el } from "../dom.js";
@@ -59,7 +60,6 @@ export const SPEED_HINT =
 /** The pace line under the slider: what the speed asks of the player at wave 1. */
 export const paceLine = (speed) =>
   `About ${paceWpm({ speed, avgLength: AVG })} WPM keeps up at wave 1.`;
-/** The slider's spoken value: the speed and the pace together. */
 const spoken = (speed) => `${speedText(speed)}, about ${paceWpm({ speed, avgLength: AVG })} WPM`;
 
 function choice(ctx, { kind, name, how }) {
@@ -141,7 +141,7 @@ export const playScreen = {
         el(
           "section",
           { class: "term-panel prose-panel picker-rules", "aria-label": "Rules for both games" },
-          [el("p", {}, RULES), el("p", {}, ESCAPE_LINE), speedRow(ctx)],
+          [RULES, ESCAPE_LINE, GHOST_COPY.hint].map((t) => el("p", {}, t)).concat(speedRow(ctx)),
         ),
       ]),
     });
