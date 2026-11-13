@@ -3,6 +3,12 @@
     "vercel": {
       "url": "https://mcp.vercel.com",
       "disabled": true
+    },
+    "dead-keys": {
+      "command": "node",
+      "args": ["mcp/server.js"],
+      "disabled": false,
+      "autoApprove": ["validate_pack"]
     }
   }
 }

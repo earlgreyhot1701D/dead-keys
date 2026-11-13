@@ -765,3 +765,5 @@ Checks before the commit: lint clean (352 files), `npm test` 909 of 909, `node s
 | Kiro's file tools are denied writes to `.kiro/settings/` by a permission rule, so the `dead-keys` entry could not be added to `.kiro/settings/mcp.json` | Open: for Shara to add the entry (see the reply) | `.kiro/settings/mcp.json` |
 | `validate_pack` was checked through a direct stdio MCP client, not through Kiro's own MCP panel, because the server is not registered yet | Open: recheck from Kiro once registered | n/a |
 | The tasks file has 4 and 5 open until the registration is in | Open | `.kiro/specs/mcp/tasks.md` |
+
+`.kiro/settings/mcp.json` registered by Shara on Nov 13; `validate_pack` answered through Kiro's MCP panel: with no arguments `OK packs/general.json: 1500 items` and `OK packs/spanish.json: 1421 items`; with `{ "path": "packs/spanish.json" }` `OK packs/spanish.json: 1421 items`.
