@@ -734,3 +734,11 @@ Built by Claude, to save credits; Kiro ran the checks, committed and deployed. S
 Sound: Off by default. Typewriter (clack per key, carriage return per word, bell per wave, thunk on a landed word) and Arcade (laser per word, thud on a landed word, chime per wave) are synthesized with Web Audio, so there are no audio files. The cues come from the engine's own events. Settings plays a sample on change. Where Web Audio is missing, the game is silent. The attract demo is always silent.
 
 Spec Wave: typing `kiro` on the title (after the privacy card has been seen) starts one falling wave of spec words, mode `specwave`, pack `specwave`. It ends itself after wave 1 and saves no ghost. A `k` waits 600 ms for the next key. Moves at the line cap: `ROUND_KINDS` to `roundKinds.js` (re-exported from `play.js`), and `clockFor` to `src/drills/limits.js`. The mock's `SOUND: OFF` footer label is not added.
+
+## Nov 13 2026: Production deploy of Block 14 (956ca98)
+
+On Shara's instruction. Before the deploy, at `956ca98` with a clean tree: `npm run lint` clean (340 files), `npm test` 886 of 886, `npm run check:build` clean, `npm run test:e2e` 96 passed, 40 skipped, 0 failed (0 serious or critical axe issues).
+
+- Deployment: `https://dead-keys-emhvl7ndt-earlgreyhot1701ds-projects.vercel.app`, aliased to `https://dead-keys.vercel.app` (`vercel deploy --prod`).
+- Live check: `curl -sI https://dead-keys.vercel.app` returned `200 OK`; the live index.html loads `/assets/index-q8uk-VYd.js`, the same asset as local `dist/index.html`. Match.
+- Env vars (names only): `AWS_REGION` (Config, Production and Preview), `AWS_ROLE_ARN` (Config, Production and Preview). No AWS key exists.
