@@ -746,3 +746,22 @@ On Shara's instruction. Before the deploy, at `956ca98` with a clean tree: `npm 
 ## Nov 13 2026: Block 15 part 1, Spanish pack and pack validator
 
 Built by Claude, to save credits; Kiro ran the checks, committed and deployed. Spec at `.kiro/specs/spanish/`. `packs/spanish.json` holds 1,400 words from FrequencyWords (OpenSubtitles 2018, CC BY-SA 4.0), filtered by a Spanish Hunspell spelling list (dictionary-es 4.0.0 via nspell, run once and kept as `packs/source/es_spelled.txt`; not a dependency) and `packs/blocklist-es.txt`, plus 21 written ¿…? / ¡…! words; ¿bilingüe? carries ü. The pack is CC BY-SA 4.0; the code stays MIT. A Words choice on Play (setting `pack`: `general` or `spanish`) applies to falling, corners and practice. The validator is `scripts/check-pack.js` with `src/packs/checkPack.js`, documented in `docs/pack-format.md`; hook H4 is `pack-check.json`. Spanish lessons S1 to S3 move to v2 (Shara, Nov 13). The MCP server is part 2.
+
+## Nov 13 2026: Block 15 part 2, MCP server
+
+Built by Kiro. Spec at `.kiro/specs/mcp/`. `mcp/server.js` is a stdio MCP server (the SDK's low-level `Server` with plain JSON Schema inputs, so the repo imports no zod of its own); the handlers live in `mcp/tools.js`, tested in `mcp/tools.test.js` with no network (6 tests).
+
+- `validate_pack { path? }` calls `checkFile` / `packFiles` from `scripts/check-pack.js`; with no path it checks every pack. A path must resolve to a `.json` file inside `packs/`; `..`, other folders, other file types, NUL bytes and non-strings are refused.
+- `run_golden_set { confirm: true }` runs `evals/run.js`'s `runGolden` and returns its lines (counts only). Without `confirm: true` it refuses and never calls Bedrock. A test checks that no env value and no drill text come back.
+
+SDK: `@modelcontextprotocol/sdk` 1.32.2, dist-tag `latest`, published Oct 23 2026, MIT, dev dependency, pinned exact, installed with `--before=2026-10-30`. It is past the fixes for this year's SDK advisories (experimental-tasks session binding, fixed in 1.32.0; shared-transport leak, HTTP only). `npm install` dropped the two optional `@emnapi` lockfile entries again; Kiro put them back and `npm ci` passed. The build output was scanned: no MCP code ships.
+
+Checks before the commit: lint clean (352 files), `npm test` 909 of 909, `node scripts/check-pack.js` OK for both packs, `check:build` clean, `npm run test:e2e` 98 passed, 40 skipped, 0 failed.
+
+`validate_pack` through MCP: Kiro connected to `node mcp/server.js` over stdio with the SDK's client (tools listed: `validate_pack, run_golden_set`) and called it: `OK packs/general.json: 1500 items`, `OK packs/spanish.json: 1421 items`, `isError: false`; a call with `../package.json` was refused. `run_golden_set` was not called.
+
+| Flag | Status | Where |
+|---|---|---|
+| Kiro's file tools are denied writes to `.kiro/settings/` by a permission rule, so the `dead-keys` entry could not be added to `.kiro/settings/mcp.json` | Open: for Shara to add the entry (see the reply) | `.kiro/settings/mcp.json` |
+| `validate_pack` was checked through a direct stdio MCP client, not through Kiro's own MCP panel, because the server is not registered yet | Open: recheck from Kiro once registered | n/a |
+| The tasks file has 4 and 5 open until the registration is in | Open | `.kiro/specs/mcp/tasks.md` |
