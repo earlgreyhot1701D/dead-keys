@@ -96,3 +96,23 @@
   border-color: var(--f-thumb);
   color: var(--f-thumb);
 }
+/* The keyboard's legend: one swatch per finger, then the next key. */
+.ls-legend {
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+  margin: 0;
+  font-size: 13px;
+  color: var(--label);
+}
+.ls-sw {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 6px;
+  border: 2px solid;
+  vertical-align: -1px;
+}
+.ls-next-key {
+  color: var(--text);
+}

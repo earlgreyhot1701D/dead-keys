@@ -10,8 +10,8 @@ One task at a time. Never "run all." Touch only the files a task names. Tick eac
 - [x] 5. `src/lessons/result.js`, the `record()` pass argument (`src/engine/record.js`) and `finishRound(result, day, pass)` (`src/ui/roundRecord.js`), with tests: the RoundResult passes the contract, Check accuracy and the 95% rule, Lesson 0 passes on finishing, a pass is added once, test out after a pass adds nothing, the lesson-passed milestone appears (Req 4).
 - [x] 6. `src/lessons/recommend.js` and `src/lessons/dip.js` with tests (Req 8.1, 8.2, Req 9.1).
 - [x] 7. `src/styles/desk.css` and the contrast test (design: Desk look). Stop and report if any pair fails.
-- [ ] 8. `src/ui/components/lessonKeyboard.js`, `lessonView.js`, `src/ui/screens/lesson.js`, routes in `src/main.js`: the Lesson screen for Lessons 1 to 6 and test out, with the pause dialog. Match mock screen C per the map.
-- [ ] 9. `src/ui/components/lessonDone.js`: the Lesson done card, recording through `finishRound`. Match mock screen E per the map.
+- [x] 8. `src/ui/components/lessonKeyboard.js`, `lessonView.js`, `src/ui/screens/lesson.js`, routes in `src/main.js`: the Lesson screen for Lessons 1 to 6 and test out, with the pause dialog. Match mock screen C per the map.
+- [x] 9. `src/ui/components/lessonDone.js`: the Lesson done card, recording through `finishRound`. Match mock screen E per the map.
 - [ ] 10. **Playtest stop.** `npm run deploy:preview`. Report the URL and stop: Shara plays Lesson 1 and a test out before anything else is built.
 - [ ] 11. `src/ui/screens/lessons.js` (the Lessons menu) and the menu item in `menu.js`. Match mock screen D per the map.
 - [ ] 12. Lesson 0 in `lesson.js` / `lessonView.js` (Req 6), the main menu panel in `menuSide.js` (Req 8.3, mock screen 2 per the map), and the How we count lines (Req 9.2).

@@ -1,0 +1,56 @@
+/* The Lesson done card (mock screen E, the mock's values), on the desk look in desk.css. */
+.ld-card {
+  width: 760px;
+  margin: 18px auto 0;
+}
+.ld-title {
+  margin: 14px 0 10px;
+  font: 700 44px var(--head);
+  letter-spacing: 0.03em;
+}
+.ld-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 8px;
+}
+.ld-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  border: 1px solid var(--paper-rule);
+}
+.ld-stat-label {
+  font: 700 12px var(--head);
+  letter-spacing: 0.14em;
+  color: var(--paper-label);
+}
+.ld-stat strong {
+  font: 700 32px var(--head);
+}
+.ld-stat small,
+.ld-line {
+  font-size: 13px;
+  color: var(--paper-soft);
+}
+.ld-line {
+  margin: 6px 0 0;
+  font-size: 15px;
+}
+.ld-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 22px;
+}
+.ld-btn {
+  flex: 1;
+  border-color: var(--paper-ink);
+  background: transparent;
+  color: var(--paper-ink);
+}
+.ld-btn.is-primary {
+  flex: 1.4;
+  background: var(--paper-ink);
+  color: var(--paper);
+}

@@ -1,0 +1,137 @@
+/* The Lesson screen (mock screen C, the mock's values), on the desk look in desk.css. */
+.ls-left {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.ls-pill {
+  margin: 0;
+  font: 400 13px var(--mono);
+  letter-spacing: 0.04em;
+}
+.ls-main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 16px;
+  padding: 18px 32px;
+  min-height: 0;
+}
+.ls-steps {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ls-step {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  font: 700 14px var(--head);
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+.ls-step.is-done {
+  border-color: var(--rule);
+  color: var(--text);
+}
+.ls-step.is-now {
+  border-color: var(--paper);
+  background: var(--paper);
+  color: var(--paper-ink);
+}
+.ls-coach,
+.ls-under {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+}
+.ls-coach {
+  font-size: 18px;
+  color: var(--soft);
+}
+.ls-key {
+  color: var(--text);
+}
+.ls-count {
+  font-size: 14px;
+  color: var(--label);
+}
+.desk-paper {
+  margin: 0;
+  white-space: pre;
+}
+.ls-under {
+  min-height: 24px;
+  font-size: 15px;
+}
+.ls-hint {
+  color: var(--shaky);
+}
+.ls-meta {
+  display: flex;
+  gap: 28px;
+  color: var(--label);
+}
+.ls-meta strong {
+  font-size: 20px;
+  color: var(--text);
+}
+.ls-kb {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-self: center;
+  padding: 14px;
+  border: 1px solid var(--desk-rule);
+}
+.ls-row {
+  display: flex;
+  gap: 6px;
+}
+.ls-row-1 {
+  margin-left: 22px;
+}
+.ls-row-2 {
+  margin-left: 52px;
+}
+.ls-row-3 {
+  justify-content: center;
+}
+.ls-k {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 66px;
+  height: 60px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  font-size: 20px;
+}
+.ls-k:not(.is-learned) {
+  opacity: 0.45;
+}
+.ls-k.is-learned {
+  border-width: 2px;
+  background: #183134;
+  font-weight: 700;
+}
+.ls-k.is-next {
+  border-color: var(--text);
+  background: var(--text);
+  color: var(--on-teal);
+}
+.ls-k.is-bump::after {
+  position: absolute;
+  bottom: 7px;
+  width: 12px;
+  border-bottom: 2px solid currentColor;
+  content: "";
+}
+.ls-k.is-space {
+  width: 420px;
+}
