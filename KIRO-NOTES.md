@@ -714,3 +714,7 @@ Shara played an AI drill on the preview: the label read `[ DRILL: AI-GENERATED ]
 ## Nov 13 2026: Block 11, share card
 
 Built by Claude, to save credits; Kiro ran the checks, committed and deployed. Spec at `.kiro/specs/share/`. The card is drawn in the browser on a 1200x630 canvas, and nothing is uploaded. The meta line uses the app's mode name (FALLING WORDS), not the mock's FALLING TARGETS. The Share button shows only where the browser can share files.
+
+## Nov 13 2026: Block 12, daily drill
+
+Built by Claude, to save credits; Kiro ran the checks, committed and deployed. Spec at `.kiro/specs/daily/`. The seed is the local date as YYYYMMDD. It is a Falling words round with a 2-minute cap on active play, so pausing stops the clock. The clock lives in the UI (`src/drills/daily.js` `clockFor`, run by `round.js`), so there is no engine change. Practice moved from `round.js` to `menuRounds.js` at the line cap. The mock's ghost line and target pace are stubbed until Block 13. `e2e/flows.spec.js`: the "not built" flow became "every menu item is built", since Daily drill was the last unbuilt item.

@@ -16,7 +16,9 @@ function ctxFor({ built = BUILT, phone = false } = {}) {
     announce: (t) => log.said.push(t),
   };
 }
-const items = (node) => findAll(node, (n) => n.tag === "button");
+// The menu's own items: the buttons in the nav (the right column has the daily Start button).
+const items = (node) =>
+  findAll(findAll(node, (n) => n.tag === "nav")[0], (n) => n.tag === "button");
 
 test("the menu is the eight PRD items, in order", () => {
   assert.deepEqual(
@@ -89,12 +91,13 @@ test("the hint only names keys that work: the approved line, in the mock's three
   });
 });
 
-test("the right column: the recommended lesson, Daily drill Not built yet, nothing made up", () => {
+test("the right column: the recommended lesson, the daily drill, nothing made up", () => {
   withFakeDocument(() => {
     const text = textOf(menuScreen.render(ctxFor()));
     assert.match(text, /Recommended next lesson\[L\d\d\]|Recommended next lessonAll letter/);
     assert.doesNotMatch(text, /Recommended next lessonNot built yet/);
-    assert.match(text, /Daily drillNot built yet/);
+    assert.match(text, /DAILY DRILLTODAYLIMIT: 02:00/);
+    assert.doesNotMatch(text, /DAILY DRILL.*Not built yet/);
     for (const gone of [
       "+4 THIS WEEK",
       "LAST: 34",

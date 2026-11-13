@@ -1,21 +1,22 @@
 # Current block
 
-**Block 11: Share card** (PRD G10). Spec: `.kiro/specs/share/`.
+**Block 12: Daily drill** (PRD G5). Spec: `.kiro/specs/daily/`.
 
-Blocks 1 to 4, 6 to 10 and 8a passed. Block 5 (design) is locked in `docs/design-brief.md`. The contract is frozen. Block 8b comes later.
+Blocks 1 to 4, 6 to 11 and 8a passed. Block 5 (design) is locked in `docs/design-brief.md`. The contract is frozen. Block 8b comes later.
 
 ## Spec for how screens look
 
-The share card mock Shara approved on Nov 13, filtered through the map and copy table in `.kiro/specs/share/design.md`. Binding: anything they don't cover, stop and ask.
+The locked mock's main menu (screen 2), Daily drill panel, filtered through the map and copy table in `.kiro/specs/daily/design.md`. Binding: anything they don't cover, stop and ask.
 
 ## Files this block may touch
 
-- `src/share/**` (new)
-- `src/ui/components/shareDialog.js` (new) and its test
-- `src/ui/screens/results.js` and its test
-- `src/styles/share.css` (new), `src/main.js` (one import)
-- `e2e/share.spec.js` (new)
-- `.kiro/specs/share/*`, `docs/current-block.md`, `KIRO-NOTES.md`
+- `src/drills/daily.js` (new) and its test
+- `src/ui/screens/menuRounds.js` (new), `play.js`, `drillRound.js`, `round.js`, `menu.test.js`, `round.test.js`, and their tests
+- `src/render/stage.js`, `src/render/playHud.js`
+- `src/ui/components/menuDaily.js` (new), `menuSide.js`, and their tests
+- `src/styles/menuDaily.css` (new), `src/main.js`
+- `e2e/daily.spec.js` (new), `e2e/flows.spec.js` (the "not built" flow: nothing is unbuilt now)
+- `.kiro/specs/daily/*`, `docs/current-block.md`, `KIRO-NOTES.md`
 
 Anything else, including `contract/**`, `src/engine/**` and `api/**`: stop and ask Shara.
 
@@ -33,7 +34,7 @@ Full.
 
 ## PASS line
 
-Every requirement in `.kiro/specs/share/requirements.md` has a test or an e2e flow. `npm test`, `npm run test:e2e` (0 serious or critical axe issues), `npm run lint` and `npm run check:build` pass. Source files under 150 lines; nothing over 250. Shara has opened the card on the preview, downloaded the PNG and copied the line. Reviewer and a11y-auditor: deferred to the Block 16 combined run.
+Every requirement in `.kiro/specs/daily/requirements.md` has a test or an e2e flow. `npm test`, `npm run test:e2e` (0 serious or critical axe issues), `npm run lint` and `npm run check:build` pass. Source files under 150 lines; nothing over 250. Shara has played a daily drill on the preview from the menu panel. Reviewer and a11y-auditor: deferred to the Block 16 combined run.
 
 ## Hooks alive
 

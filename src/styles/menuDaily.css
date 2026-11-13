@@ -1,0 +1,41 @@
+/* The main menu's Daily drill panel (daily Req 3; locked mock, screen 2). */
+.daily-panel .panel-head {
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+.daily-name {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.daily-today {
+  padding: 1px 8px;
+  background: var(--text);
+  color: var(--bg);
+}
+.daily-row {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.daily-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.daily-line {
+  font-family: var(--head);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--bright);
+}
+.daily-same {
+  font-size: 14px;
+  color: var(--muted);
+}
+.daily-start {
+  flex-shrink: 0;
+}

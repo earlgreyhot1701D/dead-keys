@@ -1,12 +1,13 @@
 // The main menu's right column (locked mock, screen 2): the recommended lesson (lessons Req 8.3),
-// daily drill as a "Not built yet" panel (Block 12), best speed and current streak from saved
+// today's daily drill (menuDaily.js, Block 12), best speed and current streak from saved
 // data, and a status line read from settings. Nothing here is made up: no "this week" or "best
 // streak", which are not stored.
 import { COACH, MENU } from "../../lessons/copy.js";
 import { lessonById } from "../../lessons/ladder.js";
 import { recommend, whyLine } from "../../lessons/recommend.js";
 import { el } from "../dom.js";
-import { ghostIcon, notBuiltPanel, panelHead } from "./chrome.js";
+import { panelHead } from "./chrome.js";
+import { dailyPanel } from "./menuDaily.js";
 import { modeName, NO_BESTS_LINE, setOn } from "./progressText.js";
 
 const REC = "Recommended next lesson";
@@ -96,10 +97,7 @@ export function renderMenuSide(ctx, now = new Date()) {
   const streak = currentStreak(p.dayStreak, now);
   return el("section", { class: "menu-side", "aria-label": "At a glance" }, [
     lessonPanel(p),
-    notBuiltPanel(
-      "Daily drill",
-      el("span", { class: "ghost-box", "aria-hidden": "true" }, ghostIcon(26, 28)),
-    ),
+    dailyPanel(ctx, p, now),
     el("div", { class: "menu-stats" }, [
       best
         ? tile(

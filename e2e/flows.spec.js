@@ -33,13 +33,13 @@ test("the menu works by keyboard alone, with a visible focus ring", async ({ pag
   await expect(page.getByRole("heading", { level: 1, name: "Main menu" })).toBeVisible();
 });
 
-test("a screen that is not built says so and does not open", async ({ page }) => {
+test("every menu item is built now; none says Not built yet (Block 12 built the last one)", async ({
+  page,
+}) => {
   await toMenu(page);
-  const daily = page.getByRole("button", { name: /^Daily drill/ }); // Lessons is built from Block 8a
-  await expect(daily).toHaveAttribute("aria-disabled", "true");
-  await expect(daily).toContainText("Not built yet");
-  await daily.click({ force: true }); // aria-disabled, not disabled: it stays focusable on purpose
-  await expect(page.getByRole("heading", { level: 1, name: "Main menu" })).toBeVisible();
+  const nav = page.locator("nav");
+  await expect(nav.locator('[aria-disabled="true"]')).toHaveCount(0);
+  await expect(nav).not.toContainText("Not built yet");
 });
 
 test("settings are saved and come back after a reload", async ({ page }) => {

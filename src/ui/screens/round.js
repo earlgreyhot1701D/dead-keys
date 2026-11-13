@@ -3,6 +3,7 @@
 // or the screen is gone; an ended round is recorded (app.finishRound) and shown on results.
 import pack from "../../../packs/general.json" with { type: "json" };
 import { announceAll } from "../../a11y/announce.js";
+import { clockFor } from "../../drills/daily.js";
 import { LIVES_MAX } from "../../engine/config.js";
 import {
   backspace,
@@ -21,7 +22,7 @@ import { openConfirm } from "../components/confirmDialog.js";
 import { el } from "../dom.js";
 import { localDay } from "../roundRecord.js";
 import { kindSource, roundOptions } from "./drillRound.js";
-import { chooseRound, nextRound } from "./play.js";
+import { nextRound } from "./play.js";
 import { showResults } from "./results.js";
 
 /** The pause dialog's words (play copy table). */
@@ -47,6 +48,7 @@ function begin(ctx) {
   const r = createRound(roundOptions(kind, ctx)); // a drill's weights and live line: drillRound.js
   const doc = ctx.root?.ownerDocument ?? globalThis.document;
   const run = { state: r.state, loop: null };
+  const clock = clockFor(kind, ctx.announce, (s) => step(endRound(s)));
   const stage = createStage(el, {
     mechanic: kind.mechanic,
     practice: kind.mode === "practice",
@@ -54,6 +56,7 @@ function begin(ctx) {
     persist: ctx.state.persist !== false,
     speed: r.state.speed,
     drill: kindSource(kind), // the HUD badge: built-in or AI (drills Req 4.1, ai-drills Req 4.1)
+    limitMs: kind.limitMs, // the daily drill's clock counts down (daily Req 2)
     onPause: () => step(pause(run.state)),
   });
   const stop = () => {
@@ -108,6 +111,7 @@ function begin(ctx) {
       // The screen was left another way: stop, and go nowhere (no frame outlives its screen).
       if (run.node.isConnected === false) return stop();
       step(tick(run.state, dt));
+      clock(run.state); // the daily drill's 2 minutes; nothing for other rounds
     },
     onHide: () => step(pause(run.state)),
   });
@@ -134,16 +138,5 @@ export const roundScreen = {
     else if (isTyping(e)) live.step(key(live.state, e.key));
     else return false;
     return true;
-  },
-};
-
-/** Practice (Req 2.2): the menu's Practice opens a practice round on the falling layout at once. */
-export const practiceScreen = {
-  ...roundScreen,
-  id: "practice",
-  title: "Practice",
-  render(ctx) {
-    chooseRound("practice");
-    return roundScreen.render(ctx);
   },
 };

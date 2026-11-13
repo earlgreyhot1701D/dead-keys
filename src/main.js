@@ -16,6 +16,7 @@ import "./styles/titlePress.css";
 import "./styles/menu.css";
 import "./styles/menuList.css";
 import "./styles/menuSide.css";
+import "./styles/menuDaily.css";
 import "./styles/keyboard.css";
 import "./styles/heatBands.css";
 import "./styles/progress.css";
@@ -50,11 +51,12 @@ import { howWeCountScreen } from "./ui/screens/howWeCount.js";
 import { lessonScreen } from "./ui/screens/lesson.js";
 import { lessonsScreen } from "./ui/screens/lessons.js";
 import { menuScreen } from "./ui/screens/menu.js";
+import { dailyScreen, practiceScreen } from "./ui/screens/menuRounds.js";
 import { playScreen } from "./ui/screens/play.js";
 import { privacyScreen } from "./ui/screens/privacy.js";
 import { progressScreen } from "./ui/screens/progress.js";
 import { resultsScreen } from "./ui/screens/results.js";
-import { practiceScreen, roundScreen } from "./ui/screens/round.js";
+import { roundScreen } from "./ui/screens/round.js";
 import { settingsScreen } from "./ui/screens/settings.js";
 import { titleScreen } from "./ui/screens/title.js";
 
@@ -84,6 +86,7 @@ const screens = Object.fromEntries(
     playScreen,
     roundScreen,
     practiceScreen,
+    dailyScreen,
     resultsScreen,
     lessonScreen,
     lessonsScreen,

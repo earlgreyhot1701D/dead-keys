@@ -6,8 +6,9 @@ import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import { CAPS_HINT, COACH, PRACTICE_NOTE, WRONG_HINT } from "../../render/playHud.js";
 import { findAll, makeFakeDoc, textOf } from "../fakeDom.js";
+import { practiceScreen } from "./menuRounds.js";
 import { chooseRound } from "./play.js";
-import { isTyping, outOfLivesLines, PAUSE, practiceScreen, roundScreen } from "./round.js";
+import { isTyping, outOfLivesLines, PAUSE, roundScreen } from "./round.js";
 
 const design = readFileSync(
   new URL("../../../.kiro/specs/play/design.md", import.meta.url),
