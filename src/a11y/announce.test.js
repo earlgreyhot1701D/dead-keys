@@ -2,7 +2,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
-import { announce, announceAll } from "./announce.js";
+import { announce, announceAll, SPOKEN_BY_DIALOG } from "./announce.js";
 
 const before = { targets: [{ id: 7, text: "harbor" }] };
 const after = { lives: 3, targets: [] };
@@ -50,10 +50,19 @@ test("one step: lines in order, and several lives lost say the count left once",
     { type: "lifeLost", targetId: 2 },
     { type: "outOfLives" },
   ];
+  // "Out of lives." is left to its dialog's title (Block 8a, Req 10.3).
   assert.deepEqual(announceAll(events, before, { lives: 0 }), [
     "Cleared harbor.",
     "Life lost. 0 left.",
-    "Out of lives.",
   ]);
   assert.deepEqual(announceAll([], before, after), []);
+});
+
+test('"Paused." and "Out of lives." are spoken once, by their dialog, not also the live region', () => {
+  assert.deepEqual([...SPOKEN_BY_DIALOG], ["paused", "outOfLives"]);
+  assert.deepEqual(announceAll([{ type: "paused" }], before, after), []);
+  assert.deepEqual(announceAll([{ type: "outOfLives" }], before, after), []);
+  assert.deepEqual(announceAll([{ type: "waveUp", wave: 2 }, { type: "paused" }], before, after), [
+    "Wave 2.",
+  ]);
 });

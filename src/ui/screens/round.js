@@ -39,6 +39,7 @@ export const isTyping = (e) =>
   typeof e?.key === "string" && [...e.key].length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey;
 
 let live = null; // the running round: { state, step, ... }; only one at a time
+const tagOf = (n) => (n.tagName ?? n.tag)?.toLowerCase(); // a real element, or the test fake
 
 function begin(ctx) {
   const kind = nextRound();
@@ -99,6 +100,8 @@ function begin(ctx) {
   };
   run.dialogOpen = () => !!doc.querySelector?.("dialog[open]");
   run.node = stage.node;
+  const [h1, main] = ["h1", "main"].map((t) => [...run.node.children].find((n) => tagOf(n) === t));
+  (main.prepend ?? main.append).call(main, h1); // the hidden h1 goes inside <main> (Req 10.1)
   stage.show([], run.state, run.state);
   run.loop = startLoop({
     onFrame: (dt) => {

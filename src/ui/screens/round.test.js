@@ -95,6 +95,7 @@ test("a round draws the HUD, the field and a sr-only title", () => {
   const { node } = start();
   try {
     assert.equal(textOf(findAll(node, (n) => n.tag === "h1")[0]), "Falling words");
+    assert.equal(findAll(node, (n) => n.tag === "h1")[0].parent.tag, "main", "Req 10.1");
     const t = textOf(node);
     for (const s of ["TERMINAL 84", "LIVES:", "SECTOR:", "SPEED:", "ACCURACY:", "TIME:"])
       assert.ok(t.includes(s), s);
@@ -120,7 +121,7 @@ test("a typed key locks a word; Escape drops the lock, then pauses", () => {
     const dialog = r.doc.querySelector("dialog[open]");
     assert.ok(dialog);
     assert.ok(textOf(dialog).includes(PAUSE.title));
-    assert.ok(r.log.said.some((l) => l.includes("Paused.")));
+    assert.ok(!r.log.said.some((l) => l.includes("Paused.")), "the dialog says it (Req 10.3)");
   } finally {
     cleanup();
   }

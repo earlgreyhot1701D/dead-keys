@@ -109,7 +109,7 @@ export function newMilestones(progress, result, localDay) {
     });
   }
   for (const l of progress.lessonsPassed) {
-    const label = `Lesson ${l.lessonId} passed`;
+    const label = `Lesson ${Number(String(l.lessonId).replace(/^\D+/, ""))} passed`; // L03: Lesson 3
     earned.push({ id: `lesson-${l.lessonId}`, kind: "lesson-passed", threshold: null, label });
   }
   const seen = new Set(progress.milestones.map((m) => m.id));

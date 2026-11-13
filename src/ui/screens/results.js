@@ -25,7 +25,7 @@ export const overLine = (r) =>
 function accuracyPanel({ result }) {
   const p = Math.round(result.accuracy * 100);
   const cells = Math.floor(p / 4); // 25 cells, one per 4%, as the mock draws 96%
-  return el("section", { class: "rs-panel rs-quiet", "aria-label": "Accuracy" }, [
+  return el("section", { class: "rs-panel rs-quiet", "aria-label": "Accuracy bar" }, [
     el("span", { class: "rs-acc-head" }, [el("span", {}, "ACCURACY"), el("strong", {}, `${p}%`)]),
     el(
       "span",
@@ -88,7 +88,7 @@ export const resultsScreen = {
         el("span", { class: "pill" }, "NODE: 0x84-RESULTS"),
         menuButton(ctx), // top right, like every page (Shara, Nov 12)
       ]),
-      el("div", { class: "rs-body" }, [
+      el("main", { id: "main", class: "rs-body" }, [
         el("section", { class: "rs-title" }, [
           el("div", {}, [
             el("p", { class: "rs-over" }, [
@@ -99,7 +99,7 @@ export const resultsScreen = {
           ]),
           el("p", { class: "rs-mode" }, `MODE: ${r.mode.toUpperCase()} // PACK: GENERAL`),
         ]),
-        el("main", { id: "main", class: "rs-main" }, [
+        el("div", { class: "rs-main" }, [
           el("div", { class: "rs-col" }, [
             statTiles(data),
             el(

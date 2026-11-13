@@ -88,7 +88,7 @@ test("Escape pauses and resumes; End round saves it; results' Main menu goes hom
   await page.keyboard.press("Escape"); // nothing locked: pause
   const paused = page.getByRole("dialog", { name: "Paused" });
   await expect(paused.getByRole("button", { name: "Resume" })).toBeFocused();
-  await expect(page.locator("#live")).toContainText("Paused.");
+  await expect(page.locator("#live")).not.toContainText("Paused."); // the dialog says it once
   await page.keyboard.press("Escape"); // Escape in the dialog resumes
   await expect(paused).toBeHidden();
   await endByPause(page);

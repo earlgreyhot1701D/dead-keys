@@ -78,8 +78,18 @@ export function statTiles({ result, outcome }) {
 }
 
 /** New best, new milestones, or "No new records this round."; the free continue when used. */
+/** Only the highest WPM band when one round earns several at once (Block 8a, Req 10.2). */
+export function topBandOnly(milestones) {
+  const top = Math.max(
+    0,
+    ...milestones.filter((m) => m.kind === "wpm-band").map((m) => m.threshold),
+  );
+  return milestones.filter((m) => m.kind !== "wpm-band" || m.threshold === top);
+}
+
 export function milestonesPanel({ result, outcome }) {
-  const { newBest, milestones, saved } = outcome;
+  const { newBest, saved } = outcome;
+  const milestones = topBandOnly(outcome.milestones);
   const rows = [];
   if (newBest) {
     rows.push(

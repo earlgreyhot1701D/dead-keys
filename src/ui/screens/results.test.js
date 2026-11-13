@@ -15,10 +15,13 @@ import {
   NO_RECORDS,
   newBestLine,
   STAT_EXPLAIN,
+  topBandOnly,
 } from "../components/resultsPanels.js";
 import { findAll, textOf, withFakeDocument } from "../fakeDom.js";
 import { nextRound } from "./play.js";
 import { HOW_LINK, overLine, resultsScreen, SHARE, showResults } from "./results.js";
+
+const ACCURACY_BAR = "Accuracy bar"; // the copy table's name for the bar panel (Req 10.1)
 
 const design = readFileSync(
   new URL("../../../.kiro/specs/play/design.md", import.meta.url),
@@ -194,4 +197,38 @@ test("a Main menu button sits in the header, top right, and opens the menu (Shar
   assert.equal(textOf(b), MAIN_MENU);
   b.listeners.click();
   assert.deepEqual(log, [["go", "menu"]]);
+});
+
+test("Block 8a carry-ins: the h1 sits inside <main>, and the two accuracy regions have their own names", () => {
+  const { node } = draw();
+  const main = findAll(node, (n) => n.tag === "main");
+  assert.equal(main.length, 1);
+  assert.equal(findAll(main[0], (n) => n.tag === "h1").length, 1, "Req 10.1");
+  const lessons = readFileSync(
+    new URL("../../../.kiro/specs/lessons/design.md", import.meta.url),
+    "utf8",
+  );
+  assert.ok(
+    lessons.includes(`panel's name becomes \`${ACCURACY_BAR}\` (the tile stays \`Accuracy\`)`),
+  );
+  const names = findAll(node, (n) => n.attrs?.["aria-label"]).map((n) => n.attrs["aria-label"]);
+  assert.ok(names.includes(ACCURACY_BAR) && names.includes("ACCURACY"));
+  const lower = names.map((n) => n.toLowerCase());
+  assert.equal(new Set(lower).size, lower.length, "no two regions share a name");
+});
+
+test("a round that earns several WPM bands shows only the highest one (Req 10.2)", () => {
+  const band = (w) => ({
+    id: `wpm-${w}`,
+    kind: "wpm-band",
+    threshold: w,
+    label: `${w} words per minute`,
+  });
+  const streak = { id: "acc-streak-3", kind: "accuracy-streak", threshold: 3, label: "3 rounds" };
+  const earned = [band(10), band(20), band(30), streak];
+  assert.deepEqual(topBandOnly(earned), [band(30), streak]);
+  assert.deepEqual(topBandOnly([streak]), [streak]);
+  const { text } = draw({ outcome: outcome({ milestones: earned }) });
+  assert.ok(text.includes("MILESTONE: 30 words per minute"));
+  assert.ok(!text.includes("MILESTONE: 10 words") && !text.includes("MILESTONE: 20 words"));
 });

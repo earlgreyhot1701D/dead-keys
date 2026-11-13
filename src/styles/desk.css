@@ -1,0 +1,98 @@
+/* The desk look for the lesson screens (lessons design: Desk look; mock/lessons.html, variant
+   "calm"): a quieter ground, no scanlines, and the typing line as a sheet of paper with dark ink.
+   Every token is scoped to .desk, so the play screens keep the arcade look. Values are the
+   mock's, re-entered; src/styles/desk.test.js checks every text pair against WCAG AA. */
+.desk {
+  --desk: #0d1719;
+  --desk-rule: #22302f;
+  --paper: #ece6d6;
+  --paper-ink: #1f2a2c;
+  --paper-rule: #c9c1ad;
+  --paper-soft: #4b5551;
+  --paper-label: #5d6763;
+  --paper-todo: #5f655f; /* was #8a8f88 (2.65:1); Shara, Nov 12 */
+  --paper-done: #2c8f84;
+  --paper-wrong: #b3261e;
+  --paper-wait: #7a4f00;
+  /* finger tints: never the heat colors (coral, amber) */
+  --f-pinky: #b49ad8;
+  --f-ring: #7fa8e0;
+  --f-middle: #9fd28a;
+  --f-index: #4fe3d1;
+  --f-thumb: #9bb0ad;
+  background: var(--desk);
+}
+/* No scanlines on the lesson screens (design decision 7). */
+.desk .scan {
+  display: none;
+}
+/* The typing line: paper, dark ink. */
+.desk-paper {
+  padding: 30px;
+  background: var(--paper);
+  box-shadow:
+    0 0 0 1px var(--line),
+    0 10px 0 -4px #d9d2bf;
+  color: var(--paper-ink);
+  font-size: 52px;
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+}
+/* Typed: underlined teal. Wrong: red, struck through. Waiting: amber, underlined. To do: grey.
+   Never color alone: each state has its own line or strike. */
+.desk-paper .ch-done {
+  border-bottom: 4px solid var(--paper-done);
+}
+.desk-paper .ch-wrong {
+  color: var(--paper-wrong);
+  text-decoration: line-through;
+}
+.desk-paper .ch-wait {
+  color: var(--paper-wait);
+  text-decoration: underline 4px;
+}
+.desk-paper .ch-todo {
+  color: var(--paper-todo);
+}
+/* The paper card (Lessons menu, Lesson done). */
+.desk-card {
+  display: flex;
+  flex-direction: column;
+  padding: 22px 24px;
+  background: var(--paper);
+  box-shadow: 8px 8px 0 var(--desk-rule);
+  color: var(--paper-ink);
+}
+.desk-card-top {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--paper-rule);
+  font: 700 13px var(--head);
+  letter-spacing: 0.16em;
+  color: var(--paper-label);
+}
+.desk-card .desk-soft {
+  color: var(--paper-soft);
+}
+/* Finger colors on the lesson keyboard: the outline and the letter. */
+.desk .f-pinky {
+  border-color: var(--f-pinky);
+  color: var(--f-pinky);
+}
+.desk .f-ring {
+  border-color: var(--f-ring);
+  color: var(--f-ring);
+}
+.desk .f-middle {
+  border-color: var(--f-middle);
+  color: var(--f-middle);
+}
+.desk .f-index {
+  border-color: var(--f-index);
+  color: var(--f-index);
+}
+.desk .f-thumb {
+  border-color: var(--f-thumb);
+  color: var(--f-thumb);
+}

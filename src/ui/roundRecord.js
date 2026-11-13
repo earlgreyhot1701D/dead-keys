@@ -27,18 +27,20 @@ export function createRoundRecord({ getState, adopt, persistNow, set }) {
      * Fold the round into progress and save it. Returns what the results screen shows.
      * @param {import("../../contract/types.js").RoundResult} result
      * @param {string} day The player's local day, "YYYY-MM-DD".
+     * @param {{ lessonId: string, how: "lesson"|"testout" } | null} [pass] A lesson this round
+     *   passed (lessons Req 4.4), handed to `record`.
      * @returns {{ recorded: boolean, saved: boolean, newBest: { wpm: number, old: number|null } | null,
      *   milestones: import("../../contract/types.js").Milestone[], previous: any }}
      *   `previous` is the player's last round in the same mode before this one, or null.
      */
-    finishRound(result, day) {
+    finishRound(result, day, pass = null) {
       const before = getState().progress;
       const previous = before.rounds.findLast((r) => r.mode === result?.mode) ?? null;
       const none = { recorded: false, saved: false, newBest: null, milestones: [], previous };
       let after;
       try {
         if (validate("RoundResult", result).status !== "valid") throw new TypeError("bad round");
-        after = record(before, result, day);
+        after = record(before, result, day, pass);
       } catch {
         set({ notice: "saveFailed" }); // a bug, not the player's doing: the round still shows
         return none;

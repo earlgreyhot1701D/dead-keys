@@ -1,0 +1,270 @@
+<!doctype html>
+<!--
+  LOCKED Nov 12, 2026 (Shara): the Block 8 mock, two screens in the "quiet desk" look.
+    Screen C: the Lesson screen (typewriter-paper line, no scanlines, unlearned keys dimmed).
+    Screen D: the Lessons menu (list grouped by row, learned-keys keyboard, paper card).
+  The LOOK is binding: layout, colors, paper, type, spacing, what is shown where.
+  Every word and number is SAMPLE CONTENT: real copy comes from the copy table in
+  .kiro/specs/lessons/design.md, real numbers from saved progress. The mock-to-build map in
+  that design says, element by element, what is kept, what becomes real data, and what is dropped.
+  Play screens keep the arcade look of mock/index.html; only lesson screens use this look.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Dead Keys mock: lessons</title>
+<link rel="stylesheet" href="/node_modules/@fontsource/jetbrains-mono/latin-400.css">
+<link rel="stylesheet" href="/node_modules/@fontsource/jetbrains-mono/latin-700.css">
+<link rel="stylesheet" href="/node_modules/@fontsource/roboto-condensed/latin-400.css">
+<link rel="stylesheet" href="/node_modules/@fontsource/roboto-condensed/latin-700.css">
+<style>
+  :root { --bg:#0a1214; --deep:#071518; --panel:#0e1c1f; --bar:#101e21; --card:#142225; --ink:#031013;
+    --text:#4fe3d1; --soft:#bbcac6; --label:#79c7c5; --muted:#9bb0ad; --accent:#71d8ca; --rule:#3ca89c;
+    --line:#3c4947; --missed:#ff7a6b; --shaky:#f2c14e; --teal-fill:#32a095; --on-teal:#00201d;
+    --head:"Roboto Condensed","Arial Narrow",sans-serif; --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+    /* finger tints: never the heat colors (coral, amber) */
+    --f-pinky:#b49ad8; --f-ring:#7fa8e0; --f-middle:#9fd28a; --f-index:#4fe3d1; --f-thumb:#9bb0ad; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#000; font-family:var(--mono); color:var(--text); }
+  .screen { width:1440px; height:900px; margin:0 0 40px; background:var(--deep); position:relative; overflow:hidden;
+    display:flex; flex-direction:column; }
+  .screen::after { content:""; position:absolute; inset:0; pointer-events:none; z-index:0;
+    background:repeating-linear-gradient(0deg, rgba(79,227,209,.035) 0 1px, transparent 1px 3px); }
+  .screen > * { position:relative; z-index:1; }
+  .lbl { position:absolute; top:-30px; left:0; color:#888; font:12px var(--mono); }
+  header { display:flex; align-items:center; justify-content:space-between; padding:14px 32px; border-bottom:2px solid var(--line); background:var(--bar); }
+  .brand { font:700 20px var(--head); letter-spacing:.18em; text-transform:uppercase; }
+  .pill { margin-left:14px; padding:3px 10px; border:1px solid var(--line); color:var(--label); font-size:13px; }
+  .btn { min-height:44px; padding:0 18px; background:transparent; color:var(--text); border:1px solid var(--rule); font:700 15px var(--head); letter-spacing:.12em; text-transform:uppercase; }
+  .btn.primary { background:var(--teal-fill); color:var(--on-teal); border-color:var(--teal-fill); }
+  .btn.quiet { color:var(--label); }
+  main { flex:1; display:flex; flex-direction:column; gap:16px; padding:18px 32px; min-height:0; }
+  h1 { margin:0; font:700 34px var(--head); letter-spacing:.06em; text-transform:uppercase; }
+  .sub { color:var(--label); font-size:14px; letter-spacing:.06em; }
+  .panel { background:var(--panel); border:3px double var(--rule); padding:16px 18px; }
+  .ptitle { display:flex; justify-content:space-between; padding-bottom:8px; margin-bottom:12px; border-bottom:1px dashed var(--rule);
+    font-size:14px; font-weight:700; letter-spacing:.12em; color:var(--accent); }
+  footer { display:flex; justify-content:space-between; padding:12px 32px; border-top:2px solid var(--line); font-size:13px; color:var(--label); letter-spacing:.06em; }
+
+  /* ladder */
+  .ladder { display:grid; grid-template-columns: 1fr 520px; gap:20px; flex:1; min-height:0; }
+  .rungs { display:flex; flex-direction:column; gap:6px; overflow:hidden; }
+  .rung { display:grid; grid-template-columns: 54px 1fr 230px 130px; align-items:center; gap:10px; min-height:40px;
+    padding:0 12px; border:1px solid var(--line); background:var(--card); font-size:15px; }
+  .rung .n { font:700 16px var(--head); color:var(--label); }
+  .rung .name { color:var(--soft); }
+  .rung .keys { color:var(--muted); letter-spacing:.2em; }
+  .rung .state { justify-self:end; font:700 13px var(--head); letter-spacing:.12em; }
+  .passed .state { color:var(--text); }
+  .passed .name { color:var(--text); }
+  .rec { border:2px solid var(--text); background:#163033; }
+  .rec .state { background:var(--teal-fill); color:var(--on-teal); padding:2px 8px; }
+  .locked { opacity:.62; }
+  .locked .state { color:var(--muted); }
+  .sel { outline:3px solid var(--text); outline-offset:2px; }
+  .caps { display:flex; gap:6px; }
+  .cap { min-width:38px; padding:6px 0; text-align:center; border:1px solid var(--text); background:var(--card); font-size:18px; }
+  .parts { list-style:none; margin:12px 0; padding:0; display:flex; flex-direction:column; gap:6px; font-size:15px; color:var(--soft); }
+  .parts b { color:var(--text); font-weight:700; }
+  .note { margin:0; padding-left:12px; border-left:2px solid var(--line); color:var(--soft); font-size:14px; line-height:1.55; }
+
+  /* lesson */
+  .steps { display:flex; gap:8px; }
+  .step { flex:1; padding:8px 12px; border:1px solid var(--line); background:var(--card); font:700 14px var(--head); letter-spacing:.1em; color:var(--muted); }
+  .step.done { color:var(--text); border-color:var(--rule); }
+  .step.now { color:var(--on-teal); background:var(--teal-fill); border-color:var(--teal-fill); }
+  .coach { display:flex; justify-content:space-between; align-items:center; font-size:18px; color:var(--soft); }
+  .coach b { color:var(--text); }
+  .line { padding:30px 30px; background:var(--ink); border:3px double var(--rule); font-size:52px; letter-spacing:.14em; white-space:nowrap; }
+  .done-ch { color:var(--on-teal); background:var(--text); }
+  .next-ch { color:var(--text); border-bottom:4px solid var(--text); }
+  .wrong-ch { color:var(--missed); text-decoration:line-through; }
+  .wait-ch { color:var(--shaky); text-decoration:underline; }
+  .todo-ch { color:var(--muted); }
+  .meta { display:flex; gap:28px; font-size:15px; color:var(--label); }
+  .meta b { color:var(--text); font-size:20px; }
+  .kb { align-self:center; display:flex; flex-direction:column; gap:6px; padding:14px; background:var(--ink); border:1px solid var(--line); }
+  .row { display:flex; gap:6px; }
+  .k { width:66px; height:60px; display:flex; align-items:center; justify-content:center; border:1px solid var(--line);
+    background:var(--card); color:var(--muted); font-size:20px; position:relative; }
+  .k.f-pinky { border-color:var(--f-pinky); color:var(--f-pinky); }
+  .k.f-ring { border-color:var(--f-ring); color:var(--f-ring); }
+  .k.f-middle { border-color:var(--f-middle); color:var(--f-middle); }
+  .k.f-index { border-color:var(--f-index); color:var(--f-index); }
+  .k.learn { border-width:2px; background:#183134; font-weight:700; }
+  .k.next { background:var(--text); color:var(--on-teal); border-color:var(--text); }
+  .k.bump::after { content:""; position:absolute; bottom:7px; width:12px; border-bottom:2px solid currentColor; }
+  .k.space { width:420px; }
+  .legend { display:flex; gap:18px; justify-content:center; font-size:13px; color:var(--label); }
+  .sw { display:inline-block; width:12px; height:12px; margin-right:6px; border:2px solid; vertical-align:-1px; }
+
+  /* Variant C: lessons feel different from play. No scanlines, a quieter ground, and the line
+     is a sheet of typewriter paper with dark ink (a nod to "I learned on a typewriter"). */
+  .calm { background:#0d1719; }
+  .calm::after { display:none; }
+  .calm .line { background:#ece6d6; border:0; box-shadow:0 0 0 1px #3c4947, 0 10px 0 -4px #d9d2bf; color:#1f2a2c; }
+  .calm .done-ch { background:transparent; color:#1f2a2c; border-bottom:4px solid #2c8f84; }
+  .calm .todo-ch { color:#8a8f88; }
+  .calm .wrong-ch { color:#b3261e; }
+  .calm .wait-ch { color:#7a4f00; text-decoration:underline 4px; }
+  .calm .step.now { background:#ece6d6; color:#1f2a2c; border-color:#ece6d6; }
+  .calm .kb { background:transparent; border-color:#22302f; }
+  .calm .k:not(.learn) { opacity:.45; }
+
+  .desk { display:grid; grid-template-columns: 1fr 520px; gap:24px; flex:1; min-height:0; }
+  .map { display:flex; flex-direction:column; gap:14px; min-height:0; }
+  .mapkb { align-self:flex-start; display:flex; flex-direction:column; gap:5px; }
+  .m { width:44px; height:40px; display:inline-flex; align-items:center; justify-content:center; margin-right:5px;
+    border:1px solid #22302f; color:#3c4947; font-size:16px; }
+  .m.on { border-color:var(--rule); color:var(--text); background:#132729; }
+  .m.nextk { border:2px solid #ece6d6; color:#ece6d6; }
+  .maplegend { display:flex; gap:22px; font-size:13px; color:var(--label); letter-spacing:.06em; }
+  .dot { display:inline-block; width:10px; height:10px; margin-right:6px; border:1px solid #3c4947; }
+  .dot.on { background:var(--text); border-color:var(--text); }
+  .dot.nx { border:2px solid #ece6d6; }
+  .stages { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .stage { border:1px solid #22302f; padding:12px; display:flex; flex-wrap:wrap; gap:8px; align-content:flex-start; }
+  .stage.dim { opacity:.55; grid-column: span 2; }
+  .sh { width:100%; display:flex; justify-content:space-between; font:700 14px var(--head); letter-spacing:.14em; color:var(--accent); }
+  .sh span { color:var(--muted); font-weight:400; }
+  .chip { padding:6px 10px; border:1px solid #2a3a3a; color:var(--soft); font-size:14px; }
+  .chip.ok { color:var(--text); border-color:var(--rule); }
+  .chip.now { background:#ece6d6; color:#1f2a2c; border-color:#ece6d6; font-weight:700; }
+  .card { background:#ece6d6; color:#1f2a2c; padding:22px 24px; display:flex; flex-direction:column; box-shadow: 8px 8px 0 #22302f; }
+  .cardtop { display:flex; justify-content:space-between; font:700 13px var(--head); letter-spacing:.16em; color:#5d6763; border-bottom:1px solid #c9c1ad; padding-bottom:8px; }
+  .card h2 { margin:14px 0 10px; font:700 34px var(--head); letter-spacing:.03em; }
+  .cardkeys { display:flex; gap:8px; }
+  .cardkeys span { min-width:44px; padding:8px 0; text-align:center; border:2px solid #1f2a2c; font-size:20px; font-weight:700; }
+  .cardkeys .w { min-width:110px; }
+  .card ol { margin:16px 0 8px; padding-left:22px; font-size:16px; line-height:1.7; }
+  .card .why { margin:0; font-size:14px; color:#4b5551; }
+  .card .btn.primary { background:#1f2a2c; color:#ece6d6; border-color:#1f2a2c; }
+  .deskbtn { color:#1f2a2c; border-color:#1f2a2c; }
+
+  .list { display:flex; flex-direction:column; gap:3px; min-height:0; }
+  .grp { display:flex; justify-content:space-between; margin-top:6px; padding:2px 2px 3px; font:700 13px var(--head); letter-spacing:.16em; color:var(--accent); border-bottom:1px solid #22302f; }
+  .grp:first-child { margin-top:0; }
+  .grp span { color:var(--muted); font-weight:400; }
+  .grp.dimg { opacity:.6; }
+  .li { display:grid; grid-template-columns:42px 1fr 190px 130px; align-items:center; min-height:31px; padding:0 12px; border:1px solid #22302f; font-size:15px; color:var(--soft); }
+  .li .n { color:var(--label); font:700 15px var(--head); }
+  .li .ks { color:var(--muted); letter-spacing:.16em; }
+  .li .st { justify-self:end; font:700 12px var(--head); letter-spacing:.12em; color:var(--muted); }
+  .li.ok, .li.ok .st { color:var(--text); }
+  .li.now { background:#ece6d6; color:#1f2a2c; border-color:#ece6d6; outline:3px solid var(--text); outline-offset:2px; }
+  .li.now .n, .li.now .ks, .li.now .st { color:#1f2a2c; }
+  .li.lk { opacity:.5; }
+  .mapbox { border:1px solid #22302f; padding:12px 14px; display:flex; flex-direction:column; gap:10px; }
+  .mapbox .m { width:40px; height:34px; }
+
+  .donestats { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-top:8px; }
+  .donestats div { border:1px solid #c9c1ad; padding:12px; display:flex; flex-direction:column; gap:4px; }
+  .donestats span { font:700 12px var(--head); letter-spacing:.14em; color:#5d6763; }
+  .donestats b { font:700 32px var(--head); }
+  .donestats i { font-style:normal; font-size:13px; color:#4b5551; }
+</style>
+</head>
+<body>
+
+<!-- ============ Screen C: Lesson, typewriter-paper variant ============ -->
+<section class="screen calm" data-label="Lesson, paper variant">
+  <header>
+    <div style="display:flex;align-items:center"><span class="brand">Dead Keys // Terminal 84</span><span class="pill">LESSON 03 // FULL HOME ROW</span></div>
+    <div style="display:flex;gap:10px"><button class="btn">[ Main menu ]</button></div>
+  </header>
+  <main>
+    <div class="steps">
+      <div class="step done">[✓] 1. WARM-UP</div>
+      <div class="step now">[▶] 2. NEW KEYS</div>
+      <div class="step">3. MIX</div>
+      <div class="step">4. CHECK</div>
+    </div>
+    <div class="coach"><span>Left index finger reaches right for <b>G</b>. Come back to <b>F</b> after.</span><span style="font-size:14px;color:var(--label)">LINE 2 OF 3</span></div>
+    <div class="line"><span class="done-ch">fgf&nbsp;gfg&nbsp;gg</span><span class="wrong-ch">h</span><span class="wait-ch">g</span><span class="todo-ch">&nbsp;fgfg&nbsp;ggf&nbsp;fgf</span></div>
+    <div class="coach" style="font-size:15px"><span style="color:var(--shaky)">TYPE "g" TO FIX. Backspace clears the red key.</span><span class="meta"><span>ACCURACY <b>94%</b></span><span>KEYS <b>14 / 28</b></span></span></div>
+    <div class="kb" aria-hidden="true">
+      <div class="row"><span class="k f-pinky">q</span><span class="k f-ring">w</span><span class="k f-middle">e</span><span class="k f-index">r</span><span class="k f-index">t</span><span class="k f-index">y</span><span class="k f-index">u</span><span class="k f-middle">i</span><span class="k f-ring">o</span><span class="k f-pinky">p</span></div>
+      <div class="row" style="margin-left:22px"><span class="k f-pinky learn">a</span><span class="k f-ring learn">s</span><span class="k f-middle learn">d</span><span class="k f-index learn bump">f</span><span class="k f-index learn next">g</span><span class="k f-index learn">h</span><span class="k f-index learn bump">j</span><span class="k f-middle learn">k</span><span class="k f-ring learn">l</span><span class="k f-pinky learn">;</span></div>
+      <div class="row" style="margin-left:52px"><span class="k f-pinky">z</span><span class="k f-ring">x</span><span class="k f-middle">c</span><span class="k f-index">v</span><span class="k f-index">b</span><span class="k f-index">n</span><span class="k f-index">m</span><span class="k f-middle">,</span><span class="k f-ring">.</span></div>
+      <div class="row" style="justify-content:center"><span class="k space learn">space</span></div>
+    </div>
+    <div class="legend"><span><i class="sw" style="border-color:var(--f-pinky)"></i>PINKY</span><span><i class="sw" style="border-color:var(--f-ring)"></i>RING</span><span><i class="sw" style="border-color:var(--f-middle)"></i>MIDDLE</span><span><i class="sw" style="border-color:var(--f-index)"></i>INDEX</span><span><i class="sw" style="border-color:var(--f-thumb)"></i>THUMB (SPACE)</span><span style="color:var(--text)">■ NEXT KEY</span></div>
+  </main>
+  <footer><span>NO LIVES. NO TIMER. LESSONS PASS ON ACCURACY, NOT SPEED.</span><span>[ESC] PAUSE &nbsp; FINGER COLORS: ON</span></footer>
+</section>
+
+
+<!-- ============ Screen D: Lessons menu, quiet-desk variant ============ -->
+<section class="screen calm" data-label="Lessons menu, desk variant">
+  <header>
+    <div style="display:flex;align-items:center"><span class="brand">Dead Keys // Terminal 84</span><span class="pill">NODE: 0x84-LESSONS</span></div>
+    <div style="display:flex;gap:10px"><button class="btn quiet">[ Back ]</button><button class="btn">[ Main menu ]</button></div>
+  </header>
+  <main style="gap:12px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end">
+      <div><div class="sub">// HOME ROW FIRST. ONE ROW AT A TIME.</div><h1>Lessons</h1></div>
+      <div class="sub"><a style="color:var(--text)">Why these lessons</a></div>
+    </div>
+    <div class="desk">
+      <div class="list" role="list"><div class="grp">HOME ROW <span>3 OF 4 PASSED</span></div><div class="li ok"><span class="n">00</span><span class="nm">Meet your keyboard</span><span class="ks">F J</span><span class="st">✓ PASSED</span></div><div class="li ok"><span class="n">01</span><span class="nm">Home row, left hand</span><span class="ks">a s d f</span><span class="st">✓ PASSED</span></div><div class="li ok"><span class="n">02</span><span class="nm">Home row, right hand</span><span class="ks">j k l ;</span><span class="st">✓ TESTED OUT</span></div><div class="li now"><span class="n">03</span><span class="nm">Full home row</span><span class="ks">g h ␣</span><span class="st">▶ NEXT</span></div><div class="grp">TOP ROW <span>0 OF 2</span></div><div class="li "><span class="n">04</span><span class="nm">Top row, index fingers</span><span class="ks">r t y u</span><span class="st">OPEN</span></div><div class="li "><span class="n">05</span><span class="nm">Top row, full</span><span class="ks">q w e i o p</span><span class="st">OPEN</span></div><div class="grp">BOTTOM ROW <span>0 OF 1</span></div><div class="li "><span class="n">06</span><span class="nm">Bottom row</span><span class="ks">z x c v b n m</span><span class="st">OPEN</span></div><div class="grp dimg">BEYOND LETTERS <span>LATER</span></div><div class="li lk"><span class="n">07</span><span class="nm">Capitals</span><span class="ks">⇧</span><span class="st">LATER</span></div><div class="li lk"><span class="n">08</span><span class="nm">Punctuation</span><span class="ks">' ? ! : " -</span><span class="st">LATER</span></div><div class="li lk"><span class="n">09</span><span class="nm">Numbers, left</span><span class="ks">1 2 3 4 5</span><span class="st">LATER</span></div><div class="li lk"><span class="n">10</span><span class="nm">Numbers, right</span><span class="ks">6 7 8 9 0</span><span class="st">LATER</span></div><div class="li lk"><span class="n">11</span><span class="nm">Symbols</span><span class="ks">$ % & ( ) /</span><span class="st">LATER</span></div><div class="li lk"><span class="n">12</span><span class="nm">Real-world strings</span><span class="ks">dates, money</span><span class="st">LATER</span></div><div class="li lk"><span class="n">13</span><span class="nm">Common pairs</span><span class="ks">th he in er</span><span class="st">LATER</span></div></div>
+      <div style="display:flex;flex-direction:column;gap:14px;min-height:0">
+        <div class="mapbox">
+          <div class="mapkb" aria-hidden="true">
+            <div class="row"><span class="m">q</span><span class="m">w</span><span class="m">e</span><span class="m">r</span><span class="m">t</span><span class="m">y</span><span class="m">u</span><span class="m">i</span><span class="m">o</span><span class="m">p</span></div>
+            <div class="row" style="margin-left:12px"><span class="m on">a</span><span class="m on">s</span><span class="m on">d</span><span class="m on">f</span><span class="m nextk">g</span><span class="m nextk">h</span><span class="m on">j</span><span class="m on">k</span><span class="m on">l</span><span class="m on">;</span></div>
+            <div class="row" style="margin-left:26px"><span class="m">z</span><span class="m">x</span><span class="m">c</span><span class="m">v</span><span class="m">b</span><span class="m">n</span><span class="m">m</span><span class="m">,</span><span class="m">.</span></div>
+          </div>
+          <div class="maplegend"><span><i class="dot on"></i>LEARNED 8</span><span><i class="dot nx"></i>NEXT: G H</span><span><i class="dot"></i>TO COME</span></div>
+        </div>
+        <div class="card">
+          <div class="cardtop"><span>LESSON 03</span><span>NEXT UP</span></div>
+          <h2>Full home row</h2>
+          <div class="cardkeys"><span>G</span><span>H</span><span class="w">SPACE</span></div>
+          <ol>
+            <li><b>Warm-up.</b> Keys you know.</li>
+            <li><b>New keys.</b> Which finger, then a drill.</li>
+            <li><b>Mix.</b> New and old keys, real words.</li>
+            <li><b>Check.</b> 95% accuracy passes, any speed.</li>
+          </ol>
+          <div style="flex:1"></div>
+          <div style="display:flex;gap:10px">
+            <button class="btn primary" style="flex:1">[ Start lesson ]</button>
+            <button class="btn deskbtn" style="flex:1">[ Test out ]</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer><span>SYS.84 // SAVE: THIS BROWSER</span><span>[UP / DOWN] SELECT &nbsp; [ENTER] START &nbsp; [T] TEST OUT &nbsp; [ESC] BACK</span></footer>
+</section>
+
+<!-- ============ Screen E: Lesson done (passed) ============ -->
+<section class="screen calm" data-label="Lesson done, passed">
+  <header>
+    <div style="display:flex;align-items:center"><span class="brand">Dead Keys // Terminal 84</span><span class="pill">LESSON 03 // FULL HOME ROW</span></div>
+    <div style="display:flex;gap:10px"><button class="btn">[ Main menu ]</button></div>
+  </header>
+  <main style="align-items:center;justify-content:center">
+    <div class="steps" style="width:100%;position:absolute;top:18px;left:0;padding:0 32px">
+      <div class="step done">[✓] 1. WARM-UP</div><div class="step done">[✓] 2. NEW KEYS</div><div class="step done">[✓] 3. MIX</div><div class="step done">[✓] 4. CHECK</div>
+    </div>
+    <div class="card" style="width:760px;margin-top:18px">
+      <div class="cardtop"><span>LESSON 03</span><span>SAVED IN THIS BROWSER</span></div>
+      <h2 style="font-size:44px">Passed.</h2>
+      <div class="donestats">
+        <div><span>CHECK ACCURACY</span><b>97%</b><i>95% passes</i></div>
+        <div><span>SPEED</span><b>18 WPM</b><i>any speed is fine</i></div>
+        <div><span>KEEP PRACTICING</span><b>h &nbsp;g</b><i>your most-missed keys here</i></div>
+      </div>
+      <p class="why" style="font-size:15px;margin-top:6px">Speed often dips while your fingers relearn. It comes back faster.</p>
+      <div style="display:flex;gap:10px;margin-top:22px">
+        <button class="btn primary" style="flex:1.4">[ Next: Lesson 04 ]</button>
+        <button class="btn deskbtn" style="flex:1">[ Again ]</button>
+        <button class="btn deskbtn" style="flex:1">[ All lessons ]</button>
+      </div>
+    </div>
+  </main>
+  <footer><span>NO LIVES. NO TIMER. LESSONS PASS ON ACCURACY, NOT SPEED.</span><span>[ENTER] NEXT LESSON &nbsp; [ESC] ALL LESSONS</span></footer>
+</section>
+</body>
+</html>
