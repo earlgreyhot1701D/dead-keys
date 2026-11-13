@@ -84,7 +84,7 @@ main.js -> app.js (state + storage actions + tab sync)
 | How we count, lock (approved) | In a round, the first character you type locks the target closest to danger that starts with it. If two are equally close, the one that appeared first is locked. Escape drops the lock. If nothing is locked, Escape pauses. |
 | About, Office Keys line (approved) | Dead Keys also grew from Office Keys, my first Lovable build (August 2025), a typing practice app. This game carries over its ideas, not its code. |
 | How we count and About, the rest (approved) | The other paragraphs live in `src/ui/screens/howWeCountText.js` (numbers read from config) and `about.js`, approved as written in the Block 6 report. |
-| Title lines (approved Nov 12) | 1980s typing games // rebuilt as a real trainer / PARANORMAL INTERCEPT // PID 0xDEAD / Keyboard required. No account. Your progress stays in this browser. |
+| Title lines (approved Nov 12; second line changed by Shara Nov 13 so the title says how it plays) | Type each word before it lands. It learns the keys you miss and drills them. / PARANORMAL INTERCEPT // PID 0xDEAD / Keyboard required. No account. Your progress stays in this browser. |
 | Mock rebuild, new copy (approved Nov 12) | Listed word for word in the Nov 12 fix-round report, approved as written |
 | Progress, no group flagged (approved Nov 12) | No group of keys stands out. Single keys to work on are listed under Keys to practice. |
 | Key lists (approved Nov 12) | Keys separated by " · "; named: comma, period, space, semicolon, apostrophe, backtick |

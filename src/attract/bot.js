@@ -4,8 +4,9 @@
 import { tick } from "../engine/lifecycle.js";
 import { createRound, key } from "../engine/round.js";
 
-/** Idle time on the title screen before the demo starts (PRD: about 15 seconds). */
-export const IDLE_MS = 15_000;
+/** Idle time on the title screen before the demo starts. PRD said about 15 s; Shara cut it to 3 s
+ *  (Nov 13), because the moving game explains itself better than any line of text. */
+export const IDLE_MS = 3_000;
 /** One key every this many ms: about 48 WPM, a good typist, not a superhuman one. */
 export const BOT_KEY_MS = 250;
 /** Each demo round runs this long, then the next starts on the other layout. */

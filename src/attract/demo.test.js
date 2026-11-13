@@ -5,6 +5,7 @@ import assert from "node:assert/strict";
 import { afterEach, test } from "node:test";
 import { createEl } from "../ui/dom.js";
 import { findAll, makeFakeDoc, textOf } from "../ui/fakeDom.js";
+import { IDLE_MS } from "./bot.js";
 import { createDemo, DEMO_COPY } from "./demo.js";
 
 function fakeWin({ reduced = false } = {}) {
@@ -35,7 +36,7 @@ const setup = (opts) => {
   doc.removeEventListener = () => {};
   globalThis.document = doc; // titleScene and the fields draw with the page's document
   const win = fakeWin(opts);
-  const demo = createDemo(createEl(doc), { win, doc, idleMs: 15_000 });
+  const demo = createDemo(createEl(doc), { win, doc });
   return { demo, win };
 };
 // The demo changes its words by textContent (the fake keeps that as a plain property).
@@ -46,12 +47,13 @@ afterEach(() => {
 });
 const cls = (node, c) => findAll(node, (n) => n.attrs?.class?.split(" ").includes(c));
 
-test("the still frame first, the controls hidden; the idle wait is 15 seconds", () => {
+test("the still frame first, the controls hidden; the idle wait is 3 seconds", () => {
   const { demo, win } = setup();
   assert.equal(demo.scene.attrs["aria-hidden"], "true");
   assert.equal(cls(demo.scene, "title-scene").length, 1);
   assert.equal(demo.controls.attrs.hidden, "");
-  assert.equal(win.timers.at(-1).ms, 15_000);
+  assert.equal(win.timers.at(-1).ms, IDLE_MS);
+  assert.equal(IDLE_MS, 3_000); // Shara, Nov 13 (the PRD said about 15 s)
   assert.equal(demo.running(), false);
 });
 

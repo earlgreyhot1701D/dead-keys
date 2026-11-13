@@ -11,7 +11,8 @@ import { isControl } from "../nav.js";
 import { chooseRound } from "./play.js";
 
 export const TAGLINE = "a typing game, back from the dead.";
-export const SUBLINE = "1980s typing games // rebuilt as a real trainer";
+export const SUBLINE =
+  "Type each word before it lands. It learns the keys you miss and drills them.";
 export const INTERCEPT = "PARANORMAL INTERCEPT // PID 0xDEAD";
 export const PRESS = "Press any key to start.";
 export const FOOTER_LINE = "Keyboard required. No account. Your progress stays in this browser.";

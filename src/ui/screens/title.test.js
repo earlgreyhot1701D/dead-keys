@@ -154,7 +154,10 @@ test("the mock's lines are the approved copy, and only true tiles show", () => {
     for (const line of [SUBLINE, INTERCEPT, FOOTER_LINE, PRESS, "[ANY KEY] START", "[TAB] MOVE"]) {
       assert.ok(text.includes(line), line);
     }
-    assert.equal(SUBLINE, "1980s typing games // rebuilt as a real trainer");
+    assert.equal(
+      SUBLINE,
+      "Type each word before it lands. It learns the keys you miss and drills them.",
+    );
     assert.equal(INTERCEPT, "PARANORMAL INTERCEPT // PID 0xDEAD");
     assert.equal(
       FOOTER_LINE,

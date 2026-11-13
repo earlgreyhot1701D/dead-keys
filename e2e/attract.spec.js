@@ -1,4 +1,4 @@
-// Attract mode (attract Reqs 1 to 3) in a real browser, with Playwright's clock so the 15-second
+// Attract mode (attract Reqs 1 to 3) in a real browser, with Playwright's clock so the 3-second
 // idle wait takes no real time: the still frame, the live demo with its Pause demo button, Tab
 // back to the still frame, nothing under reduced motion, and axe on the playing demo. Plus the
 // ghost race's two "how would I know" lines (ghost Req 5): Play's hint and How we count's section.
@@ -6,7 +6,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import { reach, toMenu } from "./helpers.js";
 
-test("after 15 idle seconds the game plays itself; Pause demo works; Tab stops it", async ({
+test("after 3 idle seconds the game plays itself; Pause demo works; Tab stops it", async ({
   page,
 }) => {
   await page.clock.install();
@@ -14,7 +14,7 @@ test("after 15 idle seconds the game plays itself; Pause demo works; Tab stops i
   const controls = page.locator(".demo-controls");
   await expect(controls).toBeHidden();
   await expect(page.locator(".title-scene")).toBeVisible();
-  await page.clock.fastForward(16_000);
+  await page.clock.fastForward(4_000);
   await page.clock.runFor(3_000);
   await expect(controls).toBeVisible();
   await expect(controls).toContainText("[Demo playing]");

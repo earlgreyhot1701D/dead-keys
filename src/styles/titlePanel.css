@@ -121,6 +121,11 @@
   color: var(--label);
 }
 .title-sub {
+  max-width: 34em; /* two even lines: how it plays, then what it does for you (Nov 13) */
+  margin: 0 auto;
   font-size: 15px;
+  line-height: 1.5;
+  text-align: center;
+  text-wrap: balance;
   color: var(--muted);
 }
