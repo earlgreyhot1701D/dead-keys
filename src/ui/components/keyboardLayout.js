@@ -82,3 +82,16 @@ export function summarizeKeyboard(model) {
     return [`${b.label}: ${keyList(inBand)}.`];
   });
 }
+
+/**
+ * One line for keys that have some tries but not enough for a band yet, so a first round doesn't
+ * look untracked (Shara, Nov 12). Empty when there are none.
+ * @param {{ attempts: number }[]} keys Saved key stats.
+ * @returns {string[]}
+ */
+export function onTheirWay(keys) {
+  const n = (keys ?? []).filter((k) => k.attempts > 0 && k.attempts < MIN_KEY_ATTEMPTS).length;
+  if (n === 0) return [];
+  const which = n === 1 ? "1 key is on its way" : `${n} keys are on their way`;
+  return [`Keys get a color after ${MIN_KEY_ATTEMPTS} tries. ${which}.`];
+}

@@ -20,7 +20,7 @@ import { createStage } from "../../render/stage.js";
 import { openConfirm } from "../components/confirmDialog.js";
 import { el } from "../dom.js";
 import { localDay } from "../roundRecord.js";
-import { roundOptions } from "./drillRound.js";
+import { kindSource, roundOptions } from "./drillRound.js";
 import { chooseRound, nextRound } from "./play.js";
 import { showResults } from "./results.js";
 
@@ -53,7 +53,7 @@ function begin(ctx) {
     title: kind.title,
     persist: ctx.state.persist !== false,
     speed: r.state.speed,
-    drill: Boolean(kind.drillSource), // the HUD badge (drills Req 4.1)
+    drill: kindSource(kind), // the HUD badge: built-in or AI (drills Req 4.1, ai-drills Req 4.1)
     onPause: () => step(pause(run.state)),
   });
   const stop = () => {
@@ -65,7 +65,7 @@ function begin(ctx) {
     stop();
     const now = Date.now();
     const meta = { id: `round-${now}`, date: now, packId: pack.id, lessonId: null };
-    const result = toResult(run.state, { ...meta, drillSource: kind.drillSource ?? null });
+    const result = toResult(run.state, { ...meta, drillSource: kindSource(kind) });
     const outcome = ctx.app.finishRound(result, localDay(now));
     showResults({ result, log: stage.log(), outcome });
     ctx.replace("results");

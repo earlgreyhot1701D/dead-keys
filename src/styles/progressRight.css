@@ -22,7 +22,8 @@
 /* The mock's 430 x 290 chart, scaled to its column; labels sit at the same proportions. */
 .chart {
   position: relative;
-  width: 100%;
+  width: 92%; /* a little narrower, so it is shorter: room for the AI nudge (ai-drills decision 6) */
+  margin-inline: auto;
   aspect-ratio: 430 / 290;
   font-size: 12px;
 }

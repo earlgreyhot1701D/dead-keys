@@ -14,7 +14,7 @@ export function drillsSection(c = {}) {
     heading: "Drills",
     paragraphs: [
       `A drill uses only words with at least one of your weak keys, when the pack has ${min} or more of them. Each letter adds its miss rate plus ${base} to the word's score, so a word full of keys you miss comes up more often.`,
-      "Every drill says where its words came from.",
+      "With AI drills on, the AI gets only your weak keys and speed. Every drill says where its words came from.",
     ],
   };
 }

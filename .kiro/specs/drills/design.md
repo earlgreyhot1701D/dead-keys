@@ -48,7 +48,7 @@ Several of these files are at 149 lines. When a change would pass 150, move the 
 | Live region, drill start | `Drill: built-in.` |
 | Screen h1 (screen readers) | `Drill` |
 | How we count heading | `Drills` |
-| How we count lines | `A drill uses only words with at least one of your weak keys, when the pack has {DRILL_MIN_WORDS} or more of them. Each letter adds its miss rate plus {DRILL_BASE} to the word's score, so a word full of keys you miss comes up more often.` / `Every drill says where its words came from.` |
+| How we count lines | `A drill uses only words with at least one of your weak keys, when the pack has {DRILL_MIN_WORDS} or more of them. Each letter adds its miss rate plus {DRILL_BASE} to the word's score, so a word full of keys you miss comes up more often.` / `With AI drills on, the AI gets only your weak keys and speed. Every drill says where its words came from.` |
 
 ## Decisions
 

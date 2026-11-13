@@ -142,6 +142,6 @@ export function breakdownPanel({ result, log }) {
     row("CORRECT CHARACTERS", BREAKDOWN_EXPLAIN.correct, String(result.correctChars)),
     row("MISSED KEYS", BREAKDOWN_EXPLAIN.missed, missedText(result), "is-missed"),
     row("TARGET BREACHES", BREAKDOWN_EXPLAIN[breach], two(log.breaches), "is-accent"),
-    isDrill(result) ? drillRow(el) : null, // drills Req 4.2: last row, drill rounds only
+    isDrill(result) ? drillRow(el, result.drillSource) : null, // last row, drill rounds only
   ]);
 }

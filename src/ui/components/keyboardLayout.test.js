@@ -5,7 +5,7 @@ import { BANDS } from "../../engine/progressConfig.js";
 import { createEl } from "../dom.js";
 import { findAll, textOf, withFakeDocument } from "../fakeDom.js";
 import { renderKeyboard } from "./keyboard.js";
-import { keyboardModel, ROWS, summarizeKeyboard } from "./keyboardLayout.js";
+import { keyboardModel, onTheirWay, ROWS, summarizeKeyboard } from "./keyboardLayout.js";
 
 const stat = (key, attempts, misses) => ({ key, attempts, misses, lastSeen: 0 });
 const count = (model) => model.flat().length;
@@ -54,4 +54,13 @@ test("the drawn keyboard has a glyph on every cap and a legend for every band", 
     const grid = findAll(root, (n) => n.attrs?.class === "kb-grid")[0];
     assert.equal(grid.attrs["aria-hidden"], "true");
   });
+});
+
+test("on their way: keys with some tries but under 10, counted in one line", () => {
+  assert.deepEqual(onTheirWay([]), []);
+  assert.deepEqual(onTheirWay([stat("e", 4, 2)]), [
+    "Keys get a color after 10 tries. 1 key is on its way.",
+  ]);
+  const three = onTheirWay([stat("e", 4, 2), stat("a", 9, 0), stat("s", 3, 0), stat("f", 20, 1)]);
+  assert.deepEqual(three, ["Keys get a color after 10 tries. 3 keys are on their way."]);
 });

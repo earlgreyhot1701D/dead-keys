@@ -1,39 +1,44 @@
 # Current block
 
-**Block 9: built-in drills** (PRD G5 weighted sampling, G8 layer 1). Spec: `.kiro/specs/drills/`.
+**Block 10: AI drills** (PRD G3, G8, G9, G15). Spec: `.kiro/specs/ai-drills/`.
 
-Blocks 1 to 4, 6, 7 and 8a passed. Block 5 (design) is locked in `docs/design-brief.md`. The contract is frozen. Block 8b (Lessons 7 to 13 and the deferred a11y items) comes later.
+Blocks 1 to 4, 6, 7, 8a and 9 passed. Block 5 (design) is locked in `docs/design-brief.md`. The contract is frozen. Block 8b comes later.
 
 ## Spec for how screens look
 
-`mock/index.html` screens "Play: falling targets", "Results" and "Progress + heat map", filtered through the mock-to-build map in `.kiro/specs/drills/design.md`. The map and the copy table are binding: anything they don't cover, stop and ask.
+Block 9's drill screens, with the AI label from `mock/index.html` "Play: four-corner defense", filtered through the map and copy table in `.kiro/specs/ai-drills/design.md`. Binding: anything they don't cover, stop and ask.
 
 ## Files this block may touch
 
-- `src/drills/**` (new)
-- `src/engine/targets.js`, `src/engine/round.js` and their tests (weighted spawning only)
-- `src/ui/screens/play.js`, `round.js`, `results.js`, `progress.js`, `howWeCountText.js`, and their tests
-- `src/ui/components/resultsPanels.js`, `progressPanels.js`, and their tests
-- `src/render/stage.js`, `src/render/playHud.js`, and their tests
-- `src/styles/playHud.css`, `results.css`, `progressWeak.css`
+- `api/**` and `api/_lib/**` (new), `evals/**` (new), `.kiro/hooks/golden-set.json` (new), `docs/aws-teardown.md` (new)
+- `src/drills/**`
+- `src/ui/screens/drillRound.js`, `resultsDrill.js`, `settings.js`, `howWeCountDrills.js`, and their tests; `.kiro/specs/drills/design.md` (one copy row)
+- `src/ui/components/drillButton.js`, `drillLabel.js`, `progressPanels.js`, and their tests
+- `src/storage/settings.js` and its test (only if the AI switch needs it)
+- Added Nov 12 for the AI drill wiring: `src/ui/screens/round.js`, `progress.js`, `src/render/stage.js`, `src/render/playHud.js`, `src/ui/components/resultsPanels.js`, and their tests (trim to stay under 150); `src/styles/progressWeak.css` (the note under the buttons), `src/styles/progressRight.css` (chart width, Claude)
+- `package.json`, `package-lock.json` (one dependency: `@aws-sdk/client-bedrock-runtime`)
 - New files split out next to any of the above to stay under 150 lines (list each in KIRO-NOTES)
 - `e2e/**`, `docs/screens/**`
-- `.kiro/specs/drills/*`, `KIRO-NOTES.md`
+- `.kiro/specs/ai-drills/*`, `KIRO-NOTES.md`
 
-Anything else, including `contract/**`, other engine files and the lesson screens: stop and ask Shara.
+Anything else, including `contract/**` and `src/engine/**`: stop and ask Shara.
+
+## Secrets
+
+Shara creates the AWS access key and enters it in the Vercel dashboard. The agent never runs `create-access-key`, never reads, prints or commits a key, and never writes one to a file. `.kiroignore` already blocks `.env*`.
 
 ## Testing rule
 
-While building, run only the tests for the files you touch. Lint and the full unit suite once before the commit. e2e only before a deploy.
+While building, run only the tests for the files you touch. Lint and the full unit suite once before each commit. e2e only before a deploy.
 
 ## Rigor tier
 
-Working for layout. Full for sampling and recording.
+Full.
 
 ## PASS line
 
-Every requirement in `.kiro/specs/drills/requirements.md` has a test or an e2e flow. Non-drill rounds replay exactly as before (regression test). `npm test`, `npm run test:e2e` (0 serious or critical axe issues), `npm run lint`, `node scripts/check-fixtures.js` and `npm run check:build` pass. No page scrolls at 1440x900, 1366x768 and 1280x720, How we count included. Drill screenshots match the mock per the map at 1440x900 and 1366x768, approved by Shara. Source files under 150 lines; nothing over 250. The reviewer and the a11y-auditor have run. Shara has played a drill on the preview (Vercel toolbar off).
+Every requirement in `.kiro/specs/ai-drills/requirements.md` has a test, an e2e flow or a recorded step. The golden set passes against real Bedrock. `npm test`, `npm run test:e2e` (0 serious or critical axe issues), `npm run lint`, `node scripts/check-fixtures.js` and `npm run check:build` pass. Source files under 150 lines; nothing over 250. Shara has turned AI drills on and played an AI drill on the preview, and seen the built-in label when it falls back. Reviewer and a11y-auditor: deferred to the Block 16 combined run.
 
 ## Hooks alive
 
-`line-cap` (permanent), `block-scope` (permanent).
+`line-cap` (permanent), `block-scope` (permanent), `golden-set` (until the AI layer passes).

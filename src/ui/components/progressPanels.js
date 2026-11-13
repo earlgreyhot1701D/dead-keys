@@ -6,7 +6,7 @@ import { el } from "../dom.js";
 import { NOT_BUILT, panelHead, pill } from "./chrome.js";
 import { DRILL_BUTTON, drillButton } from "./drillButton.js";
 import { keyCap, renderKeyboard } from "./keyboard.js";
-import { keyboardModel, summarizeKeyboard } from "./keyboardLayout.js";
+import { keyboardModel, onTheirWay, summarizeKeyboard } from "./keyboardLayout.js";
 import {
   EMPTY_LINE,
   EVEN_LINE,
@@ -40,7 +40,7 @@ export function keysPanel(keys, rounds) {
     renderKeyboard(el, keys),
     el("div", { class: "words" }, [
       el("h3", {}, "Heat map in words"),
-      list(summarizeKeyboard(keyboardModel(keys))),
+      list([...summarizeKeyboard(keyboardModel(keys)), ...onTheirWay(keys)]),
     ]),
   ]);
 }
@@ -118,8 +118,8 @@ const comingSoon = (label, id, announce) =>
     el("span", { id, class: "later-note" }, NOT_BUILT),
   ]);
 
-/** The weak keys, drawn as caps, Drill these keys, and Lessons. */
-export function weakPanel(weakKeys, heat, announce = null, toLessons = null, toDrill = null) {
+/** The weak keys, drawn as caps, Drill these keys (its line knows if AI drills are on), Lessons. */
+export function weakPanel(weakKeys, heat, announce, toLessons = null, toDrill = null, ai = false) {
   const byKey = new Map(heat.map((h) => [h.key, h]));
   return el("section", { class: "weak-panel", "aria-labelledby": "pg-weak" }, [
     el("h2", { id: "pg-weak", class: "weak-title" }, "Your top weak keys"),
@@ -137,7 +137,7 @@ export function weakPanel(weakKeys, heat, announce = null, toLessons = null, toD
       : null,
     el("div", { class: "weak-actions" }, [
       toDrill // drills are built (Block 9); a caller without the route keeps the old line
-        ? drillButton(el, weakKeys.length > 0, toDrill)
+        ? drillButton(el, weakKeys.length > 0, toDrill, ai)
         : comingSoon(DRILL_BUTTON, "later-drill", announce),
       toLessons // Lessons are built (Block 8a); a caller without the route keeps the old line
         ? el("button", { type: "button", class: "btn btn-term", onClick: toLessons }, "Lessons")

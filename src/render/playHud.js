@@ -75,11 +75,11 @@ export function lockHint(state) {
 
 /**
  * @param {Function} el
- * @param {{ onPause: () => void, persist: boolean, speed: number, practice?: boolean, drill?: boolean }} o
+ * @param {{ onPause: () => void, persist: boolean, speed: number, practice?: boolean, drill?: "built-in"|"ai"|null }} o
  *   Practice has no lives and no waves, so the note takes their place; a drill's badge follows.
  * @returns {{ header: HTMLElement, station: HTMLElement, footer: HTMLElement, update: (state: object) => void, setCaps: (on: boolean) => void }}
  */
-export function createPlayHud(el, { onPause, persist, speed, practice = false, drill = false }) {
+export function createPlayHud(el, { onPause, persist, speed, practice = false, drill = null }) {
   const span = (cls) => el("span", { class: cls });
   const box = (label, nodes) =>
     el("div", { class: "hud-box" }, [el("span", { class: "hud-label" }, label), ...nodes]);
@@ -102,7 +102,7 @@ export function createPlayHud(el, { onPause, persist, speed, practice = false, d
       ...(practice
         ? [el("p", { class: "hud-box hud-note" }, PRACTICE_NOTE)]
         : [box("LIVES:", [v.lives]), box("SECTOR:", [v.wave, v.left])]),
-      drill ? drillBadge(el, "hud-drill") : null,
+      drill ? drillBadge(el, "hud-drill", drill) : null,
     ]),
     el("div", { class: "hud-group" }, [
       box("SPEED:", [v.wpm, el("span", { class: "hud-unit" }, "WPM")]),

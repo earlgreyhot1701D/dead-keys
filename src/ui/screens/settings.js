@@ -24,7 +24,7 @@ export const SPEED_SETTING_HINT =
 
 /**
  * The small "Not built yet" line under a setting that saves now but does nothing until a later
- * block (sound: Block 14, finger colors: Block 8, AI drills: Block 10). Speed works since Block 7.
+ * block (sound: Block 14, finger colors: Block 8b). Speed works since Block 7, AI drills since 10.
  */
 const later = (id) => el("span", { id: `${id}-later`, class: "hint later-hint" }, NOT_BUILT);
 
@@ -34,20 +34,21 @@ function change(ctx, key, value) {
   else ctx.refresh(); // put the control back to what is saved
 }
 
-function checkbox(ctx, key, label, hint) {
+function checkbox(ctx, key, label, hint, built = false) {
   const id = `st-${key}`;
+  const tied = [hint ? `${id}-hint` : null, built ? null : `${id}-later`].filter(Boolean);
   return el("p", { class: "set-row" }, [
     el("input", {
       type: "checkbox",
       id,
       "data-focus-id": id,
       checked: ctx.state.settings[key],
-      "aria-describedby": hint ? `${id}-hint ${id}-later` : `${id}-later`,
+      "aria-describedby": tied.join(" "),
       onChange: (e) => change(ctx, key, e.target.checked === true),
     }),
     el("label", { for: id }, ` ${label}`),
     hint ? el("span", { id: `${id}-hint`, class: "hint" }, ` ${hint}`) : null,
-    later(id),
+    built ? null : later(id),
   ]);
 }
 
@@ -67,7 +68,7 @@ export const settingsScreen = {
         el("h2", { id: "st-prefs" }, "Preferences"),
         el("span", { class: "flavor" }, "CH-84"),
       ),
-      checkbox(ctx, "ai", "AI drills", AI_HINT),
+      checkbox(ctx, "ai", "AI drills", AI_HINT, true), // works since Block 10 (ai-drills Req 4.2)
       el("p", { class: "set-row" }, [
         el("label", { for: "st-sound" }, "Sound "),
         el(

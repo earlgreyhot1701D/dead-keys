@@ -655,3 +655,54 @@ Splits made at the line cap (allowed by the design; each sits next to the file i
 | `src/ui/screens/howWeCountDrills.js` (+ test) | `howWeCountText.js` | the Drills section |
 
 The results badge CSS sits in `playHud.css` with its HUD twin, because `results.css` is at the line cap (`main.js` is not on the allowlist, so no new CSS file).
+
+## Nov 13 2026: Block 9, built-in drills, close-out
+
+Built in Block 9: item weights (`src/drills/weights.js`, PRD G5), weighted spawning with one random number per pick (non-drill rounds replay the recorded pre-Block 9 sequences exactly), the drill round (Practice on the falling layout, `drillSource: "built-in"`), the `[ DRILL: BUILT-IN ]` badge on the HUD and results, the DRILL SOURCE row, Play again for a drill, the working Drill these keys button with its no-weak-keys line, the live line `Drill: built-in.`, How we count's Drills section (last), and `e2e/drills.spec.js` plus screenshot pairs. Commits: `be4df7c` (tasks 1 to 5), `0651c9f` (Claude's drill pool, design decision 5). Previews: `dead-keys-m2fq7gw34` (task 5) and `dead-keys-36olut8ag-earlgreyhot1701ds-projects.vercel.app` (`dpl_DNwRbjHCsQGN8s2Qk3e5XfEwXR2U`, Ready). No production deploy.
+
+Checks before `0651c9f` and its deploy: `npm run lint` clean (285 files); `npm test` 748 of 748; `npm run test:e2e` 75 passed, 40 skipped, 0 failed (axe 0 serious or critical on the drill HUD and drill results; no scroll at 1440x900, 1366x768, 1280x720, How we count included); `check:build` clean in `deploy:preview`. Earlier at `be4df7c`: `node scripts/check-fixtures.js` 42 of 42, nothing over 250, only `scripts/check-fixtures.js` over 150 (151, Block 1).
+
+| Flag | Status | Where |
+|---|---|---|
+| 1. Weights alone barely move one weak key: with q missed half the time, about 1 drill in 5 showed a q-word in the first 8 (2,000 simulated seeds), so Req 7.1's e2e could not be reliable | Fixed by Claude (design decision 5): a drill draws only from words with at least one weak key when the pack has 8 or more, else the whole pack; G5 weights still order the pool; How we count, tests and `drills.spec.js` updated | `weights.js`, `drillRound.js`, `howWeCountDrills.js`, `drills.spec.js` |
+| 2. Weights live on the round's item copies (`item.weight`), not a separate `state.weights`; non-drill items get no field | Accepted as built (Shara) | `weightedPick.js`, `round.js` |
+| 3. The badge pushed the practice note's one line and TIME off the HUD's right edge; in a drill only, the note wraps | Accepted as built (Shara) | `playHud.css` |
+| 4. Splits at the line cap: `weightedPick.js`, `drillRound.js`, `resultsDrill.js`, `drillLabel.js`, `drillButton.js`, `howWeCountDrills.js`; the results badge CSS in `playHud.css` (results.css at the cap, `main.js` off the allowlist) | Accepted as built (Shara); listed in the tasks 1 to 5 note above | see the split table above |
+| 5. Trims for the 150 cap: header comments in `targets.js`, `play.js`, `howWeCountText.js`; a blank line and a JSDoc line in `round.js`, one blank line in `howWeCountText.js`; the round screen's `speed` local and one comment line | Accepted as built (Shara) | those files |
+| 6. Test edits: `about.test.js` (off the allowlist) and `screens.spec.js` heading counts 9 to 10; the Progress "not built yet" drill test replaced by tests of the working button | Accepted as built (Shara) | `about.test.js`, `screens.spec.js`, `progress.test.js` |
+| 7. axe once caught a cleared word mid-fade on the drill HUD; four reruns clean; the test waits 600 ms first | Accepted as built (Shara) | `drills.spec.js` |
+| 8. Map-true labels: results read `MODE: PRACTICE // PACK: GENERAL` and `ROUND_OVER // PRACTICE`; the Practice footer's "FINISH IT BEFORE IT LANDS" is unchanged from Block 7 | Accepted as built (Shara) | `resultsDrill.js`, `playHud.js` |
+| 9. Screenshot pairs for the drill HUD and results at both sizes; differences: the badge follows the practice note (Practice has no lives or sector), word codes and baseline dropped, PRACTICE in place of the mock's FALLING | Accepted as built (Shara) | `docs/screens/built-drill*.png`, `mock-drill*.png` |
+| Reviewer and a11y-auditor for Block 9 | Deferred (Shara): one combined run at Block 16, to save credits | n/a |
+| PASS-line items for Shara: screenshot sign-off; playing a drill on the preview (Vercel toolbar off) | For Shara | preview above |
+
+Lesson for the write-up: a simulation of 2,000 seeds turned a vague "drills don't feel different" into a number (about 20%), which made the design change an easy call. The test that couldn't be written reliably was the signal.
+
+## Nov 12 2026: Block 10, AI drills, Batch A (tasks 1 to 4, AWS faked)
+
+Built: the AI route (`api/drill.js`, the only Vercel function; helpers in `api/_lib/`: `limits`, `prompt`, `bedrock` (the only AWS SDK import), `answer`, `ledger`), the browser client (`src/drills/aiClient.js`, `aiWords.js`), the drill start with the waiting line (`drillStart.js`), the AI badge, row, live line and `drillSource: "ai"`, Play again on the same AI words, the Progress nudge, the Settings switch, How we count's new last line, and `e2e/aiDrills.spec.js` with `/api/drill` faked. No deploy, no AWS calls, no key read, typed or printed.
+
+Dependency (task 1): `@aws-sdk/client-bedrock-runtime` 3.1160.0, published Oct 29 2026 (18:46 UTC), Apache-2.0, not deprecated; newer releases (3.1161 to 3.1168) were under two weeks old. Installed with `--save-exact --before=2026-10-30T04:00:00Z`, the only `dependencies` entry; `npm audit --omit=dev`: 0 vulnerabilities. The install dropped the two optional `@emnapi` lockfile entries; Claude put them back (needed for `npm ci` on Linux, where Vercel builds).
+
+Checks before the commit: `npm run lint` clean (303 files); `npm test` 800 of 800 (including 30 `api/_lib` tests, AWS faked); `npm run test:e2e` 83 passed, 40 skipped, 0 failed; `node scripts/check-fixtures.js` 42 of 42; only `scripts/check-fixtures.js` over 150 (151, Block 1).
+
+Splits (allowed; each next to its source): `src/ui/screens/drillStart.js` (from `progress.js`), `src/ui/screens/drillAi.test.js` (the AI drill UI tests). No trims were needed: every changed source file stays at or under 149 lines.
+
+| Flag | Status | Where |
+|---|---|---|
+| Vercel makes every `.js` in `api/` a function (tests included; Hobby caps the count), so helpers live in `api/_lib/` (`_` folders are skipped); hook H5 watches `api/_lib/prompt.js` | Accepted (design decision 5) | `api/_lib/` |
+| Only weak keys in the pack charset are sent (the contract rejects `;`); none left means built-in | Accepted (decision 5) | `aiClient.js` |
+| A daily cap refusal is a quiet 200 and doesn't count against the visitor | Accepted (decision 5) | `limits.js`, `drill.js` |
+| No server timeout on the Bedrock call | Fixed (Req 2.8): 3.5 s abort answers `{ error: "timeout" }`, with tests | `bedrock.js`, `drill.js` |
+| Same origin means a matching `Origin` header; none, or a cross-site `Sec-Fetch-Site`, is refused | Accepted (decision 5) | `drill.js` |
+| The fetch lives in `src/drills/aiClient.js`, not `src/net/` (structure.md) | Accepted (decision 5) | `aiClient.js` |
+| `npm install` dropped the `@emnapi` entries | Done by Claude: re-added | `package-lock.json` |
+| Five files off the allowlist were needed to wire an AI drill (`round.js`, `progress.js`, `stage.js`, `playHud.js`, `resultsPanels.js`) | Allowed (Shara) | those files |
+| Play again after an AI drill | Decided (Req 3.5): the same AI words, no new request, labeled AI-generated | `resultsDrill.js`, `results.js` (unchanged) |
+| An AI drill's results pack line | Decided (decision 6, copy table): `PACK: AI WORDS`, unit and e2e tests | `resultsDrill.js` |
+| The nudge, the no-weak-keys line and the waiting line share one `aria-live="polite"` note; the button is always described by it | Accepted (decision 6) | `drillButton.js` |
+| `weakPanel`'s `announce` argument lost its default (line length); every caller passes it | Accepted (decision 6) | `progressPanels.js` |
+| The nudge made Progress scroll (920 px at 1440x900) | Fixed (decision 6's fit fix): the note spans the whole button row (`.drill-act` `display: contents`, `.drill-note` on its own row, `.weak-actions` `row-gap: 0`, Shara's ruling), which cleared 1440x900; Claude then made the speed chart 92% of its column, centered, which cleared 1366x768 and 1280x720 (they were 14 px over) | `progressWeak.css`, `progressRight.css` |
+| AWS setup, golden set and hook H5, teardown doc, preview deploy | Batch B, with Shara | tasks 5 to 7 |
+
+Lesson for the write-up: one plain line of copy (the nudge) broke "no page scrolls" three times, at three sizes, for three different reasons. The fit test caught each one; a screenshot alone would have looked fine.

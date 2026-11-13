@@ -29,6 +29,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  row-gap: 0; /* the note's own line height keeps it off the buttons (ai-drills decision 6) */
 }
 /* A future button: its label alone, styled disabled, and "Not built yet" as a line under it.
    Drill these keys (Block 9) keeps the same place and size, with its no-weak-keys line. */
@@ -53,6 +54,21 @@
   font-size: 12px;
   color: var(--dim);
   text-align: center;
+}
+/* The drill button's note spans the whole button row, under Drill these keys and Lessons, so the
+   longer lines (the AI nudge) fit on one line (ai-drills decision 6). */
+.drill-act {
+  display: contents;
+}
+.drill-act .btn-term {
+  flex: 1;
+}
+.drill-note {
+  flex-basis: 100%;
+  order: 1;
+}
+.drill-note:empty {
+  display: none;
 }
 /* Only below the fit range (fit.js); from 1100px up the page is zoomed to fit instead. */
 @media (max-width: 1099px) {

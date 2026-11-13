@@ -43,3 +43,16 @@ test("change DRILL_BASE in the config and the line changes with it", () => {
   const changed = buildSections({ ...CONFIG, DRILL_BASE: 0.3 }).at(-1).paragraphs[0];
   assert.ok(changed.includes("plus 0.3 to"));
 });
+
+test("the last line says what the AI gets, as the ai-drills copy table writes it (Req 4.4)", () => {
+  const ai = readFileSync(
+    new URL("../../../.kiro/specs/ai-drills/design.md", import.meta.url),
+    "utf8",
+  )
+    .split("\n")
+    .find((l) => l.startsWith("| How we count, Drills, last line"))
+    .split("|")[2]
+    .trim()
+    .replace(/^`|`$/g, "");
+  assert.equal(buildSections().at(-1).paragraphs.at(-1), ai);
+});

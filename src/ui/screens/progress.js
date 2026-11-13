@@ -8,7 +8,7 @@ import { termPage } from "../components/chrome.js";
 import { bestsBlock, diagnosisPanel, keysPanel, weakPanel } from "../components/progressPanels.js";
 import { renderSpeedPanel } from "../components/speedChart.js";
 import { el } from "../dom.js";
-import { chooseRound } from "./play.js";
+import { startDrill } from "./drillStart.js";
 
 export {
   EMPTY_LINE,
@@ -49,10 +49,8 @@ export const progressScreen = {
             heat,
             ctx.announce,
             () => ctx.go("lessons"),
-            () => {
-              chooseRound("drill"); // drills Req 5.1: weights come from the stats at the start
-              ctx.go("round");
-            },
+            (ui) => startDrill(ctx, ui), // AI first when on, else built-in (drillStart.js)
+            ctx.state.settings?.ai === true,
           ),
         ]),
       ]),
