@@ -1,0 +1,102 @@
+/* The Lessons menu (mock screen D, the mock's values), on the desk look in desk.css. */
+.lm-main {
+  gap: 12px;
+}
+.lm-title {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.lm-sub {
+  margin: 0;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  color: var(--label);
+}
+.lm-title h1 {
+  margin: 0;
+  font: 700 34px var(--head);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.lm-desk {
+  display: grid;
+  flex: 1;
+  grid-template-columns: 1fr 520px;
+  gap: 24px;
+  min-height: 0;
+}
+.lm-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-height: 0;
+}
+.lm-group {
+  display: flex;
+  justify-content: space-between;
+  margin: 6px 0 0;
+  padding: 2px 2px 3px;
+  border-bottom: 1px solid var(--desk-rule);
+  font: 700 13px var(--head);
+  letter-spacing: 0.16em;
+  color: var(--accent);
+}
+.lm-group:first-child {
+  margin-top: 0;
+}
+.lm-group.is-later {
+  opacity: 0.6;
+}
+.lm-count {
+  font-weight: 400;
+  color: var(--muted);
+}
+.lm-row {
+  display: grid;
+  grid-template-columns: 42px 1fr 190px 130px;
+  align-items: center;
+  min-height: 31px;
+  padding: 0 12px;
+  border: 1px solid var(--desk-rule);
+  background: transparent;
+  color: var(--soft);
+  font: 15px var(--mono);
+  text-align: left;
+  cursor: pointer;
+}
+.lm-n {
+  font: 700 15px var(--head);
+  color: var(--label);
+}
+.lm-keys {
+  letter-spacing: 0.16em;
+  color: var(--muted);
+}
+.lm-state {
+  justify-self: end;
+  font: 700 12px var(--head);
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+.lm-row.is-passed,
+.lm-row.is-testedOut,
+.lm-row.is-passed .lm-state,
+.lm-row.is-testedOut .lm-state {
+  color: var(--text);
+}
+.lm-row.is-later {
+  opacity: 0.5;
+}
+.lm-row.is-selected {
+  border-color: var(--paper);
+  outline: 3px solid var(--text);
+  outline-offset: 2px;
+  background: var(--paper);
+  color: var(--paper-ink);
+}
+.lm-row.is-selected .lm-n,
+.lm-row.is-selected .lm-keys,
+.lm-row.is-selected .lm-state {
+  color: var(--paper-ink);
+}

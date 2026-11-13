@@ -98,3 +98,27 @@ export const DONE = Object.freeze({
 export const nextLabel = (n) => `Next: Lesson ${two(n)}`;
 /** "LESSON 03", the card's top label. */
 export const cardLabel = (n) => `LESSON ${two(n)}`;
+
+/** The Lessons menu (copy table). Each part: [bold word, the rest]. */
+export const MENU = Object.freeze({
+  node: "NODE: 0x84-LESSONS",
+  sub: "// HOME ROW FIRST. ONE ROW AT A TIME.",
+  title: "Lessons",
+  parts: Object.freeze([
+    ["Warm-up.", " Keys you know."],
+    ["New keys.", " Which finger, then a drill."],
+    ["Mix.", " New and old keys, real words."],
+    ["Check.", " 95% accuracy passes, any speed."],
+  ]),
+  parts0: Object.freeze([
+    ["Your keyboard.", " Is it this one?"],
+    ["Home keys.", " Find F and J."],
+    ["Fingers.", " One color, one finger."],
+    ["Eyes up.", " Passes when you finish."],
+  ]),
+  later: "Not built yet",
+  start: "Start lesson",
+  testOut: "Test out",
+  testOutNote: "Test out: one check line. 95% skips the lesson.",
+  footer: Object.freeze(["[UP / DOWN] SELECT", "[ENTER] START", "[T] TEST OUT", "[ESC] BACK"]),
+});

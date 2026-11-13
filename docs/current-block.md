@@ -18,7 +18,7 @@ Blocks 1 to 4, 6 and 7 passed (tags `block-1` to `block-4`, `block-6`, `block-7`
 - `src/ui/screens/lessons.js`, `lesson.js` (new), `menu.js`, `howWeCountText.js`, `results.js`, `round.js` (carry-in only), and their tests
 - `src/ui/components/lessonKeyboard.js`, `lessonView.js`, `lessonDone.js` (new), `menuSide.js`, `resultsPanels.js`, and their tests
 - `src/a11y/announce.js` and its test (carry-in only)
-- `src/styles/desk.css`, `src/styles/desk.test.js` (new), and a one-line import of the CSS
+- `src/styles/desk.css`, `deskLesson.css`, `deskDone.css`, `desk.test.js` (new; split for the line cap), and their imports in `src/main.js`
 - `src/main.js` (routes)
 - `e2e/**`, `docs/screens/**`
 - `.kiro/specs/lessons/*`, `KIRO-NOTES.md`

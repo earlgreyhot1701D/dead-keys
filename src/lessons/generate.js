@@ -1,6 +1,5 @@
-// A lesson's parts and lines (lessons Req 2, Req 4.2; design decisions 3 and 4), from its keys
-// and the seeded RNG: the same seed gives the same lesson. Pure. A pattern is a group of 2 to 4
-// keys; groups are one space apart; a line ends on a group and is never longer than MAX_LINE.
+// A lesson's parts and lines (Req 2, 4.2; design 3, 4), seeded and pure. A pattern is 2 to 4
+// keys; groups one space apart; a line ends on a group, never longer than MAX_LINE.
 import general from "../../packs/general.json" with { type: "json" };
 import lessonWords from "../../packs/lessonWords.json" with { type: "json" };
 import { createRng } from "../engine/rng.js";
@@ -8,10 +7,8 @@ import { anchorOf } from "./fingers.js";
 import { keysBefore, learnedKeys, lessonById } from "./ladder.js";
 
 export const MAX_LINE = 28;
-/** The Check's lines together are at least this long (Req 2.4). */
-export const CHECK_MIN = 50;
-/** With at least this many words, the Check is real words only. */
-export const CHECK_WORDS = 6;
+export const CHECK_MIN = 50; // the Check's lines together, at least (Req 2.4)
+export const CHECK_WORDS = 6; // with this many words, the Check is real words only
 /** Lesson 0's typing lines, from the copy table (Req 6.2). Part 1 is the keyboard question. */
 export const LESSON0_LINES = Object.freeze([
   "fff jjj fjf jfj",
@@ -49,8 +46,7 @@ function fill(item, spare = null) {
   return line;
 }
 
-/** The letters a lesson works with: its learned keys without space. */
-const letters = (keys) => keys.filter((k) => k !== " ");
+const letters = (keys) => keys.filter((k) => k !== " "); // a lesson's keys without space
 
 /** The words a lesson can use (Req 2.5): the lesson words up to 3, the general pack's from 4. */
 export function wordsFor(id) {

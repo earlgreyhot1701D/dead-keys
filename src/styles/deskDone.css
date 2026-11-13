@@ -7,6 +7,7 @@
   margin: 14px 0 10px;
   font: 700 44px var(--head);
   letter-spacing: 0.03em;
+  text-transform: none; /* "Passed.", as the mock writes it */
 }
 .ld-stats {
   display: grid;

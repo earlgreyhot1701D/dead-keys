@@ -1,0 +1,102 @@
+/* The Lessons menu's right column: the learned-keys map and the paper card (mock screen D). */
+.lm-side {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;
+}
+.lm-map {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--desk-rule);
+}
+.lm-kb {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-self: flex-start;
+}
+.lm-kb-row-1 {
+  margin-left: 12px;
+}
+.lm-kb-row-2 {
+  margin-left: 26px;
+}
+.lm-m {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 34px;
+  margin-right: 5px;
+  border: 1px solid var(--desk-rule);
+  font-size: 16px;
+  color: var(--line);
+}
+.lm-m.is-on {
+  border-color: var(--rule);
+  background: #132729;
+  color: var(--text);
+}
+.lm-m.is-next {
+  border: 2px solid var(--paper);
+  color: var(--paper);
+}
+.lm-legend {
+  display: flex;
+  gap: 22px;
+  margin: 0;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: var(--label);
+}
+.lm-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
+  border: 1px solid var(--line);
+}
+.lm-dot.is-on {
+  border-color: var(--text);
+  background: var(--text);
+}
+.lm-dot.is-next {
+  border: 2px solid var(--paper);
+}
+.lm-card-title {
+  margin: 14px 0 10px;
+  font: 700 34px var(--head);
+  letter-spacing: 0.03em;
+  text-transform: none; /* the mock writes the name as it is: "Full home row" */
+}
+.lm-caps {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+}
+.lm-caps span {
+  min-width: 44px;
+  padding: 8px 0;
+  border: 2px solid var(--paper-ink);
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+}
+.lm-caps .is-wide {
+  min-width: 110px;
+}
+.lm-parts {
+  margin: 16px 0 8px;
+  padding-left: 22px;
+  font-size: 16px;
+  line-height: 1.7;
+}
+.lm-later,
+.lm-note {
+  margin: 10px 0 0;
+  font-size: 14px;
+  color: var(--paper-soft);
+}

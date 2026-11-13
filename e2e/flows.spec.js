@@ -35,10 +35,10 @@ test("the menu works by keyboard alone, with a visible focus ring", async ({ pag
 
 test("a screen that is not built says so and does not open", async ({ page }) => {
   await toMenu(page);
-  const lessons = page.getByRole("button", { name: /^Lessons/ }); // Play is built from Block 7
-  await expect(lessons).toHaveAttribute("aria-disabled", "true");
-  await expect(lessons).toContainText("Not built yet");
-  await lessons.click({ force: true }); // aria-disabled, not disabled: it stays focusable on purpose
+  const daily = page.getByRole("button", { name: /^Daily drill/ }); // Lessons is built from Block 8a
+  await expect(daily).toHaveAttribute("aria-disabled", "true");
+  await expect(daily).toContainText("Not built yet");
+  await daily.click({ force: true }); // aria-disabled, not disabled: it stays focusable on purpose
   await expect(page.getByRole("heading", { level: 1, name: "Main menu" })).toBeVisible();
 });
 
@@ -70,4 +70,42 @@ test("a screen change is announced once: the heading takes focus, the live regio
   await page.keyboard.press("Escape");
   await expect(page.getByRole("heading", { level: 1, name: "Dead Keys" })).toBeFocused();
   await expect(page.locator("#live")).toHaveText("");
+});
+
+test("main menu > Lessons > a lesson > done > back on the Lessons menu, with it passed", async ({
+  page,
+}) => {
+  test.setTimeout(60_000);
+  await toMenu(page);
+  await page.getByRole("button", { name: "Lessons", exact: true }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "Lessons" })).toBeVisible();
+  const l1 = page.locator(".lm-row", { hasText: "Home row, left hand" });
+  await page.keyboard.press("ArrowDown"); // the list starts on Lesson 0 for a new player
+  await expect(l1).toHaveAttribute("aria-current", "true");
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("heading", { level: 1, name: "LESSON 01 // HOME ROW, LEFT HAND" })).toBeVisible();
+  for (let i = 0; i < 400 && !(await page.locator(".ld-card").count()); i++) {
+    await page.keyboard.press(await page.locator(".ch-wait").textContent());
+  }
+  await expect(page.locator(".ld-title")).toHaveText("Passed.");
+  await page.keyboard.press("Escape"); // all lessons
+  await expect(page.getByRole("heading", { level: 1, name: "Lessons" })).toBeVisible();
+  await expect(l1).toContainText("✓ PASSED");
+  await expect(page.locator(".lm-group").first()).toContainText("1 OF 4 PASSED");
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("deadkeys:v1")));
+  expect(saved.lessonsPassed).toEqual([{ lessonId: "L01", how: "lesson" }]);
+});
+
+test("leaving a lesson goes to the Lessons menu and records nothing", async ({ page }) => {
+  await toMenu(page);
+  await page.getByRole("button", { name: "Lessons", exact: true }).click();
+  await page.keyboard.press("ArrowDown");
+  await page.keyboard.press("t"); // test out of Lesson 1
+  await expect(page.getByRole("heading", { level: 1, name: "TEST OUT // LESSON 01" })).toBeVisible();
+  await page.keyboard.press(await page.locator(".ch-wait").textContent());
+  await page.keyboard.press("Escape");
+  await page.getByRole("dialog", { name: "Paused" }).getByRole("button", { name: "Leave lesson" }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "Lessons" })).toBeVisible();
+  const rounds = await page.evaluate(() => JSON.parse(localStorage.getItem("deadkeys:v1") ?? '{"rounds":[]}').rounds);
+  expect(rounds).toEqual([]);
 });

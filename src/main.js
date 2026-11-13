@@ -38,6 +38,8 @@ import "./styles/resultsLog.css";
 import "./styles/desk.css";
 import "./styles/deskLesson.css";
 import "./styles/deskDone.css";
+import "./styles/deskMenu.css";
+import "./styles/deskMenuSide.css";
 import { createApp } from "./ui/app.js";
 import { downloadText } from "./ui/download.js";
 import { mountFit } from "./ui/fit.js";
@@ -45,6 +47,7 @@ import { mountRouter } from "./ui/router.js";
 import { aboutScreen } from "./ui/screens/about.js";
 import { howWeCountScreen } from "./ui/screens/howWeCount.js";
 import { lessonScreen } from "./ui/screens/lesson.js";
+import { lessonsScreen } from "./ui/screens/lessons.js";
 import { menuScreen } from "./ui/screens/menu.js";
 import { playScreen } from "./ui/screens/play.js";
 import { privacyScreen } from "./ui/screens/privacy.js";
@@ -82,6 +85,7 @@ const screens = Object.fromEntries(
     practiceScreen,
     resultsScreen,
     lessonScreen,
+    lessonsScreen,
   ].map((s) => [s.id, s]),
 );
 mountRouter({

@@ -13,7 +13,7 @@ One task at a time. Never "run all." Touch only the files a task names. Tick eac
 - [x] 8. `src/ui/components/lessonKeyboard.js`, `lessonView.js`, `src/ui/screens/lesson.js`, routes in `src/main.js`: the Lesson screen for Lessons 1 to 6 and test out, with the pause dialog. Match mock screen C per the map.
 - [x] 9. `src/ui/components/lessonDone.js`: the Lesson done card, recording through `finishRound`. Match mock screen E per the map.
 - [ ] 10. **Playtest stop.** `npm run deploy:preview`. Report the URL and stop: Shara plays Lesson 1 and a test out before anything else is built.
-- [ ] 11. `src/ui/screens/lessons.js` (the Lessons menu) and the menu item in `menu.js`. Match mock screen D per the map.
+- [x] 11. `src/ui/screens/lessons.js` (the Lessons menu) and the menu item in `menu.js`. Match mock screen D per the map.
 - [ ] 12. Lesson 0 in `lesson.js` / `lessonView.js` (Req 6), the main menu panel in `menuSide.js` (Req 8.3, mock screen 2 per the map), and the How we count lines (Req 9.2).
 - [ ] 13. e2e and screenshots (Req 11): `e2e/lessons.spec.js`, axe, no scroll at three sizes, screenshot pairs added to `e2e/screenshots.spec.js` and saved in `docs/screens/`. Compare each pair with its mock yourself and list every difference you can still see.
 - [ ] 14. `KIRO-NOTES.md`: Block 8a entry, every flag with a status. Then gates: run the reviewer and the a11y-auditor, run every command yourself, recap both reports. Don't fix anything. Shara decides PASS.
