@@ -4,7 +4,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import pack from "../../../packs/general.json" with { type: "json" };
-import { itemWeights } from "../../drills/weights.js";
+import { DRILL_MIN_WORDS, drillItems, itemWeights } from "../../drills/weights.js";
 import { DRILL_BADGE, DRILL_SOURCE } from "../components/drillLabel.js";
 import { findAll, makeFakeDoc, textOf } from "../fakeDom.js";
 import { DRILL_SAY, roundOptions } from "./drillRound.js";
@@ -38,11 +38,17 @@ test("roundOptions: other rounds get exactly what round.js passed before, with n
   assert.deepEqual(said, [], "no live line outside a drill");
 });
 
-test("roundOptions: a drill weighs the pack's words from the saved stats, and says so once", () => {
+test("roundOptions: a drill keeps only weak-key words, weighs them, and says so once", () => {
   const said = [];
   const o = roundOptions(ROUND_KINDS.drill, ctxFor(said), 5);
-  assert.deepEqual(o.weights, itemWeights(pack.pools.words, KEYS));
-  assert.equal(o.weights.length, pack.pools.words.length);
+  const qWords = pack.pools.words.filter((w) => w.text.includes("q"));
+  assert.ok(qWords.length >= DRILL_MIN_WORDS);
+  assert.deepEqual(
+    o.items.map((i) => i.text),
+    qWords.map((w) => w.text),
+  );
+  assert.deepEqual(o.weights, itemWeights(qWords, KEYS));
+  assert.deepEqual(drillItems(pack.pools.words, KEYS), qWords);
   assert.deepEqual(said, [DRILL_SAY]);
   assert.equal(DRILL_SAY, "Drill: built-in.");
   const none = roundOptions(ROUND_KINDS.drill, { ...ctxFor(), state: { settings: { speed: 1 } } });

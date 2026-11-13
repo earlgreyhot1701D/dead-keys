@@ -78,3 +78,15 @@ test("property: a word of a fully missed key outweighs a same-length word of uns
     }),
   );
 });
+
+test("drillItems: weak-key words only when there are enough, else every word", async () => {
+  const { drillItems, DRILL_MIN_WORDS } = await import("./weights.js");
+  const words = ["quiz", "aqua", "sad", "dad", ...Array.from({ length: 10 }, (_, i) => `q${i}`)];
+  const items = words.map((text, i) => ({ id: `w${i}`, text }));
+  const q = [{ key: "q", attempts: 40, misses: 20, lastSeen: 0 }];
+  const got = drillItems(items, q).map((i) => i.text);
+  assert.ok(got.length >= DRILL_MIN_WORDS && got.every((t) => t.includes("q")));
+  const few = items.slice(0, 4);
+  assert.equal(drillItems(few, q), few); // only 2 q-words: the whole list
+  assert.equal(drillItems(items, []), items); // no weak keys: the whole list
+});

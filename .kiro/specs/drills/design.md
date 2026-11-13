@@ -48,7 +48,7 @@ Several of these files are at 149 lines. When a change would pass 150, move the 
 | Live region, drill start | `Drill: built-in.` |
 | Screen h1 (screen readers) | `Drill` |
 | How we count heading | `Drills` |
-| How we count lines | `A drill favors words with your weak keys: each letter adds its miss rate plus {DRILL_BASE} to the word's score, so a word full of keys you miss comes up more often.` / `Every drill says where its words came from.` |
+| How we count lines | `A drill uses only words with at least one of your weak keys, when the pack has {DRILL_MIN_WORDS} or more of them. Each letter adds its miss rate plus {DRILL_BASE} to the word's score, so a word full of keys you miss comes up more often.` / `Every drill says where its words came from.` |
 
 ## Decisions
 
@@ -56,3 +56,4 @@ Several of these files are at 149 lines. When a change would pass 150, move the 
 2. Keys under 10 attempts weigh as 0 miss rate, matching the heat map's enough-data bar.
 3. Mode stays `practice` with `drillSource: "built-in"`: no contract change.
 4. Weights are taken once when the drill starts, not updated mid-round.
+5. **Drill pool, decided by Shara, Nov 12 (built by Claude).** Kiro's flag 1 showed weights alone barely move one weak key (about 1 drill in 5 showed a q-word early). A drill now draws only from words with at least one of the player's weak keys (Progress's up-to-6), when the pack has at least `DRILL_MIN_WORDS` (8) of them; otherwise from the whole pack. The G5 weights still order the pool. Weights live on the item copies (Kiro's flag 2), which does the same job as `state.weights`.

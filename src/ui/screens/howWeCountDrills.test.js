@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
-import { DRILL_BASE } from "../../drills/weights.js";
+import { DRILL_BASE, DRILL_MIN_WORDS } from "../../drills/weights.js";
 import { drillsSection } from "./howWeCountDrills.js";
 import { buildSections, CONFIG } from "./howWeCountText.js";
 
@@ -28,7 +28,12 @@ test("its heading and lines are the copy table's, with DRILL_BASE in place of {D
   assert.equal(`\`${s.heading}\``, cell("| How we count heading"));
   const lines = cell("| How we count lines")
     .split(" / ")
-    .map((l) => l.replace(/^`|`$/g, "").replace("{DRILL_BASE}", String(DRILL_BASE)));
+    .map((l) =>
+      l
+        .replace(/^`|`$/g, "")
+        .replace("{DRILL_BASE}", String(DRILL_BASE))
+        .replace("{DRILL_MIN_WORDS}", String(DRILL_MIN_WORDS)),
+    );
   assert.deepEqual(s.paragraphs, lines);
   assert.ok(s.paragraphs[0].includes("plus 0.05 to the word's score"));
 });

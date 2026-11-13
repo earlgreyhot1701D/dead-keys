@@ -1,40 +1,38 @@
 # Current block
 
-**Block 8a: lessons, letters** (PRD G5, G7, G11). Spec: `.kiro/specs/lessons/`.
+**Block 9: built-in drills** (PRD G5 weighted sampling, G8 layer 1). Spec: `.kiro/specs/drills/`.
 
-Blocks 1 to 4, 6 and 7 passed (tags `block-1` to `block-4`, `block-6`, `block-7`). Block 5 (design) is locked in `docs/design-brief.md`. The contract is frozen.
+Blocks 1 to 4, 6, 7 and 8a passed. Block 5 (design) is locked in `docs/design-brief.md`. The contract is frozen. Block 8b (Lessons 7 to 13 and the deferred a11y items) comes later.
 
 ## Spec for how screens look
 
-`mock/lessons.html` (locked Nov 12: screens C, D, E) and `mock/index.html` screen 2 (the recommended lesson panel), filtered through the mock-to-build map in `.kiro/specs/lessons/design.md`. Reference pictures: `docs/screens/mock-lesson.png`, `mock-lessons.png`, `mock-lesson-done.png`. The map and the copy table are binding: anything they don't cover, stop and ask. Lesson screens use the desk look; play screens must not change.
+`mock/index.html` screens "Play: falling targets", "Results" and "Progress + heat map", filtered through the mock-to-build map in `.kiro/specs/drills/design.md`. The map and the copy table are binding: anything they don't cover, stop and ask.
 
 ## Files this block may touch
 
-- `src/lessons/**` (new)
-- `packs/lessonWords.json`, `packs/lessonWords.test.js` (new)
-- `src/engine/record.js` and its test (one change: the optional pass, Req 4.4); `src/lessons/recordPass.test.js`, `src/lessons/playKit.js` (test helper)
-- `src/engine/milestones.js` (one line: the lesson milestone label, Nov 12)
-- `src/ui/roundRecord.js` and its test (one change: pass the pass through)
-- `src/ui/screens/lessons.js`, `lesson.js` (new), `menu.js`, `howWeCountText.js`, `results.js`, `round.js` (carry-in only), and their tests
-- `src/ui/components/lessonKeyboard.js`, `lessonView.js`, `lessonDone.js` (new), `menuSide.js`, `resultsPanels.js`, and their tests
-- `src/ui/components/lessonsMenuParts.js` (new; split from `lessons.js` at the line cap, task 11)
-- `package-lock.json` (sync only: the two missing optional @emnapi entries, Nov 12)
-- `src/a11y/announce.js` and its test (carry-in only)
-- `src/styles/desk.css`, `deskLesson.css`, `deskDone.css`, `desk.test.js` (new; split for the line cap), and their imports in `src/main.js`
-- `src/main.js` (routes)
-- Added by Claude, Nov 12: `src/lessons/keysRound.js` and test, `src/ui/screens/play.js` (round items), `src/ui/components/lessonAsk.js` and test (Kiro, split for the line cap), `src/styles/deskMenu.css`, `deskMenuSide.css`, `pages.css` (How we count in four columns), `src/ui/screens/progress.js`, `src/ui/components/progressPanels.js` (Lessons button) and their tests
+- `src/drills/**` (new)
+- `src/engine/targets.js`, `src/engine/round.js` and their tests (weighted spawning only)
+- `src/ui/screens/play.js`, `round.js`, `results.js`, `progress.js`, `howWeCountText.js`, and their tests
+- `src/ui/components/resultsPanels.js`, `progressPanels.js`, and their tests
+- `src/render/stage.js`, `src/render/playHud.js`, and their tests
+- `src/styles/playHud.css`, `results.css`, `progressWeak.css`
+- New files split out next to any of the above to stay under 150 lines (list each in KIRO-NOTES)
 - `e2e/**`, `docs/screens/**`
-- `.kiro/specs/lessons/*`, `KIRO-NOTES.md`
+- `.kiro/specs/drills/*`, `KIRO-NOTES.md`
 
-Anything else, including `contract/**`, `src/engine/` other than `record.js`, `src/render/**` and every play style: stop and ask Shara.
+Anything else, including `contract/**`, other engine files and the lesson screens: stop and ask Shara.
+
+## Testing rule
+
+While building, run only the tests for the files you touch. Lint and the full unit suite once before the commit. e2e only before a deploy.
 
 ## Rigor tier
 
-Working for layout. Full for the pass rule and recording a lesson.
+Working for layout. Full for sampling and recording.
 
 ## PASS line
 
-Every requirement in `.kiro/specs/lessons/requirements.md` has a test or an e2e flow. `npm test`, `npm run test:e2e` (0 serious or critical axe issues), `npm run lint`, `node scripts/check-fixtures.js` and `npm run check:build` pass. No page scrolls at 1440x900, 1366x768 and 1280x720. Each lesson screenshot matches its mock side by side per the map, at 1440x900 and 1366x768, approved by Shara. Source files under 150 lines; nothing over 250. The reviewer and the a11y-auditor have run. Shara has played Lesson 1, a test out and Lesson 0 on the preview (Vercel toolbar off).
+Every requirement in `.kiro/specs/drills/requirements.md` has a test or an e2e flow. Non-drill rounds replay exactly as before (regression test). `npm test`, `npm run test:e2e` (0 serious or critical axe issues), `npm run lint`, `node scripts/check-fixtures.js` and `npm run check:build` pass. No page scrolls at 1440x900, 1366x768 and 1280x720, How we count included. Drill screenshots match the mock per the map at 1440x900 and 1366x768, approved by Shara. Source files under 150 lines; nothing over 250. The reviewer and the a11y-auditor have run. Shara has played a drill on the preview (Vercel toolbar off).
 
 ## Hooks alive
 

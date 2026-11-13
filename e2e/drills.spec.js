@@ -1,11 +1,7 @@
-// Block 9 built-in drills (drills Req 7): Drill these keys starts a drill with the HUD badge, a
-// word with the weak key comes early, ending from pause shows the results badge and row, Play
-// again drills again; with no stats the line shows and the drill still starts; axe and no scroll.
-//
-// The clock is fixed (Playwright's setFixedTime), so the drill's seed is fixed too. Under the
-// spec's formula one weak key raises its words' odds only a little (with q missed half the time,
-// about 1 seed in 5 shows a q-word in the first 8), so an unpinned seed would make this flaky.
-// At this time the weighted drill's first word is "equally"; unweighted it would be "ordinary".
+// Block 9 built-in drills (drills Req 7): Drill these keys starts a drill with the HUD badge, every
+// word has the weak key (drills design decision 5: the pool is weak-key words), ending from pause
+// shows the results badge and row, Play again drills again; with no stats the line shows and the
+// drill still starts; axe and no scroll. The clock is fixed so screenshots and axe see one seed.
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import { endByPause, LIVE_WORD, reach, seed, seededText, toMenu } from "./helpers.js";
@@ -60,7 +56,7 @@ test("q weak: a drill with its badge, a q-word early, results badge and row, Pla
   await expect(page.locator(".play-hud")).not.toContainText("LIVES:");
   await expect(page.locator("#live")).toHaveText("Drill: built-in.");
   const words = await typeWords(page, 8);
-  expect(words.some((w) => w.includes("q")), words.join(" ")).toBe(true);
+  expect(words.every((w) => w.includes("q")), words.join(" ")).toBe(true); // weak-key words only
   await endByPause(page);
   await expect(page.locator(".rs-mode")).toHaveText("MODE: PRACTICE // PACK: GENERAL");
   await expect(page.locator(".rs-drill")).toHaveText(BADGE);

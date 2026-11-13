@@ -2,7 +2,7 @@
 // gets item weights from the saved key stats at that moment (drills Req 3.2) and says so in the
 // live region once (Req 3.4). Every other round starts exactly as it did before Block 9.
 import pack from "../../../packs/general.json" with { type: "json" };
-import { itemWeights } from "../../drills/weights.js";
+import { drillItems, itemWeights } from "../../drills/weights.js";
 import { isDrill } from "../components/drillLabel.js";
 
 /** The live line when a drill starts (drills copy table). */
@@ -19,5 +19,7 @@ export function roundOptions(kind, ctx, seed = Date.now()) {
   const o = { items: pack.pools.words, ...kind, seed, speed: ctx.state.settings.speed };
   if (!isDrill(kind)) return o;
   ctx.announce(DRILL_SAY);
-  return { ...o, weights: itemWeights(o.items, ctx.state.progress?.keys ?? []) };
+  const keys = ctx.state.progress?.keys ?? [];
+  const items = drillItems(o.items, keys); // only words with a weak key, when there are enough
+  return { ...o, items, weights: itemWeights(items, keys) };
 }
