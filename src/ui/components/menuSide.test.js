@@ -2,7 +2,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { findAll, textOf, withFakeDocument } from "../fakeDom.js";
-import { bestSpeed, currentStreak, dayOf, renderMenuSide } from "./menuSide.js";
+import { bestSpeed, currentStreak, dayOf, lessonPanel, renderMenuSide } from "./menuSide.js";
 
 const NOW = new Date(2026, 10, 12, 9, 30); // Nov 12 2026, local
 
@@ -53,5 +53,60 @@ test("no saved data: dashes and the approved no-bests line, a zero streak", () =
     );
     assert.match(text, /Current streak0DAYS/);
     assert.equal(findAll(node, (n) => n.tag === "button").length, 0);
+  });
+});
+
+// The recommended lesson panel (lessons Req 8.3, the map for mock screen 2).
+const pass = (lessonId) => ({ lessonId, how: "lesson" });
+const panelText = (progress) => withFakeDocument(() => textOf(lessonPanel(progress)));
+
+test("a new player is pointed at Lesson 0, with its card line and no test out", () => {
+  const t = panelText({ lessonsPassed: [], rounds: [], keys: [] });
+  assert.equal(
+    t,
+    "Recommended next lesson[L00]Lesson 0: Meet your keyboardFJ" +
+      "Your keyboard. Is it this one?[WHY] New to typing? Start here.",
+  );
+  assert.equal(panelText({}), t); // nothing saved reads the same
+});
+
+test("the next lesson in order: tag, title, letter caps, New keys coach line, Why, Test out", () => {
+  const t = panelText({ lessonsPassed: ["L00", "L01", "L02"].map(pass), rounds: [{}], keys: [] });
+  assert.equal(
+    t,
+    "Recommended next lesson[L03]Lesson 3: Full home rowGH" +
+      "Index fingers reach in: left for G, right for H. Thumbs press Space." +
+      "[WHY] Next in order.[TEST OUT] 95% to skip",
+  );
+  // caps are letters only: Lesson 2's ; and Lesson 6's , . are left out
+  const l2 = panelText({ lessonsPassed: ["L00", "L01"].map(pass), rounds: [{}], keys: [] });
+  assert.match(l2, /Lesson 2: Home row, right handJKL[A-Z]/);
+});
+
+test("weak keys pick the lesson and name the keys", () => {
+  const keys = [{ key: "r", attempts: 40, misses: 20, lastSeen: 0 }];
+  const t = panelText({ lessonsPassed: [pass("L00")], rounds: [{}], keys });
+  assert.match(t, /\[L04\]Lesson 4: Top row, index fingersRTYU/);
+  assert.match(t, /\[WHY\] You miss "r" most\./);
+});
+
+test("every built lesson passed: the copy-table title and line, no tag", () => {
+  const all = ["L00", "L01", "L02", "L03", "L04", "L05", "L06"].map(pass);
+  withFakeDocument(() => {
+    const node = lessonPanel({ lessonsPassed: all, rounds: [{}], keys: [] });
+    assert.equal(
+      textOf(node),
+      "Recommended next lessonAll letter lessons passed.Capitals, punctuation and numbers are next.",
+    );
+    assert.equal(findAll(node, (n) => n.tag === "h2").length, 1);
+    assert.equal(findAll(node, (n) => n.tag === "button").length, 0); // information only
+  });
+});
+
+test("the main menu's right column shows the panel, not Not built yet", () => {
+  withFakeDocument(() => {
+    const t = textOf(renderMenuSide({ state: { progress: {}, settings: {} } }, NOW));
+    assert.ok(t.startsWith("Recommended next lesson[L00]"));
+    assert.ok(!t.startsWith("Recommended next lessonNot built yet"));
   });
 });

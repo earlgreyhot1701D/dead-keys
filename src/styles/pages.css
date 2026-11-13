@@ -7,10 +7,11 @@
   align-content: start;
   align-items: start; /* panels size to their content */
 }
-/* How we count: six panels in three columns, so the whole rulebook fits on one screen. */
+/* How we count: nine panels in four columns, so the whole rulebook fits on one screen
+   (Lessons made it nine, Nov 12). */
 .page-grid-3 {
   display: block;
-  column-count: 3;
+  column-count: 4;
   column-gap: 20px;
 }
 .page-grid-3 > * {
@@ -36,9 +37,12 @@
   line-height: 1.6;
   color: var(--soft);
 }
+.page-grid-3 .prose-panel {
+  gap: 6px;
+}
 .page-grid-3 .prose-panel p {
-  font-size: 14px;
-  line-height: 1.55;
+  font-size: 13px;
+  line-height: 1.45;
 }
 .set-row .hint {
   flex-basis: 100%;

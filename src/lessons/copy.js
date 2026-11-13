@@ -25,6 +25,9 @@ export const COACH = Object.freeze({
   warmup: "Warm up on keys you know.",
   mix: "New and old keys together, then real words.",
   check: "One check. 95% accuracy passes, at any speed.",
+  home: "Find the two keys with a small bump: F and J. Rest your index fingers on them.",
+  fingers: "Each color is one finger. Middle fingers rest on D and K.",
+  eyes: "Keep your eyes on the screen, not your hands. Sit up, wrists loose.",
   new: Object.freeze({
     L01: "Left hand on the home row: pinky on A, ring on S, middle on D, index on F.",
     L02: "Right hand on the home row: index on J, middle on K, ring on L, pinky on ;.",
@@ -36,6 +39,16 @@ export const COACH = Object.freeze({
 });
 /** The coach line for a part of a lesson. */
 export const coachFor = (id, part) => (part === "new" ? COACH.new[id] : COACH[part]);
+
+/** Lesson 0's part 1, the keyboard question (Req 6.1). */
+export const LESSON0 = Object.freeze({
+  question: "Does your keyboard look like this?",
+  yes: "Yes",
+  no: "No",
+  notUs:
+    "Dead Keys teaches the US keyboard for now. Some keys may sit in other places on yours. You can still go on.",
+  goOn: "Go on",
+});
 
 /** Split a coach line so its key letters can be drawn bold teal: [text, isKey][]. */
 export function coachParts(line) {

@@ -57,3 +57,10 @@
   background: var(--paper-ink);
   color: var(--paper);
 }
+/* .btn:hover's dark fill under paper ink was 1.04:1 (axe); on paper, hover keeps the button's own fill. */
+.ld-btn:hover {
+  background: transparent;
+}
+.ld-btn.is-primary:hover {
+  background: var(--paper-ink);
+}

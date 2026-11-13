@@ -18,6 +18,7 @@ import {
 import { learnedKeys } from "../../lessons/ladder.js";
 import { el } from "../dom.js";
 import { hints, MAIN_MENU, termBar } from "./chrome.js";
+import { showAsk } from "./lessonAsk.js";
 import { createLessonKeyboard, legend } from "./lessonKeyboard.js";
 
 /**
@@ -63,38 +64,35 @@ export function createSteps(kind, id) {
 
 /**
  * @param {{ id: string, kind: "lesson"|"testout", onMenu: () => void }} o
- * @returns {{ node: HTMLElement, show: (v: object) => void }}
+ * @returns {{ node: HTMLElement, show: (v: object) => void, ask: (onDone: () => void) => void,
+ *   askKey: (e: KeyboardEvent) => boolean }} `ask`: Lesson 0's keyboard question.
  */
 export function createLessonView({ id, kind, onMenu }) {
   const steps = createSteps(kind, id);
-  const coach = el("span", { class: "ls-coach-text" });
+  const coach = el("span", { id: "ls-coach-text", class: "ls-coach-text" });
   const count = el("span", { class: "ls-count" });
   const paper = el("p", { class: "desk-paper", "aria-hidden": "true" });
   const hint = el("span", { class: "ls-hint" });
   const acc = el("strong", {});
   const keys = el("strong", {});
   const kb = createLessonKeyboard(learnedKeys(id));
+  const under = el("p", { class: "ls-under" }, [
+    hint,
+    el("span", { class: "ls-meta" }, [
+      el("span", {}, [`${ACCURACY} `, acc]),
+      el("span", {}, [`${KEYS} `, keys]),
+    ]),
+  ]);
+  const slot = el("div", { class: "ls-slot" }, [paper, under]); // Lesson 0's question swaps in
   const node = lessonFrame({
     id,
     kind,
     onMenu,
     footRight: FOOTER_RIGHT,
-    body: [
-      steps.node,
-      el("p", { class: "ls-coach" }, [coach, count]),
-      paper,
-      el("p", { class: "ls-under" }, [
-        hint,
-        el("span", { class: "ls-meta" }, [
-          el("span", {}, [`${ACCURACY} `, acc]),
-          el("span", {}, [`${KEYS} `, keys]),
-        ]),
-      ]),
-      kb.node,
-      legend(),
-    ],
+    body: [steps.node, el("p", { class: "ls-coach" }, [coach, count]), slot, kb.node, legend()],
   });
   let partShown = null;
+  let asking = null; // Lesson 0's keyboard question, while it shows (lessonAsk.js)
   /**
    * @param {{ part: number, partName: string, lineNo: number, lines: number,
    *   line: import("../../lessons/line.js").LineState, accuracy: number|null,
@@ -102,6 +100,8 @@ export function createLessonView({ id, kind, onMenu }) {
    */
   function show(v) {
     if (v.part !== partShown) {
+      asking = null;
+      slot.replaceChildren(paper, under);
       steps.show(v.part);
       coach.replaceChildren(
         ...coachParts(coachFor(id, v.partName)).map(([s, key]) =>
@@ -124,5 +124,9 @@ export function createLessonView({ id, kind, onMenu }) {
     keys.textContent = `${v.keysDone} / ${v.keysAll}`;
     kb.show(text[typed] ?? null);
   }
-  return { node, show };
+  const ask = (onDone) => {
+    steps.show(0);
+    asking = showAsk({ coach, slot, onDone });
+  };
+  return { node, show, ask, askKey: (e) => asking?.onKey(e) ?? false };
 }

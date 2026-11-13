@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
-import { quietLine } from "../components/progressPanels.js";
+import { bestsBlock, quietLine } from "../components/progressPanels.js";
 import { SPEED_ROUNDS, speedTitle } from "../components/speedChart.js";
 import { findAll, textOf, withFakeDocument } from "../fakeDom.js";
 import {
@@ -40,6 +40,7 @@ function draw(progress) {
     const node = progressScreen.render({
       state: { progress },
       back: () => went.push("back"),
+      go: (to) => went.push(["go", to]),
       announce: (t) => went.push(["say", t]),
     });
     out = { node, text: textOf(node), went };
@@ -113,21 +114,21 @@ test("the approved four headings are visible, in order, among the mock's panel t
   ]);
 });
 
-test("the drill and lesson buttons are there, marked Not built yet, and only say so", () => {
+test("the drill button is marked Not built yet and only says so; Lessons opens the Lessons menu", () => {
   const { node, went } = draw(fixture("ugly/progress.200-rounds-all-keys.json"));
   const later = findAll(node, (n) => n.tag === "button" && n.attrs?.["aria-disabled"] === "true");
   // the label alone in the button; "Not built yet" is a line under it, tied by aria-describedby
-  assert.deepEqual(later.map(textOf), ["Drill these keys", "Lessons"]);
+  assert.deepEqual(later.map(textOf), ["Drill these keys"]);
   for (const b of later) {
     b.click();
     const note = findAll(node, (n) => n.attrs?.id === b.attrs["aria-describedby"])[0];
     assert.equal(textOf(note), "Not built yet");
     assert.ok(!b.children.includes(note));
   }
-  assert.deepEqual(went, [
-    ["say", "Drill these keys: not built yet"],
-    ["say", "Lessons: not built yet"],
-  ]);
+  const lessons = findAll(node, (n) => n.tag === "button" && textOf(n) === "Lessons")[0];
+  lessons.click();
+  assert.deepEqual(went.slice(0, 1), [["say", "Drill these keys: not built yet"]]);
+  assert.deepEqual(went.at(-1), ["go", "lessons"]);
 });
 
 test("no group flagged: 'even' only when no single key is Focus here or Practicing", () => {
@@ -187,4 +188,11 @@ test("a best's date reads 'set Nov 11' in local time, and bad dates are left out
     ["Four corners", "30 WPM", ""], // no date, no "set" line
     ["weird", "5 WPM", ""], // an unknown mode shows its own name, never crashes
   ]);
+});
+
+test("personal bests show whole WPM, never the raw fraction", () => {
+  withFakeDocument(() => {
+    const text = textOf(bestsBlock({ falling: { wpm: 20.037849, date: Date.UTC(2026, 10, 12) } }));
+    assert.ok(text.includes("20 WPM") && !text.includes("20.03"), text);
+  });
 });

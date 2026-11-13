@@ -45,12 +45,14 @@
 .lm-group:first-child {
   margin-top: 0;
 }
-.lm-group.is-later {
-  opacity: 0.6;
-}
 .lm-count {
   font-weight: 400;
   color: var(--muted);
+}
+/* Later: dim by color, not opacity, so every word keeps 4.5:1 (axe, Nov 12). */
+.lm-group.is-later,
+.lm-group.is-later .lm-count {
+  color: var(--dim);
 }
 .lm-row {
   display: grid;
@@ -85,8 +87,14 @@
 .lm-row.is-testedOut .lm-state {
   color: var(--text);
 }
+.lm-row.is-later,
+.lm-row.is-later .lm-n,
+.lm-row.is-later .lm-keys,
+.lm-row.is-later .lm-state {
+  color: var(--dim);
+}
 .lm-row.is-later {
-  opacity: 0.5;
+  border-style: dashed;
 }
 .lm-row.is-selected {
   border-color: var(--paper);

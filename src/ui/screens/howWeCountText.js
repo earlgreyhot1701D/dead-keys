@@ -1,11 +1,6 @@
-// The words of the "How we count" page, built from the engine's config so the page and the code
-// cannot disagree (shell Req 7.1). Pure: no DOM, no storage. `buildSections` takes the config as
-// an argument, so a test can change a number and see the page change with it.
-//
-// Every number comes from config, including characters per word and the most sentences and weak
-// keys (Block 7). Rules whose code is not built yet (lesson pass, drills, daily drill, the speed
-// dip notice) are left out until their block adds both the config and the text.
-
+// The words of the "How we count" page, built from config so the page and the code cannot
+// disagree (shell Req 7.1, lessons Req 9.2). Pure. `buildSections` takes the config, so a test can
+// change a number and see the page change. Rules not built yet (drills, daily drill) wait.
 import { CHARS_PER_WORD } from "../../engine/config.js";
 import {
   BANDS,
@@ -25,6 +20,9 @@ import {
   WPM_BAND,
 } from "../../engine/progressConfig.js";
 import { MAX_ROUNDS } from "../../engine/record.js";
+import { DIP_SHARE } from "../../lessons/dip.js";
+import { GAP_CAP_MS } from "../../lessons/line.js";
+import { PASS_ACCURACY } from "../../lessons/result.js";
 import { PRIVACY_PARAGRAPHS } from "./privacy.js";
 
 /** Everything the page reads. */
@@ -46,22 +44,13 @@ export const CONFIG = Object.freeze({
   STREAK_DAYS,
   STREAK_ROUNDS,
   WPM_BAND,
+  PASS_ACCURACY,
+  GAP_CAP_MS,
+  DIP_SHARE,
 });
 
 const pct = (x) => `${Math.round(x * 100)}%`;
-const WORDS = [
-  "zero",
-  "one",
-  "two",
-  "three",
-  "four",
-  "five",
-  "six",
-  "seven",
-  "eight",
-  "nine",
-  "ten",
-];
+const WORDS = "zero one two three four five six seven eight nine ten".split(" ");
 /** Small counts read as words ("five"), as the approved text has them; bigger ones as digits. */
 export const inWords = (n) => WORDS[n] ?? String(n);
 
@@ -131,6 +120,17 @@ export function buildSections(c = CONFIG) {
       paragraphs: [
         `A personal best only counts at ${pct(c.BEST_ACCURACY)} accuracy or better, so speed never beats accuracy.`,
         `Milestones are a speed band every ${c.WPM_BAND} words per minute, ${c.STREAK_ROUNDS} rounds in a row at ${pct(c.STREAK_ACCURACY)} accuracy or better, ${c.STREAK_DAYS} days in a row with a round, and each lesson passed. We never tell you that you got slower.`,
+      ],
+    },
+    {
+      id: "lessons",
+      heading: "Lessons",
+      paragraphs: [
+        `A lesson passes when its check is ${pct(c.PASS_ACCURACY)} accurate or better, at any speed. Lesson 0 passes when you finish it.`,
+        "Test out is the check on its own. It passes the same way.",
+        `Lesson speed counts only the time between keys, at most ${c.GAP_CAP_MS / 1000} seconds each, and never while paused.`,
+        `If your second or third lesson is more than ${pct(c.DIP_SHARE)} slower than your first, we tell you: that dip is normal, and it comes back.`,
+        "Every key you type in a lesson counts toward your heat map.",
       ],
     },
     {

@@ -113,7 +113,8 @@
   font-size: 20px;
 }
 .ls-k:not(.is-learned) {
-  opacity: 0.45;
+  border-style: dashed;
+  color: var(--dim);
 }
 .ls-k.is-learned {
   border-width: 2px;
@@ -134,4 +135,15 @@
 }
 .ls-k.is-space {
   width: 420px;
+}
+/* Lesson 0's keyboard question: the buttons sit on the paper where the line goes. */
+.ls-slot {
+  display: contents;
+}
+.ls-ask {
+  display: flex;
+  gap: 10px;
+}
+.ls-ask .btn.ld-btn {
+  flex: 0 0 160px;
 }

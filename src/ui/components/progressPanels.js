@@ -1,6 +1,6 @@
 // The progress screen's panels, as the locked mock draws them (screen 6): the keyboard panel with
-// its words, the diagnosis panel, the personal-best tiles, and the weak-keys panel whose drill and
-// lesson buttons are "Not built yet" (Blocks 9 and 8). Rendering only; the numbers come from the
+// its words, the diagnosis panel, the personal-best tiles, and the weak-keys panel: the drill button
+// is "Not built yet" (Block 9), Lessons opens the Lessons menu. Rendering only; the numbers come from the
 // engine (heatmap, diagnose) and the saved progress.
 import { el } from "../dom.js";
 import { NOT_BUILT, panelHead, pill } from "./chrome.js";
@@ -88,7 +88,7 @@ export function bestsBlock(bests) {
           entries.map(([mode, b]) =>
             el("li", { class: "best-tile" }, [
               el("span", { class: "best-mode" }, modeName(mode)),
-              el("span", { class: "best-wpm" }, `${b.wpm} WPM`),
+              el("span", { class: "best-wpm" }, `${Math.round(b.wpm)} WPM`),
               el("span", { class: "best-date" }, setOn(b.date)),
             ]),
           ),
@@ -117,8 +117,8 @@ const comingSoon = (label, id, announce) =>
     el("span", { id, class: "later-note" }, NOT_BUILT),
   ]);
 
-/** The weak keys, drawn as caps, and the drill and lesson buttons that come later. */
-export function weakPanel(weakKeys, heat, announce = null) {
+/** The weak keys, drawn as caps, the drill button that comes later, and Lessons. */
+export function weakPanel(weakKeys, heat, announce = null, toLessons = null) {
   const byKey = new Map(heat.map((h) => [h.key, h]));
   return el("section", { class: "weak-panel", "aria-labelledby": "pg-weak" }, [
     el("h2", { id: "pg-weak", class: "weak-title" }, "Your top weak keys"),
@@ -136,7 +136,9 @@ export function weakPanel(weakKeys, heat, announce = null) {
       : null,
     el("div", { class: "weak-actions" }, [
       comingSoon("Drill these keys", "later-drill", announce),
-      comingSoon("Lessons", "later-lessons", announce),
+      toLessons // Lessons are built (Block 8a); a caller without the route keeps the old line
+        ? el("button", { type: "button", class: "btn btn-term", onClick: toLessons }, "Lessons")
+        : comingSoon("Lessons", "later-lessons", announce),
     ]),
   ]);
 }

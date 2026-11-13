@@ -1,13 +1,13 @@
-// Results (play Req 7; mock screen 5 through the map). The round screen hands over the round with
-// `showResults` before it opens this screen (the router has no parameters). Enter plays the same
-// mode again, Escape goes to the main menu, View progress opens progress. Dropped per the map:
-// SESSION, PASS LINE, the drill label, the coach note, the feedback link (and SOUND, as on play).
+// Results (play Req 7; mock screen 5 via the map). The round hands over its result with
+// `showResults` first. Enter plays the mode again, Escape: main menu, View progress: progress.
+// Dropped per the map: SESSION, PASS LINE, drill label, coach note, feedback link, SOUND.
 import { hints, menuButton, NOT_BUILT, scanlines, sysLine } from "../components/chrome.js";
 import { breakdownPanel, milestonesPanel, statTiles } from "../components/resultsPanels.js";
 import { el } from "../dom.js";
 import { chooseRound, roundItems } from "./play.js";
 
 export const HOW_LINK = "How we count every number";
+const packLabel = () => (roundItems() ? "PACK: YOUR KEYS" : "PACK: GENERAL"); // Play these keys
 export const SHARE = "Share card";
 let shown = null; // { result, log, outcome }
 
@@ -97,7 +97,7 @@ export const resultsScreen = {
             ]),
             el("h1", {}, "DEAD KEYS // ROUND RESULTS"),
           ]),
-          el("p", { class: "rs-mode" }, `MODE: ${r.mode.toUpperCase()} // PACK: GENERAL`),
+          el("p", { class: "rs-mode" }, `MODE: ${r.mode.toUpperCase()} // ${packLabel()}`),
         ]),
         el("div", { class: "rs-main" }, [
           el("div", { class: "rs-col" }, [

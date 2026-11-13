@@ -20,6 +20,7 @@ Blocks 1 to 4, 6 and 7 passed (tags `block-1` to `block-4`, `block-6`, `block-7`
 - `src/a11y/announce.js` and its test (carry-in only)
 - `src/styles/desk.css`, `deskLesson.css`, `deskDone.css`, `desk.test.js` (new; split for the line cap), and their imports in `src/main.js`
 - `src/main.js` (routes)
+- Added by Claude, Nov 12: `src/lessons/keysRound.js` and test, `src/ui/screens/play.js` (round items), `src/ui/components/lessonAsk.js` and test (Kiro, split for the line cap), `src/styles/deskMenu.css`, `deskMenuSide.css`, `pages.css` (How we count in four columns), `src/ui/screens/progress.js`, `src/ui/components/progressPanels.js` (Lessons button) and their tests
 - `e2e/**`, `docs/screens/**`
 - `.kiro/specs/lessons/*`, `KIRO-NOTES.md`
 

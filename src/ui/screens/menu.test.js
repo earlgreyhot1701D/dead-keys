@@ -89,10 +89,11 @@ test("the hint only names keys that work: the approved line, in the mock's three
   });
 });
 
-test("the right column: future features say Not built yet; nothing made up is shown", () => {
+test("the right column: the recommended lesson, Daily drill Not built yet, nothing made up", () => {
   withFakeDocument(() => {
     const text = textOf(menuScreen.render(ctxFor()));
-    assert.match(text, /Recommended next lessonNot built yet/);
+    assert.match(text, /Recommended next lesson\[L\d\d\]|Recommended next lessonAll letter/);
+    assert.doesNotMatch(text, /Recommended next lessonNot built yet/);
     assert.match(text, /Daily drillNot built yet/);
     for (const gone of [
       "+4 THIS WEEK",

@@ -1,10 +1,51 @@
-// The main menu's right column (locked mock, screen 2): recommended lesson and daily drill as
-// "Not built yet" panels (Blocks 8 and 12), best speed and current streak from saved data, and a
-// status line read from settings. Nothing here is made up: no "this week" or "best streak", which
-// are not stored.
+// The main menu's right column (locked mock, screen 2): the recommended lesson (lessons Req 8.3),
+// daily drill as a "Not built yet" panel (Block 12), best speed and current streak from saved
+// data, and a status line read from settings. Nothing here is made up: no "this week" or "best
+// streak", which are not stored.
+import { COACH, MENU } from "../../lessons/copy.js";
+import { lessonById } from "../../lessons/ladder.js";
+import { recommend, whyLine } from "../../lessons/recommend.js";
 import { el } from "../dom.js";
-import { ghostIcon, notBuiltPanel } from "./chrome.js";
+import { ghostIcon, notBuiltPanel, panelHead } from "./chrome.js";
 import { modeName, NO_BESTS_LINE, setOn } from "./progressText.js";
+
+const REC = "Recommended next lesson";
+export const ALL_PASSED = Object.freeze({
+  title: "All letter lessons passed.",
+  line: "Capitals, punctuation and numbers are next.",
+});
+
+/**
+ * The recommended lesson panel, information only (design decision 8; the map for screen 2).
+ * @param {{ lessonsPassed?: object[], rounds?: object[], keys?: object[] }} p Saved progress.
+ */
+export function lessonPanel(p) {
+  const rec = recommend({ lessonsPassed: [], rounds: [], keys: [], ...p });
+  const l = rec && lessonById(rec.lessonId);
+  const title = (t) => el("h2", { class: "rec-title" }, t);
+  const body = !l
+    ? [title(ALL_PASSED.title), el("p", { class: "rec-line" }, ALL_PASSED.line)]
+    : [
+        el("div", { class: "rec-row" }, [
+          title(`Lesson ${l.n}: ${l.name}`),
+          el(
+            "span",
+            { class: "rec-caps" },
+            l.keys.filter((k) => /^[a-z]$/.test(k)).map((k) => el("span", {}, k.toUpperCase())),
+          ),
+        ]),
+        // Lesson 0 has no New keys part: its card line (the first card part) stands in.
+        el("p", { class: "rec-line" }, l.n === 0 ? MENU.parts0[0].join("") : COACH.new[l.id]),
+        el("p", { class: "rec-foot" }, [
+          el("span", {}, whyLine(rec.why)),
+          l.n === 0 ? null : el("span", {}, "[TEST OUT] 95% to skip"),
+        ]),
+      ];
+  return el("section", { class: "term-panel rec-panel", "aria-label": REC }, [
+    panelHead(el("span", { class: "panel-title" }, REC), l ? el("span", {}, `[${l.id}]`) : null),
+    ...body,
+  ]);
+}
 
 /** The player's local day, "YYYY-MM-DD". */
 export const dayOf = (d) =>
@@ -54,7 +95,7 @@ export function renderMenuSide(ctx, now = new Date()) {
   const name = best && modeName(best.mode);
   const streak = currentStreak(p.dayStreak, now);
   return el("section", { class: "menu-side", "aria-label": "At a glance" }, [
-    notBuiltPanel("Recommended next lesson"),
+    lessonPanel(p),
     notBuiltPanel(
       "Daily drill",
       el("span", { class: "ghost-box", "aria-hidden": "true" }, ghostIcon(26, 28)),
@@ -63,7 +104,7 @@ export function renderMenuSide(ctx, now = new Date()) {
       best
         ? tile(
             "Best speed",
-            String(best.wpm),
+            String(Math.round(best.wpm)),
             "WPM",
             [name, setOn(best.date)].filter(Boolean).join(", "),
           )

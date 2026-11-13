@@ -3,7 +3,7 @@
 // spoken and cleared, the pause dialog, leaving records nothing, and finishing records once.
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { DONE, FOOTER_LEFT, PAUSE, SAY } from "../../lessons/copy.js";
+import { COACH, DONE, FOOTER_LEFT, LESSON0, PAUSE, SAY } from "../../lessons/copy.js";
 import { findAll, makeFakeDoc, textOf } from "../fakeDom.js";
 import { chooseLesson, lessonScreen, nextLesson } from "./lesson.js";
 import { chooseRound, nextRound, roundItems } from "./play.js";
@@ -190,6 +190,30 @@ test("Play these keys is not offered on Not yet", () => {
     }
     assert.ok(textOf(byClass(s.view(), "ld-card")[0]).includes(DONE.notYet));
     assert.ok(!textOf(s.view()).includes(DONE.play));
+  } finally {
+    cleanup();
+  }
+});
+
+test("Lesson 0 (Req 6): the keyboard question, Enter takes Yes, three parts, then a pass", () => {
+  const s = open("L00");
+  const coach = () => textOf(byClass(s.view(), "ls-coach-text")[0]);
+  try {
+    const steps = byClass(s.view(), "ls-step").map((n) => n.textContent);
+    assert.deepEqual(steps, ["[▶] 1. YOUR KEYBOARD", "2. HOME KEYS", "3. FINGERS", "4. EYES UP"]);
+    assert.equal(coach(), LESSON0.question);
+    assert.equal(byClass(s.view(), "ls-k").length, 30, "the US keyboard is drawn");
+    assert.equal(s.press("f"), false, "typing does nothing during the question");
+    assert.equal(s.press("Escape"), true, "Escape pauses, with no line to lose");
+    findAll(s.doc.querySelector("dialog[open]"), (n) => textOf(n) === PAUSE.resume)[0].click();
+    assert.equal(s.press("Enter"), true);
+    assert.equal(coach(), COACH.home);
+    assert.deepEqual(s.log.said, [SAY.line(1, 1, "fff jjj fjf jfj")]);
+    typeAll(s);
+    assert.deepEqual(s.log.finished[0].pass, { lessonId: "L00", how: "lesson" });
+    const card = textOf(byClass(s.view(), "ld-card")[0]);
+    assert.ok(card.includes(DONE.passed) && card.includes(DONE.lesson0Sub));
+    assert.ok(!card.includes(DONE.play), "no Play these keys for Lesson 0");
   } finally {
     cleanup();
   }

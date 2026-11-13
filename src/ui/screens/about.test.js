@@ -68,7 +68,7 @@ test("How we count links to the source and has every section", () => {
   const a = links(node)[0];
   assert.equal(a.attrs.href, SOURCE_URL);
   assert.equal(a.attrs.rel, "noopener noreferrer");
-  assert.equal(findAll(node, (n) => n.tag === "h2").length, 8);
+  assert.equal(findAll(node, (n) => n.tag === "h2").length, 9); // + Lessons (Block 8a)
 });
 
 test("the Office Keys line is the approved copy, word for word", () => {

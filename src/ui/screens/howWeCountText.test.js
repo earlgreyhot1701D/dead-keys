@@ -27,6 +27,9 @@ const CHANGED = {
   CHARS_PER_WORD: 4,
   MAX_SENTENCES: 2,
   MAX_WEAK_KEYS: 8,
+  PASS_ACCURACY: 0.91,
+  GAP_CAP_MS: 7000,
+  DIP_SHARE: 0.22,
 };
 
 test("characters per word, most sentences and most weak keys are read from config (Req 8.3)", () => {
@@ -83,6 +86,9 @@ test("change a number in the config and the page changes with it", () => {
     "8 rounds in a row at 66%",
     "12 days in a row",
     "last 321 rounds",
+    "check is 91% accurate",
+    "at most 7 seconds each",
+    "more than 22% slower",
   ]) {
     assert.ok(all.includes(phrase), phrase);
   }
@@ -108,6 +114,8 @@ test("every number in the text is a config number; nothing is typed in twice", (
     if (typeof v === "number") add(v);
     if (k === "BANDS") for (const b of v) if (b.min !== null) add(b.min);
   }
+  add(CONFIG.GAP_CAP_MS / 1000); // written in seconds
+  allowed.add("0"); // "Lesson 0" is a lesson's name, not a number
   const found = textOf(CONFIG).match(/\d+/g) ?? [];
   for (const n of found) assert.ok(allowed.has(n), `${n} is not from the config`);
 });
@@ -151,8 +159,25 @@ test("sections have unique ids and plain headings", () => {
       "The heat map",
       "What we notice",
       "Bests and milestones",
+      "Lessons",
       "What is stored",
       "What leaves your browser",
     ],
   );
+});
+
+test("the Lessons section is the lessons copy table, word for word (lessons Req 9.2)", () => {
+  const table = readFileSync(
+    new URL("../../../.kiro/specs/lessons/design.md", import.meta.url),
+    "utf8",
+  );
+  const row = table.split("\n").find((l) => l.startsWith("| How we count, new section"));
+  const lines = row
+    .split("Lines: ")[1]
+    .replace(/ \|$/, "")
+    .split(" / ")
+    .map((s) => s.replace(/^`|`$/g, ""));
+  const s = buildSections().find((x) => x.id === "lessons");
+  assert.equal(s.heading, "Lessons");
+  assert.deepEqual(s.paragraphs, lines);
 });

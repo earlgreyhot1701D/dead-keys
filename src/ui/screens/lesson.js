@@ -30,14 +30,13 @@ let live = null; // the running lesson; only one at a time
 
 function begin(ctx) {
   const { id, kind } = chosen;
-  const seed = Date.now();
-  const plan = kind === "testout" ? generateTestOut(id, seed) : generateLesson(id, seed);
+  const plan = (kind === "testout" ? generateTestOut : generateLesson)(id, Date.now());
   const doc = ctx.root?.ownerDocument ?? globalThis.document;
   const where = (to) => (to === "menu" || !ctx.has?.("lessons") ? "menu" : "lessons");
   const run = { plan, part: 0, lineNo: 0, line: null, checkFrom: 0, done: null, doc, view: null };
   const part = () => plan.parts[run.part];
   run.ask = (to) => {
-    run.line = pauseLine(run.line);
+    if (run.line) run.line = pauseLine(run.line); // no line yet during Lesson 0's question
     openConfirm(doc, el, {
       ...{ id: "lesson-pause", title: PAUSE.title, lines: [PAUSE.body] },
       ...{ cancelLabel: PAUSE.resume, confirmLabel: PAUSE.leave },
@@ -74,8 +73,8 @@ function begin(ctx) {
     }
     startAt();
   };
-  while (part().lines.length === 0) run.part += 1; // Lesson 0's keyboard question: task 12
-  startAt();
+  if (part().lines.length) startAt();
+  else view.ask(run.advance); // Lesson 0's keyboard question comes first (Req 6.1)
   live = run;
   return run;
 }
@@ -131,6 +130,7 @@ export const lessonScreen = {
   onKey(ctx, e) {
     if (!live || live.doc.querySelector?.("dialog[open]")) return false;
     if (live.done) return live.done.onKey(e);
+    if (!live.line && e.key !== "Escape") return live.view.askKey(e); // Lesson 0's question
     if (e.key === "Escape") live.ask("lessons");
     else if (e.key === "Backspace") live.line = backspace(live.line);
     else if (!isTyping(e)) return false;
@@ -143,7 +143,7 @@ export const lessonScreen = {
         return true;
       }
     }
-    if (!live.done) live.draw();
+    if (live.line && !live.done) live.draw();
     return true;
   },
 };

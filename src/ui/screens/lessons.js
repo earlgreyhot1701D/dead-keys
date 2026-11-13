@@ -15,6 +15,7 @@ const two = (n) => String(n).padStart(2, "0");
 
 function open(ctx, id, kind) {
   chooseLesson(id, kind);
+  selected = null; // the next visit starts on the recommended lesson again (Req 5.5)
   ctx.go("lesson");
 }
 const canStart = (id) => lessonById(id).built;

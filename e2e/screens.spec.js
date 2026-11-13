@@ -43,7 +43,7 @@ test("Progress with nothing saved says so and shows 'Not enough yet' on every ke
 
 test("How we count and About: sections, safe links, a way back", async ({ page }) => {
   await reach(page, "How we count");
-  await expect(page.getByRole("heading", { level: 2 })).toHaveCount(8);
+  await expect(page.getByRole("heading", { level: 2 })).toHaveCount(9); // + Lessons (Block 8a)
   await expect(page.getByText("Escape drops the lock. If nothing is locked, Escape pauses.")).toBeVisible();
   const source = page.getByRole("link", { name: "Read the source code" });
   await expect(source).toHaveAttribute("rel", /noopener/);

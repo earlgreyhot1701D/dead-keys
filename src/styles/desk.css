@@ -116,3 +116,34 @@
 .ls-next-key {
   color: var(--text);
 }
+/* The main menu's recommended lesson panel (mock/index.html screen 2; terminal look, not desk). */
+.rec-row,
+.rec-caps,
+.rec-foot {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: space-between;
+}
+.rec-title {
+  font-size: 24px;
+  letter-spacing: 0.04em;
+  text-transform: none; /* the mock writes the title in sentence case */
+}
+.rec-caps span {
+  min-width: 32px;
+  padding: 4px 0;
+  border: 1px solid var(--text);
+  background: var(--card);
+  font-size: 16px;
+  text-align: center;
+}
+.rec-line {
+  margin: 0; /* the panel's 10px gap is the mock's 10px margin; 16px/1.5 from the body */
+  color: var(--soft);
+}
+.rec-foot {
+  margin: 0;
+  font-size: 14px;
+  color: var(--accent);
+}

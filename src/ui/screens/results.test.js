@@ -233,13 +233,15 @@ test("a round that earns several WPM bands shows only the highest one (Req 10.2)
   assert.ok(!text.includes("MILESTONE: 10 words") && !text.includes("MILESTONE: 20 words"));
 });
 
-test("Play again after Play these keys keeps the same words", () => {
+test("Play these keys: PACK: YOUR KEYS, and Play again keeps the same words", () => {
   const items = [{ id: "L01-k1", text: "sad", kind: "word", source: "lesson" }];
   chooseRound("practice", items);
-  const { log, ctx } = draw({ result: result({ mode: "practice" }) });
+  const { log, ctx, text } = draw({ result: result({ mode: "practice" }) });
+  assert.ok(text.includes("MODE: PRACTICE // PACK: YOUR KEYS"));
   resultsScreen.onKey(ctx, { key: "Enter", target: { tagName: "BODY" } });
   assert.deepEqual(log, [["replace", "round"]]);
   assert.equal(nextRound().items, items);
   chooseRound("practice");
   assert.equal(roundItems(), null);
+  assert.ok(draw({ result: result({ mode: "practice" }) }).text.includes("PACK: GENERAL"));
 });

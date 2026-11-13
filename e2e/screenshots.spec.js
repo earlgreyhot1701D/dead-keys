@@ -31,7 +31,31 @@ const PAIRS = [
   { name: "falling", mock: 2 },
   { name: "corners", mock: 3 },
   { name: "results", mock: 4 },
+  // Lessons (Block 8a): their mocks are mock/lessons.html, already saved as mock-<name>.png.
+  { name: "lessons", mock: null },
+  { name: "lesson", mock: null },
+  { name: "lesson-done", mock: null },
 ];
+/** The lessons mock's story: Lessons 0 and 1 passed, Lesson 2 tested out, Lesson 3 next. */
+const LESSONS_SEED = JSON.stringify({
+  ...JSON.parse(seededText("normal/progress.basic.json")),
+  lessonsPassed: [
+    { lessonId: "L00", how: "lesson" },
+    { lessonId: "L01", how: "lesson" },
+    { lessonId: "L02", how: "testout" },
+  ],
+});
+const LESSON_SHOTS = new Set(["lessons", "lesson", "lesson-done"]);
+/** Lessons menu > Lesson 3 (the list is walked to the top first, then down three). */
+async function lesson3(page) {
+  await reach(page, "Lessons");
+  for (let i = 0; i < 14; i++) await page.keyboard.press("ArrowUp");
+  for (let i = 0; i < 3; i++) await page.keyboard.press("ArrowDown");
+  await page.keyboard.press("Enter");
+  await page.getByRole("heading", { level: 1, name: "LESSON 03 // FULL HOME ROW" }).waitFor();
+}
+const typeWaiting = async (page) =>
+  page.keyboard.press(await page.locator(".ch-wait").textContent());
 
 /** Past the warm-up into wave 1, then a word locked with two letters typed, as the mocks show. */
 async function midRound(page, mode) {
@@ -64,6 +88,20 @@ const OPEN = {
     for (let i = 0; i < 5; i++) await typeWord(page);
     await endByPause(page);
   },
+  lessons: (page) => reach(page, "Lessons"),
+  // As mock screen C: New keys, line 2, a few letters typed, one wrong key showing.
+  lesson: async (page) => {
+    await lesson3(page);
+    while ((await page.locator(".ls-step.is-now").textContent()) !== "[▶] 2. NEW KEYS")
+      await typeWaiting(page);
+    while ((await page.locator(".ls-count").textContent()) === "LINE 1 OF 2") await typeWaiting(page);
+    for (let i = 0; i < 4; i++) await typeWaiting(page);
+    await page.keyboard.press("q");
+  },
+  "lesson-done": async (page) => {
+    await lesson3(page);
+    while (!(await page.locator(".ld-card").count())) await typeWaiting(page);
+  },
 };
 
 test.skip(!process.env.SCREENSHOTS, "set SCREENSHOTS=1 to refresh docs/screens/");
@@ -75,7 +113,8 @@ const SMALL = { width: 1366, height: 768 };
 for (const { name, mock } of PAIRS) {
   test(`built at 1366x768: ${name}`, async ({ page }) => {
     await page.setViewportSize(SMALL);
-    if (name !== "privacy") await seed(page, seededText(BIG));
+    if (LESSON_SHOTS.has(name)) await seed(page, LESSONS_SEED);
+    else if (name !== "privacy") await seed(page, seededText(BIG));
     await OPEN[name](page);
     await page.getByRole("heading", { level: 1 }).waitFor({ state: "attached" });
     await page.evaluate(() => document.fonts.ready);
@@ -83,7 +122,8 @@ for (const { name, mock } of PAIRS) {
     await page.screenshot({ path: `${OUT}built-${name}-1366.png` });
   });
   test(`built: ${name}`, async ({ page }) => {
-    if (name !== "privacy") await seed(page, seededText(BIG));
+    if (LESSON_SHOTS.has(name)) await seed(page, LESSONS_SEED);
+    else if (name !== "privacy") await seed(page, seededText(BIG));
     await OPEN[name](page);
     await page.getByRole("heading", { level: 1 }).waitFor({ state: "attached" });
     await page.evaluate(() => document.fonts.ready);
