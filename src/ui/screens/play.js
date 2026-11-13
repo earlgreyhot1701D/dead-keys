@@ -1,7 +1,6 @@
-// Play: the mode picker (play Req 2.1, 2.3). Two choices, each with its one-line "how it plays",
-// one shared panel with the rules both games use, and the speed slider (the same setting
-// Settings shows). Enter on a choice starts that round; Escape goes back. Every word here is the
-// copy table's (play design.md). No mock screen of its own, so it uses the Block 6 page pieces.
+// Play: the mode picker (play Req 2.1, 2.3): two choices with a "how it plays" line each, the
+// shared rules, and the speed slider (Settings' setting). Enter starts a round; Escape goes back.
+// Words: play design.md's copy table. No mock screen, so it uses the Block 6 page pieces.
 import pack from "../../../packs/general.json" with { type: "json" };
 import { SPEED_MAX, SPEED_MIN } from "../../engine/config.js";
 import { averageLength, paceWpm } from "../../engine/pace.js";
@@ -15,6 +14,7 @@ export const ROUND_KINDS = Object.freeze({
   falling: { mode: "falling", mechanic: "falling", title: "Falling words" },
   corners: { mode: "corners", mechanic: "corners", title: "Four corners" },
   practice: { mode: "practice", mechanic: "falling", title: "Practice" },
+  drill: { mode: "practice", mechanic: "falling", title: "Drill", drillSource: "built-in" },
 });
 let next = "falling";
 let items = null; // "Play these keys": a lesson's words in place of the pack; null: the pack

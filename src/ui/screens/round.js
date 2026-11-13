@@ -20,6 +20,7 @@ import { createStage } from "../../render/stage.js";
 import { openConfirm } from "../components/confirmDialog.js";
 import { el } from "../dom.js";
 import { localDay } from "../roundRecord.js";
+import { roundOptions } from "./drillRound.js";
 import { chooseRound, nextRound } from "./play.js";
 import { showResults } from "./results.js";
 
@@ -43,8 +44,7 @@ const tagOf = (n) => (n.tagName ?? n.tag)?.toLowerCase(); // a real element, or 
 
 function begin(ctx) {
   const kind = nextRound();
-  const { speed } = ctx.state.settings;
-  const r = createRound({ items: pack.pools.words, ...kind, seed: Date.now(), speed });
+  const r = createRound(roundOptions(kind, ctx)); // a drill's weights and live line: drillRound.js
   const doc = ctx.root?.ownerDocument ?? globalThis.document;
   const run = { state: r.state, loop: null };
   const stage = createStage(el, {
@@ -52,7 +52,8 @@ function begin(ctx) {
     practice: kind.mode === "practice",
     title: kind.title,
     persist: ctx.state.persist !== false,
-    speed,
+    speed: r.state.speed,
+    drill: Boolean(kind.drillSource), // the HUD badge (drills Req 4.1)
     onPause: () => step(pause(run.state)),
   });
   const stop = () => {
@@ -64,7 +65,7 @@ function begin(ctx) {
     stop();
     const now = Date.now();
     const meta = { id: `round-${now}`, date: now, packId: pack.id, lessonId: null };
-    const result = toResult(run.state, { ...meta, drillSource: null });
+    const result = toResult(run.state, { ...meta, drillSource: kind.drillSource ?? null });
     const outcome = ctx.app.finishRound(result, localDay(now));
     showResults({ result, log: stage.log(), outcome });
     ctx.replace("results");
@@ -81,8 +82,7 @@ function begin(ctx) {
       if (e.type === "ended") finish();
     }
   };
-  // Cancel (focused first, and Escape) is the safe choice: Resume, or Continue. Each button
-  // hands the round to an engine call.
+  // Cancel (focused first, and Escape) is the safe choice: Resume, or Continue.
   const ask = (id, title, lines, cancelLabel, cancel, confirm) =>
     openConfirm(doc, el, {
       ...{ id, title, lines, cancelLabel, confirmLabel: PAUSE.end },

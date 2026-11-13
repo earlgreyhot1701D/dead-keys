@@ -1,6 +1,5 @@
-// The words of the "How we count" page, built from config so the page and the code cannot
-// disagree (shell Req 7.1, lessons Req 9.2). Pure. `buildSections` takes the config, so a test can
-// change a number and see the page change. Rules not built yet (drills, daily drill) wait.
+// How we count's words, built from config so the page and code can't disagree (shell Req 7.1).
+// Pure: a test passes changed config and sees the page change. Drills: howWeCountDrills.js.
 import { CHARS_PER_WORD } from "../../engine/config.js";
 import {
   BANDS,
@@ -23,8 +22,8 @@ import { MAX_ROUNDS } from "../../engine/record.js";
 import { DIP_SHARE } from "../../lessons/dip.js";
 import { GAP_CAP_MS } from "../../lessons/line.js";
 import { PASS_ACCURACY } from "../../lessons/result.js";
+import { drillsSection } from "./howWeCountDrills.js";
 import { PRIVACY_PARAGRAPHS } from "./privacy.js";
-
 /** Everything the page reads. */
 export const CONFIG = Object.freeze({
   BANDS,
@@ -145,5 +144,6 @@ export function buildSections(c = CONFIG) {
       heading: "What leaves your browser",
       paragraphs: [PRIVACY_PARAGRAPHS[1]],
     },
+    drillsSection(c), // last (drills Req 6.1)
   ];
 }

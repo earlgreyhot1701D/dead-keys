@@ -3,9 +3,11 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
+import { NO_WEAK_LINE } from "../components/drillButton.js";
 import { bestsBlock, quietLine } from "../components/progressPanels.js";
 import { SPEED_ROUNDS, speedTitle } from "../components/speedChart.js";
 import { findAll, textOf, withFakeDocument } from "../fakeDom.js";
+import { nextRound, ROUND_KINDS } from "./play.js";
 import {
   EMPTY_LINE,
   EVEN_LINE,
@@ -114,21 +116,28 @@ test("the approved four headings are visible, in order, among the mock's panel t
   ]);
 });
 
-test("the drill button is marked Not built yet and only says so; Lessons opens the Lessons menu", () => {
+test("Drill these keys starts a drill (drills Req 5.1); Lessons opens the Lessons menu", () => {
   const { node, went } = draw(fixture("ugly/progress.200-rounds-all-keys.json"));
   const later = findAll(node, (n) => n.tag === "button" && n.attrs?.["aria-disabled"] === "true");
-  // the label alone in the button; "Not built yet" is a line under it, tied by aria-describedby
-  assert.deepEqual(later.map(textOf), ["Drill these keys"]);
-  for (const b of later) {
-    b.click();
-    const note = findAll(node, (n) => n.attrs?.id === b.attrs["aria-describedby"])[0];
-    assert.equal(textOf(note), "Not built yet");
-    assert.ok(!b.children.includes(note));
-  }
+  assert.deepEqual(later, [], "nothing on the panel says Not built yet");
+  const drill = findAll(node, (n) => n.tag === "button" && textOf(n) === "Drill these keys")[0];
+  drill.click();
+  assert.deepEqual(went.at(-1), ["go", "round"]);
+  assert.deepEqual(nextRound(), ROUND_KINDS.drill);
+  assert.ok(!textOf(node).includes(NO_WEAK_LINE), "weak keys: no line under the button");
   const lessons = findAll(node, (n) => n.tag === "button" && textOf(n) === "Lessons")[0];
   lessons.click();
-  assert.deepEqual(went.slice(0, 1), [["say", "Drill these keys: not built yet"]]);
   assert.deepEqual(went.at(-1), ["go", "lessons"]);
+});
+
+test("no weak keys: the button still drills, with the copy-table line under it (Req 5.2)", () => {
+  const { node, went } = draw(fixture("ugly/progress.zero-rounds.json"));
+  const drill = findAll(node, (n) => n.tag === "button" && textOf(n) === "Drill these keys")[0];
+  const note = findAll(node, (n) => n.attrs?.id === drill.attrs["aria-describedby"])[0];
+  assert.equal(textOf(note), "Play a few rounds first. Drills aim at the keys you miss.");
+  assert.equal(NO_WEAK_LINE, textOf(note));
+  drill.click();
+  assert.deepEqual(went.at(-1), ["go", "round"]);
 });
 
 test("no group flagged: 'even' only when no single key is Focus here or Practicing", () => {

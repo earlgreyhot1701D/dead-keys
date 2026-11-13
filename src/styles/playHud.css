@@ -1,5 +1,5 @@
 /* Play screens: the frame and the HUD header (mock screen 3, value for value). The station
-   line and footer are in playStation.css. Dropped per the map: drill label, SHIELD, CAPACITOR, SOUND. */
+   line and footer are in playStation.css. Dropped per the map: SHIELD, CAPACITOR, SOUND. */
 .play-frame {
   min-height: max(100vh, 900px);
   background: var(--bg-deep);
@@ -67,4 +67,35 @@
 .hud-note {
   margin: 0;
   color: var(--soft);
+}
+/* A drill's badge after the practice note (mock screen 3: 3px double rule, card fill). */
+.hud-drill {
+  padding: 6px 12px;
+  border: var(--rule-double);
+  background: var(--card);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+/* With the badge, the practice note's one line pushed TIME off the right edge: let it wrap. */
+.play-hud:has(.hud-drill) .hud-note {
+  white-space: normal;
+}
+/* The same badge on a drill's results (mock screen 5), kept here with its HUD twin because
+   results.css is at the line cap: under the mode line, and the breakdown's last row. */
+.rs-mode-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+}
+.rs-drill {
+  padding: 2px 10px;
+  border: var(--rule-double);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.rs-row.rs-drill-row {
+  padding-bottom: 0;
+  border-bottom: 0;
 }

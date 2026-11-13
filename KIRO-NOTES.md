@@ -640,3 +640,18 @@ Reviewer: PASS, no High or Medium. a11y-auditor: FAIL, two High (read from code 
 | a11y Low: unlit letters on the Lessons key map use `--line`, about 2:1 | Deferred to Block 8b (decision 12) | `deskMenuSide.css` |
 | a11y Low: group headings are `<p>`; the pill h1 reads "//"; `[WHY]` and `[TEST OUT]` look like buttons; the lesson h1 sits in `<header>`, not `<main>` | Deferred to Block 8b (decision 12) | `lessons.js`, `menuSide.js`, `lessonView.js` |
 | a11y Low: reflow at 200% zoom not tested (fixed widths in the lesson CSS) | Deferred to Block 8b (decision 12) | `deskLesson.css`, `deskDone.css`, `deskMenu.css` |
+
+## Nov 13 2026: Block 9, built-in drills, tasks 1 to 5 (running notes for task 6)
+
+Splits made at the line cap (allowed by the design; each sits next to the file it came from):
+
+| New file | Split from | Holds |
+|---|---|---|
+| `src/engine/weightedPick.js` (+ test) | `targets.js`, `round.js` | `withWeights` (copies items with their weight, checks one per item, finite and above 0) and `pickFrom` (uniform, or the running-sum walk) |
+| `src/ui/screens/drillRound.js` (+ test) | `round.js` | `roundOptions`: createRound's options; a drill adds weights and says `Drill: built-in.` |
+| `src/ui/screens/resultsDrill.js` | `results.js` | the mode line with the drill badge under it, `againKind` for Play again |
+| `src/ui/components/drillLabel.js` | `playHud.js`, `results.js`, `resultsPanels.js` | the badge, the DRILL SOURCE row, `isDrill` |
+| `src/ui/components/drillButton.js` | `progressPanels.js` | Drill these keys and its no-weak-keys line |
+| `src/ui/screens/howWeCountDrills.js` (+ test) | `howWeCountText.js` | the Drills section |
+
+The results badge CSS sits in `playHud.css` with its HUD twin, because `results.css` is at the line cap (`main.js` is not on the allowlist, so no new CSS file).

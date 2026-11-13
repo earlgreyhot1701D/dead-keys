@@ -1,7 +1,8 @@
 // The play screen's bars (mock screen 3): the HUD header, the station line with the input stream
 // and target, and the footer. Every value comes from hud.js; per frame only textContent changes.
-// Dropped per the map: the drill label, word codes, BASELINE, SHIELD, CAPACITOR, SOUND.
+// Dropped per the map: word codes, BASELINE, SHIELD, CAPACITOR, SOUND. A drill adds its badge.
 import { crtOn } from "../ui/components/chrome.js";
+import { drillBadge } from "../ui/components/drillLabel.js";
 import {
   accuracyBar,
   accuracyText,
@@ -74,11 +75,11 @@ export function lockHint(state) {
 
 /**
  * @param {Function} el
- * @param {{ onPause: () => void, persist: boolean, speed: number, practice?: boolean }} o
- *   Practice has no lives and no waves, so the note takes their place (play copy table).
+ * @param {{ onPause: () => void, persist: boolean, speed: number, practice?: boolean, drill?: boolean }} o
+ *   Practice has no lives and no waves, so the note takes their place; a drill's badge follows.
  * @returns {{ header: HTMLElement, station: HTMLElement, footer: HTMLElement, update: (state: object) => void, setCaps: (on: boolean) => void }}
  */
-export function createPlayHud(el, { onPause, persist, speed, practice = false }) {
+export function createPlayHud(el, { onPause, persist, speed, practice = false, drill = false }) {
   const span = (cls) => el("span", { class: cls });
   const box = (label, nodes) =>
     el("div", { class: "hud-box" }, [el("span", { class: "hud-label" }, label), ...nodes]);
@@ -101,6 +102,7 @@ export function createPlayHud(el, { onPause, persist, speed, practice = false })
       ...(practice
         ? [el("p", { class: "hud-box hud-note" }, PRACTICE_NOTE)]
         : [box("LIVES:", [v.lives]), box("SECTOR:", [v.wave, v.left])]),
+      drill ? drillBadge(el, "hud-drill") : null,
     ]),
     el("div", { class: "hud-group" }, [
       box("SPEED:", [v.wpm, el("span", { class: "hud-unit" }, "WPM")]),

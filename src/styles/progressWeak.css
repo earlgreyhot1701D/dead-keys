@@ -30,21 +30,26 @@
   flex-wrap: wrap;
   gap: 10px;
 }
-/* A future button: its label alone, styled disabled, and "Not built yet" as a line under it. */
-.later {
+/* A future button: its label alone, styled disabled, and "Not built yet" as a line under it.
+   Drill these keys (Block 9) keeps the same place and size, with its no-weak-keys line. */
+.later,
+.drill-act {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
-.later:first-child {
+.later:first-child,
+.drill-act:first-child {
   flex: 1;
 }
-.later .btn-term {
+.later .btn-term,
+.drill-act .btn-term {
   width: 100%;
   font-size: 14px;
   white-space: nowrap;
 }
-.later-note {
+.later-note,
+.drill-note {
   font-size: 12px;
   color: var(--dim);
   text-align: center;

@@ -4,7 +4,7 @@ import { dropTail, swallow } from "./lostTail.js";
 import { applyKey, pickLock } from "./match.js";
 import { createRng } from "./rng.js";
 import { spawn } from "./targets.js";
-
+import { withWeights } from "./weightedPick.js";
 // Every mode a RoundResult can carry (contract/schemas/roundResult.json).
 export const MODES = ["corners", "falling", "practice", "lesson", "testout", "daily", "specwave"];
 const same = (state) => ({ state, events: [] }); // an ignored input: the very same state
@@ -20,7 +20,7 @@ export function fill(state) {
 
 /**
  * Start a round. Everything is passed in; nothing is read from a clock.
- * @param {object} o
+ * @param {object} o Drills also pass `weights`: one per item, and spawn then picks by weight.
  * @param {string} o.mode One of MODES.
  * @param {"corners"|"falling"} o.mechanic The layout. Practice uses it too but never moves.
  * @param {{ id: string, text: string }[]} o.items The pack's items to spawn from.
@@ -29,7 +29,7 @@ export function fill(state) {
  * @returns {{ state: object, events: [] }}
  * @throws {TypeError|RangeError} On bad options (programmer error).
  */
-export function createRound({ mode, mechanic, items, seed, speed }) {
+export function createRound({ mode, mechanic, items, seed, speed, weights }) {
   if (!MODES.includes(mode)) throw new RangeError(`unknown mode "${mode}"`);
   if (!Object.hasOwn(SLOTS, mechanic)) throw new RangeError(`unknown mechanic "${mechanic}"`);
   if (!Array.isArray(items) || items.length === 0) throw new TypeError("items must not be empty");
@@ -40,7 +40,7 @@ export function createRound({ mode, mechanic, items, seed, speed }) {
   const state = fill({
     mode,
     mechanic,
-    items: items.map((i) => ({ ...i })), // the caller can't change a running round
+    items: withWeights(items, weights), // a copy: the caller can't change a running round
     rng: createRng(seed).state,
     speed,
     lives: LIVES_MAX,
@@ -81,8 +81,8 @@ export function key(state, char) {
   let lock = s.targets.find((t) => t.id === s.lockId);
   if (!lock) {
     lock = pickLock(s.targets, char);
-    // Nothing expects this key: a counted keystroke, with no expected key to blame.
     if (!lock) {
+      // Nothing expects this key: a counted keystroke, with no expected key to blame.
       const miss = { type: "miss", expected: null, typed: char };
       return { state: { ...s, strayKeys: s.strayKeys + 1 }, events: [miss] };
     }

@@ -5,9 +5,9 @@ import { hints, menuButton, NOT_BUILT, scanlines, sysLine } from "../components/
 import { breakdownPanel, milestonesPanel, statTiles } from "../components/resultsPanels.js";
 import { el } from "../dom.js";
 import { chooseRound, roundItems } from "./play.js";
+import { againKind, modeBlock } from "./resultsDrill.js";
 
 export const HOW_LINK = "How we count every number";
-const packLabel = () => (roundItems() ? "PACK: YOUR KEYS" : "PACK: GENERAL"); // Play these keys
 export const SHARE = "Share card";
 let shown = null; // { result, log, outcome }
 
@@ -62,7 +62,7 @@ function wordLogPanel({ result, log, outcome }) {
 }
 
 function playAgain(ctx) {
-  const [mode, keep] = [shown.result.mode, roundItems()]; // Play these keys plays them again
+  const [mode, keep] = [againKind(shown.result), roundItems()]; // Play these keys: the same words
   chooseRound(mode, keep);
   ctx.replace(mode === "practice" && !keep ? "practice" : "round");
 }
@@ -97,7 +97,7 @@ export const resultsScreen = {
             ]),
             el("h1", {}, "DEAD KEYS // ROUND RESULTS"),
           ]),
-          el("p", { class: "rs-mode" }, `MODE: ${r.mode.toUpperCase()} // ${packLabel()}`),
+          modeBlock(r), // a drill's badge sits under the mode line (resultsDrill.js)
         ]),
         el("div", { class: "rs-main" }, [
           el("div", { class: "rs-col" }, [

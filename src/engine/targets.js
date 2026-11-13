@@ -13,6 +13,7 @@ import {
   WAVE_SPEEDUP_MAX_WAVE,
 } from "./config.js";
 import { createRng } from "./rng.js";
+import { pickFrom } from "./weightedPick.js";
 
 const { next } = createRng(0); // `next` takes the state as an argument, so any seed will do
 
@@ -22,7 +23,7 @@ const { next } = createRng(0); // `next` takes the state as an argument, so any 
  * @typedef {object} TargetState
  * @property {"corners"|"falling"} mechanic
  * @property {string} mode
- * @property {{ id: string, text: string }[]} items
+ * @property {{ id: string, text: string, weight?: number }[]} items `weight`: drills only.
  * @property {number} rng
  * @property {number} speed
  * @property {number} wave 1 or more.
@@ -64,11 +65,10 @@ const firstChar = (text) => [...text][0] ?? "";
 export const spawnGap = (speed) => SPAWN_GAP_MS / speed;
 
 /**
- * Add one target if fewer are on screen than the wave allows and the spawn gap has passed
- * (`spawnWaitMs` is 0 or missing). The new target starts the gap again; `cool` runs it down.
- * The item is picked uniformly (Block 9 swaps in weighted sampling here) from the items whose
- * first letter no on-screen word starts with, then a free slot. One word per first letter means
- * the first key always locks the word the player is looking at (ZType's rule).
+ * Add one target if fewer are on screen than the wave allows and the spawn gap (`spawnWaitMs`,
+ * run down by `cool`) has passed. The item comes from those whose first letter no on-screen word
+ * starts with (ZType's rule: the first key locks the word you look at), uniformly, or by weight in
+ * a drill (weightedPick.js), with the same one random number as always; then a free slot.
  * @param {TargetState} state
  * @returns {{ state: TargetState, events: [] }} The same state, untouched, when at the limit,
  *   still inside the gap, or every item shares a first letter with a word on screen.
@@ -87,7 +87,7 @@ export function spawn(state) {
   if (pool.length === 0) return { state, events: [] };
   const a = next(state.rng);
   const b = next(a.state);
-  const item = pool[Math.floor(a.value * pool.length)];
+  const item = pickFrom(pool, a.value);
   const target = {
     id: state.nextId,
     itemId: item.id,

@@ -3,6 +3,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
+import { DRILL_BASE } from "../../drills/weights.js";
 import { buildSections, CONFIG } from "./howWeCountText.js";
 import { PRIVACY_PARAGRAPHS } from "./privacy.js";
 
@@ -116,7 +117,8 @@ test("every number in the text is a config number; nothing is typed in twice", (
   }
   add(CONFIG.GAP_CAP_MS / 1000); // written in seconds
   allowed.add("0"); // "Lesson 0" is a lesson's name, not a number
-  const found = textOf(CONFIG).match(/\d+/g) ?? [];
+  allowed.add(String(DRILL_BASE)); // the Drills section's base weight, written as 0.05
+  const found = textOf(CONFIG).match(/\d+(\.\d+)?/g) ?? [];
   for (const n of found) assert.ok(allowed.has(n), `${n} is not from the config`);
 });
 
@@ -162,6 +164,7 @@ test("sections have unique ids and plain headings", () => {
       "Lessons",
       "What is stored",
       "What leaves your browser",
+      "Drills",
     ],
   );
 });

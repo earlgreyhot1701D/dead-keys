@@ -17,9 +17,10 @@ import { createPlayHud } from "./playHud.js";
  * @param {string} o.title The screen's h1 (read by a screen reader; the mock shows none).
  * @param {boolean} o.persist
  * @param {number} o.speed
+ * @param {boolean} [o.drill] A built-in drill: the HUD shows its badge (falling only).
  * @param {() => void} o.onPause The footer's pause button.
  */
-export function createStage(el, { mechanic, practice, title, persist, speed, onPause }) {
+export function createStage(el, { mechanic, practice, title, persist, speed, drill, onPause }) {
   const corners = mechanic === "corners";
   const field = (corners ? createCorners : createFalling)(el);
   const hud = (corners ? createCornersHud : createPlayHud)(el, {
@@ -27,6 +28,7 @@ export function createStage(el, { mechanic, practice, title, persist, speed, onP
     persist,
     speed,
     practice,
+    drill,
   });
   const moments = createMoments();
   let log = { words: [], breaches: 0 };

@@ -8,6 +8,7 @@ import { termPage } from "../components/chrome.js";
 import { bestsBlock, diagnosisPanel, keysPanel, weakPanel } from "../components/progressPanels.js";
 import { renderSpeedPanel } from "../components/speedChart.js";
 import { el } from "../dom.js";
+import { chooseRound } from "./play.js";
 
 export {
   EMPTY_LINE,
@@ -43,7 +44,16 @@ export const progressScreen = {
         ]),
         el("div", { class: "progress-right" }, [
           renderSpeedPanel(rounds, [bestsBlock(bests)]),
-          weakPanel(d.weakKeys, heat, ctx.announce, () => ctx.go("lessons")),
+          weakPanel(
+            d.weakKeys,
+            heat,
+            ctx.announce,
+            () => ctx.go("lessons"),
+            () => {
+              chooseRound("drill"); // drills Req 5.1: weights come from the stats at the start
+              ctx.go("round");
+            },
+          ),
         ]),
       ]),
       footerExtra: [

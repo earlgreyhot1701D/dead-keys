@@ -35,7 +35,16 @@ const PAIRS = [
   { name: "lessons", mock: null },
   { name: "lesson", mock: null },
   { name: "lesson-done", mock: null },
+  // Drills (Block 9): the HUD badge against the falling mock, the results badge and row.
+  { name: "drill", mock: 2 },
+  { name: "drill-results", mock: 4 },
 ];
+/** Progress > Drill these keys, then a few words typed. */
+async function drill(page, words) {
+  await reach(page, "Progress");
+  await page.getByRole("button", { name: "Drill these keys" }).click();
+  for (let i = 0; i < words; i++) await typeWord(page);
+}
 /** The lessons mock's story: Lessons 0 and 1 passed, Lesson 2 tested out, Lesson 3 next. */
 const LESSONS_SEED = JSON.stringify({
   ...JSON.parse(seededText("normal/progress.basic.json")),
@@ -89,6 +98,17 @@ const OPEN = {
     await endByPause(page);
   },
   lessons: (page) => reach(page, "Lessons"),
+  drill: async (page) => {
+    await drill(page, 3);
+    await page.waitForTimeout(3000); // more words on screen, as the mock shows
+    const word = await page.locator(LIVE_WORD).last().textContent();
+    await page.keyboard.type(word.slice(0, 2)); // a locked word, as the mock shows
+    await page.waitForTimeout(250);
+  },
+  "drill-results": async (page) => {
+    await drill(page, 5);
+    await endByPause(page);
+  },
   // As mock screen C: New keys, line 2, a few letters typed, one wrong key showing.
   lesson: async (page) => {
     await lesson3(page);
