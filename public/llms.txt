@@ -1,0 +1,9 @@
+# Dead Keys
+
+> A typing game, back from the dead. Dead Keys rebuilds the 1980s typing games MasterType and Type Attack as a keyboard trainer: type each word before it lands, and the game notices which keys you miss and drills them.
+
+Dead Keys runs in the browser with no account. Progress stays in the player's browser. The only server route is an AI drill endpoint (/api/drill) that accepts weak keys and recent speed, nothing else. It is not a public API.
+
+- [Play Dead Keys](https://dead-keys.vercel.app/): the game. It needs JavaScript and a keyboard (QWERTY in this version).
+- [Source code and README](https://github.com/earlgreyhot1701D/dead-keys): how it works, how it was built with Kiro, decision records, credits and licenses. MIT License.
+- [Maker](https://clewlabs.org): L. Cordero.

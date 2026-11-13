@@ -1,0 +1,6 @@
+# Dead Keys: a typing game, back from the dead.
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://dead-keys.vercel.app/sitemap.xml

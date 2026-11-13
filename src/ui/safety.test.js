@@ -64,8 +64,11 @@ test("index.html: English, one app root, a polite live region, no remote or inli
   assert.match(html, /<div id="app">/);
   assert.match(html, /<div id="live"[^>]*aria-live="polite"/);
   assert.match(html, /<noscript>/);
-  assert.doesNotMatch(html, /(src|href)="https?:/);
-  assert.doesNotMatch(html, /<script(?![^>]*\bsrc=)/); // every script has a src: no inline code
+  // Remote links for people and crawlers (a, canonical) are fine; remote code or styles are not.
+  assert.doesNotMatch(html, /\ssrc="https?:/);
+  assert.doesNotMatch(html, /<link(?![^>]*rel="canonical")[^>]*href="https?:/);
+  // Every script has a src (no inline code), except JSON-LD, which is data the browser never runs.
+  assert.doesNotMatch(html, /<script(?![^>]*\bsrc=)(?![^>]*type="application\/ld\+json")/);
   assert.doesNotMatch(html, /\son[a-z]+=/i);
   assert.doesNotMatch(html, /googleapis|gstatic/i);
 });

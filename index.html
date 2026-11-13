@@ -4,15 +4,64 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Dead Keys</title>
-    <meta name="description" content="A typing game, back from the dead." />
+    <meta name="description" content="A typing game, back from the dead. Type each word before it lands. Dead Keys learns the keys you miss and drills them. Free, no account." />
+    <link rel="canonical" href="https://dead-keys.vercel.app/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Dead Keys" />
+    <meta property="og:title" content="Dead Keys: a typing game, back from the dead" />
+    <meta property="og:description" content="Type each word before it lands. Dead Keys learns the keys you miss and drills them." />
+    <meta property="og:url" content="https://dead-keys.vercel.app/" />
+    <meta property="og:image" content="https://dead-keys.vercel.app/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="The Dead Keys title screen: green terminal type on a dark screen." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Dead Keys: a typing game, back from the dead" />
+    <meta name="twitter:description" content="Type each word before it lands. Dead Keys learns the keys you miss and drills them." />
+    <meta name="twitter:image" content="https://dead-keys.vercel.app/og.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "Dead Keys",
+        "description": "A typing game, back from the dead. Type each word before it lands; the game learns the keys you miss and drills them.",
+        "url": "https://dead-keys.vercel.app/",
+        "image": "https://dead-keys.vercel.app/og.png",
+        "genre": ["Typing game", "Educational"],
+        "gamePlatform": "Web browser",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "inLanguage": ["en", "es"],
+        "isAccessibleForFree": true,
+        "license": "https://opensource.org/licenses/MIT",
+        "codeRepository": "https://github.com/earlgreyhot1701D/dead-keys",
+        "author": { "@type": "Person", "name": "L. Cordero", "url": "https://clewlabs.org" },
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    </script>
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   </head>
   <body>
+    <!-- What a reader without JavaScript sees. The router replaces all of it on boot; boot-fallback
+         waits 1.5 s before showing, so players never see it flash. -->
     <div id="app">
-      <noscript>Dead Keys needs JavaScript to run. Nothing is sent anywhere without it.</noscript>
+      <header class="boot-fallback">
+        <h1>Dead Keys</h1>
+        <p>A typing game, back from the dead.</p>
+      </header>
+      <main id="main" class="boot-fallback">
+        <p>Type each word before it lands. Dead Keys learns the keys you miss and drills them. It rebuilds the 1980s typing games MasterType and Type Attack. Free, no account, and your progress stays in your browser.</p>
+        <noscript><p>Dead Keys needs JavaScript and a keyboard to play. Nothing is sent anywhere without it.</p></noscript>
+      </main>
+      <nav aria-label="More about Dead Keys" class="boot-fallback">
+        <ul>
+          <li><a href="https://github.com/earlgreyhot1701D/dead-keys">Source code and README</a></li>
+          <li><a href="https://clewlabs.org">Made by L. Cordero</a></li>
+        </ul>
+      </nav>
     </div>
     <!-- Polite live region: the router and the notice bar announce here. -->
     <div id="live" class="sr-only" aria-live="polite" aria-atomic="true"></div>

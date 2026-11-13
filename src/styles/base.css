@@ -94,3 +94,17 @@ html.fit .screen-frame {
     scroll-behavior: auto !important;
   }
 }
+
+/* The no-JavaScript page in index.html: shown only if the app hasn't replaced it after 1.5 s. */
+.boot-fallback {
+  padding: 0 24px;
+  animation: boot-show 0s 1.5s both;
+}
+@keyframes boot-show {
+  from {
+    visibility: hidden;
+  }
+  to {
+    visibility: visible;
+  }
+}
