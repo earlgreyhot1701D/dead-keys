@@ -28,7 +28,7 @@
 }
 .demo-status {
   padding: 4px 10px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--rule);
   font-size: 14px;
   color: var(--label);
 }

@@ -12,14 +12,32 @@ Blocks 1 to 15 passed. The contract is frozen.
 | ae9891b | robots.txt, sitemap.xml, llms.txt, og.png; canonical, Open Graph, Twitter card and JSON-LD in index.html; a no-JavaScript fallback inside #app that the router replaces |
 | 8624583 | Attract demo: Falling words only, no warm-up, speed 1.5, 25 s rounds, outer lanes 0 and 5 only (attract spec 2.2 changed); About button top right on title and menu; lifecycleRandom test allows a swallowed key to clear lostTail |
 
+## PRD G15 11-point check (Nov 13, at d57e68f, plus the review fixes)
+
+| # | Item | Result | Evidence |
+|---|---|---|---|
+| 1 | Authorization | N/A | No accounts (PRD G2) |
+| 2 | Validation | Pass | Client `src/drills/aiClient.js`; server `api/drill.js` and `api/_lib/answer.js`, both through `contract/validate.js` |
+| 3 | CORS | Pass | `api/drill.js` refuses any Origin but its own and cross-site requests; no CORS headers |
+| 4 | Rate limiting | Pass (approximate, G8) | `api/_lib/limits.js`: 30 an hour per visitor, 3,000 a day |
+| 5 | Password reset | N/A | No accounts |
+| 6 | Frontend errors | Pass | `src/drills/aiClient.js` try/catch and 4 s timeout; storage try/catch in `src/storage/` |
+| 7 | DB indexes | N/A | No database |
+| 8 | Logging | Pass | `api/_lib/ledger.js`: time, tokens, stop reason, time taken, result; no keys, IP or lines |
+| 9 | Alarms | Pass | AWS Budgets `dead-keys`, $5 a month, Bedrock only (`docs/aws-teardown.md`) |
+| 10 | Rollback | Pass once tagged | Vercel redeploy, plus a git tag per block: Kiro adds block-8a and block-9 to block-16 at the push |
+| 11 | Prompt injection | Pass | `api/_lib/prompt.js` sends only weak keys, rates and WPM; answers are charset and real-word checked |
+
 ## Files this block may touch
 
-- `README.md`, `index.html`, `public/**`, `docs/current-block.md`, `KIRO-NOTES.md`
+- `README.md`, `index.html`, `public/**`, `docs/current-block.md`, `docs/prior-work.md`, `docs/aws-teardown.md`, `docs/attract.gif`, `KIRO-NOTES.md`, `.github/workflows/ci.yml`
 - `src/analytics/**`, `src/main.js`, `src/attract/**`, `src/styles/base.css`, `src/styles/chrome.css`
 - `src/ui/components/feedback.js`, `src/ui/components/aboutButton.js` and their tests
 - `src/ui/screens/about.js`, `results.js`, `title.js`, `menu.js` and their tests; `src/ui/safety.test.js`
-- `api/_lib/answer.js` and its test; `src/engine/lifecycleRandom.test.js`
-- `e2e/helpers.js`, `e2e/keyboard.spec.js`, `e2e/screens.spec.js`, `e2e/flows.spec.js`
+- `api/_lib/answer.js` and its test; `src/engine/lifecycleRandom.test.js`; `mcp/tools.js` and its test
+- `src/ui/isTyping.js`, `src/ui/nav.js`, `src/ui/router.js`, `src/ui/screens/round.js`, `src/ui/components/packPick.js`, `src/styles/titlePanel.css`, `src/styles/attract.css` and their tests
+- `scripts/build-pack-es.js`, `scripts/check-pack.js` (Job lines only); `.kiro/specs/attract/requirements.md`, `.kiro/specs/spanish/tasks.md`
+- `e2e/helpers.js`, `e2e/keyboard.spec.js`, `e2e/screens.spec.js`, `e2e/flows.spec.js`, `e2e/attract.spec.js`, `e2e/spanish.spec.js`
 - `.kiro/specs/attract/requirements.md`
 
 Anything else, including `contract/**` and `src/engine/**` (tests aside): stop and ask Shara.

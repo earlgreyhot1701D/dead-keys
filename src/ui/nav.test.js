@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import * as fc from "fast-check";
-import { createNav, escapeAction, isControl } from "./nav.js";
+import { createNav, escapeAction, isControl, tabTitle } from "./nav.js";
 
 test("it starts on the first screen, which has nothing to go back to", () => {
   const nav = createNav("title");
@@ -127,4 +127,10 @@ test("isControl: buttons, links and fields use keys themselves; headings and the
   ]) {
     assert.equal(isControl(t), false, JSON.stringify(t));
   }
+});
+
+test("each screen names the browser tab (WCAG 2.4.2, a11y audit Nov 13)", () => {
+  assert.equal(tabTitle({ title: "Settings" }), "Settings · Dead Keys");
+  assert.equal(tabTitle({ title: "Dead Keys" }), "Dead Keys"); // the title screen
+  assert.equal(tabTitle(undefined), "Dead Keys");
 });

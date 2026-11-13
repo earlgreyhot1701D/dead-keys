@@ -62,6 +62,11 @@
   border-bottom: var(--rule-double);
   background: var(--panel);
 }
+.title-header-right {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
 .title-header .term-name {
   font-size: 20px;
 }

@@ -16,8 +16,9 @@ const spanish = new Set(
 
 /**
  * Type a word one key at a time. Plain letters are real key presses. A composed character (á, ñ,
- * ¿) arrives as one keydown whose key is that character, as US-International sends it after its
- * dead key; Playwright has no key for those, so the page gets that same keydown directly.
+ * ¿) arrives as one keydown whose key is that character, as US-International sends it with
+ * AltGr held (Windows reports Ctrl+Alt; a11y audit, Nov 13). Playwright has no key for those, so
+ * the page gets that same keydown directly.
  */
 async function typeKeys(page, word) {
   for (const c of word) {
@@ -25,7 +26,9 @@ async function typeKeys(page, word) {
     else
       await page.evaluate((key) => {
         const t = document.activeElement ?? document.body;
-        t.dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true }));
+        t.dispatchEvent(
+          new KeyboardEvent("keydown", { key, bubbles: true, altKey: true, ctrlKey: true }),
+        );
       }, c);
   }
 }

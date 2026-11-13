@@ -57,13 +57,13 @@ When a player turns on AI drills in Settings, Drill these keys asks Amazon Nova 
 ## Requirement 6: AWS setup, no IAM user and no keys (Vercel OIDC federation; Shara, Nov 13)
 
 0. Bedrock model access is automatic for serverless models since Oct 2025. Nova Micro is an Amazon model, so nothing is enabled in the console.
-1. Account 831889733571 through the `default` CLI profile (Shara, Nov 13). Kiro SHALL create no IAM user and no access key.
+1. Account <ACCOUNT_ID> through the `default` CLI profile (Shara, Nov 13). Kiro SHALL create no IAM user and no access key.
 2. Kiro SHALL find the Vercel team slug and project name (`vercel project inspect`, `vercel teams ls`) and confirm the project's OIDC issuer mode is Team. If OIDC federation or Team issuer mode is off in the project's settings, stop and tell Shara where to switch it on.
 3. Kiro SHALL create the IAM OIDC identity provider for `https://oidc.vercel.com/<TEAM_SLUG>` with audience `https://vercel.com/<TEAM_SLUG>` (check for an existing one first).
 4. Kiro SHALL create the IAM role `dead-keys-drill` with:
    - a trust policy allowing `sts:AssumeRoleWithWebIdentity` from that provider, with `StringEquals` `oidc.vercel.com/<TEAM_SLUG>:aud` = `https://vercel.com/<TEAM_SLUG>` and `StringLike` `oidc.vercel.com/<TEAM_SLUG>:sub` in [`owner:<TEAM_SLUG>:project:<PROJECT>:environment:preview`, `owner:<TEAM_SLUG>:project:<PROJECT>:environment:production`] (this project only, never development);
-   - one inline policy, `bedrock:InvokeModel` only (Converse uses it): on `arn:aws:bedrock:us-east-1:831889733571:inference-profile/us.amazon.nova-micro-v1:0`, and on the foundation-model ARNs in us-east-1, us-east-2 and us-west-2 with `StringEquals bedrock:InferenceProfileArn` = that profile ARN.
-5. Kiro SHALL create a $5 monthly AWS Budgets alert named "dead-keys", emailing cordero.lsj@gmail.com.
+   - one inline policy, `bedrock:InvokeModel` only (Converse uses it): on `arn:aws:bedrock:us-east-1:<ACCOUNT_ID>:inference-profile/us.amazon.nova-micro-v1:0`, and on the foundation-model ARNs in us-east-1, us-east-2 and us-west-2 with `StringEquals bedrock:InferenceProfileArn` = that profile ARN.
+5. Kiro SHALL create a $5 monthly AWS Budgets alert named "dead-keys", emailing the account owner.
 6. Kiro SHALL add two Vercel env vars for Preview and Production through the Vercel CLI: `AWS_ROLE_ARN` (the role ARN, not a secret) and `AWS_REGION` = `us-east-1`. No AWS key exists anywhere.
 7. `api/_lib/bedrock.js` (Claude, Nov 13) trades the request's `x-vercel-oidc-token` header for role credentials with `fromWebToken` from `@aws-sdk/credential-provider-web-identity` 3.972.85 (Oct 29, already in the SDK's tree; pinned directly). It never logs the token. Locally it uses the default profile. Claude chose this over `@vercel/oidc-aws-credentials-provider`, whose two-week-old versions carry a high zod advisory and whose fix is one day old.
 8. Kiro SHALL write `docs/aws-teardown.md`: the role, its inline policy, the OIDC provider (shared only if another project uses it), the budget, the log groups, the two Vercel env vars, and the steps to delete them after judging (Jan 29, 2027).

@@ -1,3 +1,4 @@
+// Job: load Vercel Web Analytics on Vercel hosts only, page views only.
 // Vercel Web Analytics, page views only (PRD G9; the Privacy page already says so). One script
 // tag, same origin, no cookies, no custom events: nothing about typing is ever passed to it. Not
 // loaded on this machine (dev, e2e), where the path does not exist. Turned on in the Vercel

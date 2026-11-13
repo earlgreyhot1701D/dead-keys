@@ -1,0 +1,22 @@
+# Job: run lint and the unit tests on every push and pull request (Block 16).
+# No secrets, no AWS, no deploy: deploys stay manual, on Shara's word (PRD G15).
+# e2e is left out on purpose: it needs a browser and runs before each deploy instead.
+name: CI
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test

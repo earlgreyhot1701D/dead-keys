@@ -1,9 +1,12 @@
 // Job: test the MCP tool handlers with no network: path refusal, validate_pack on the real packs, run_golden_set's confirm gate.
 // mcp Req 2 to 4. Bedrock is never called here: run_golden_set gets a fake `ask` when confirmed.
 import assert from "node:assert/strict";
+import { mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { test } from "node:test";
 import { createServer } from "./server.js";
-import { packPath, runGoldenSet, TOOLS, validatePack } from "./tools.js";
+import { PACKS, packPath, runGoldenSet, TOOLS, validatePack } from "./tools.js";
 
 const text = (r) => r.content.map((c) => c.text).join("\n");
 
@@ -87,4 +90,23 @@ test("the server lists exactly the two tools, with plain JSON Schema inputs", ()
   );
   assert.deepEqual(TOOLS[1].inputSchema.required, ["confirm"]);
   assert.ok(createServer());
+});
+
+test("a symlink inside packs/ that leads outside it is refused (review, Nov 13)", () => {
+  const outside = mkdtempSync(join(tmpdir(), "dk-"));
+  const link = join(PACKS, "zz-link-test.json");
+  writeFileSync(join(outside, "x.json"), "{}");
+  try {
+    symlinkSync(join(outside, "x.json"), link);
+  } catch {
+    return; // this machine can't make symlinks (Windows without the right); nothing to test
+  }
+  try {
+    assert.equal(packPath("packs/zz-link-test.json"), null);
+    rmSync(join(outside, "x.json"));
+    assert.equal(packPath("packs/zz-link-test.json"), null, "dangling too");
+  } finally {
+    rmSync(link, { force: true });
+    rmSync(outside, { recursive: true, force: true });
+  }
 });

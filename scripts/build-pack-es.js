@@ -1,3 +1,4 @@
+// Job: build packs/spanish.json from its sources, deterministically.
 // Build packs/spanish.json (Block 15, spanish Req 1) from FrequencyWords' Spanish list, most
 // frequent first: lowercase letters with á é í ó ú ñ ü, 3 to 9 letters, no duplicates, in the
 // Spanish spelling list (which drops names and English words from subtitles), nothing on

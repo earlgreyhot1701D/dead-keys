@@ -142,12 +142,7 @@
 .header-about {
   min-height: 36px;
   padding: 0 12px;
-  border-color: var(--line);
+  border-color: var(--rule); /* 3:1 or better against the bar (a11y audit) */
   background: transparent;
   font-size: 14px;
-}
-.title-header-right {
-  display: flex;
-  gap: 12px;
-  align-items: center;
 }

@@ -1,3 +1,4 @@
+// Job: validate pack files and print every problem (CLI and library).
 // The pack validator (spanish Req 3; PRD G2, hook H4). Checks one or more pack files and prints
 // every problem with where it is. Exit code 0 when all pass, 1 when any fails.
 //   node scripts/check-pack.js packs/spanish.json [more.json ...]

@@ -1,7 +1,7 @@
 // Job: the two MCP tools' handlers (validate_pack, run_golden_set), kept apart from the transport so tests run them with no network.
 // PRD G12; mcp Req 2, 3. Each handler takes the tool's arguments and returns MCP tool content.
 // Neither one ever returns an env value, a token or a credential.
-import { readFileSync } from "node:fs";
+import { lstatSync, readFileSync, realpathSync } from "node:fs";
 import { isAbsolute, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { runGolden } from "../evals/run.js";
@@ -25,7 +25,16 @@ export function packPath(path) {
   if (rel === "" || rel.startsWith("..") || isAbsolute(rel) || rel.split(sep).includes("..")) {
     return null;
   }
-  return abs.endsWith(".json") ? abs : null;
+  if (!abs.endsWith(".json")) return null;
+  try {
+    // a symlink inside packs/ must not lead outside it (review, Nov 13)
+    const real = relative(realpathSync(PACKS), realpathSync(abs));
+    if (real.startsWith("..") || isAbsolute(real)) return null;
+  } catch {
+    // a dangling symlink is refused; a missing plain file is reported by the validator
+    if (lstatSync(abs, { throwIfNoEntry: false })?.isSymbolicLink()) return null;
+  }
+  return abs;
 }
 
 /** One line per file, OK or FAIL, then each problem, as check-pack.js prints them. */

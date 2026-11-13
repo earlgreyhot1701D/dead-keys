@@ -1,6 +1,6 @@
 // Job: the Play screen's Words choice (spanish Req 2): English or Español for Falling words, Four
 // corners and Practice, saved at once as the `pack` setting. The hint says what Español needs.
-import { PACK_IDS, PACK_LABELS } from "../../packs/registry.js";
+import { PACK_IDS, PACK_LABELS, PACKS } from "../../packs/registry.js";
 import { isValidSetting } from "../../storage/settings.js";
 import { el } from "../dom.js";
 
@@ -24,7 +24,10 @@ export function packRow(ctx) {
           else ctx.refresh(); // put the choice back to what is saved
         },
       },
-      PACK_IDS.map((id) => el("option", { value: id, selected: id === picked }, PACK_LABELS[id])),
+      PACK_IDS.map((id) =>
+        // each name in its own language, so "Español" is spoken in Spanish (WCAG 3.1.2)
+        el("option", { value: id, selected: id === picked, lang: PACKS[id].lang }, PACK_LABELS[id]),
+      ),
     ),
     el("span", { id: "pick-pack-hint", class: "hint" }, ` ${PACK_HINT}`),
   ]);

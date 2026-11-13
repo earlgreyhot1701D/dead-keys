@@ -767,3 +767,33 @@ Checks before the commit: lint clean (352 files), `npm test` 909 of 909, `node s
 | The tasks file has 4 and 5 open until the registration is in | Open | `.kiro/specs/mcp/tasks.md` |
 
 `.kiro/settings/mcp.json` registered by Shara on Nov 13; `validate_pack` answered through Kiro's MCP panel: with no arguments `OK packs/general.json: 1500 items` and `OK packs/spanish.json: 1421 items`; with `{ "path": "packs/spanish.json" }` `OK packs/spanish.json: 1421 items`.
+
+## Nov 13 2026: Block 16 review findings and what happened to each (Claude)
+
+The reviewer and a11y-auditor ran once on Blocks 15 and 16 together (d57e68f) and both recommended FAIL. Fixed by Claude unless noted.
+
+| Finding | Severity | What happened |
+|---|---|---|
+| AltGr (Windows Ctrl+Alt) and Mac Option keys were rejected, so ñ ¿ ¡ ü might not type | High | Fixed: `src/ui/isTyping.js` accepts a key with Alt held when AltGraph is on or the character isn't ASCII; Ctrl alone and Meta stay shortcuts. Unit tests, and the Spanish e2e now sends composed keys with Ctrl+Alt |
+| Every tab was titled "Dead Keys" | Medium | Fixed: the router sets "Screen · Dead Keys" on each screen (`tabTitle` in nav.js) |
+| No `lang` on Spanish words or "Español" | Medium | Fixed for the Words option. The play fields are aria-hidden, so their words are never read; the live region's "Cleared más." stays one English sentence. Deferred: per-word `lang` in announcements |
+| Pause demo changed its label and also toggled aria-pressed | Medium | Fixed: aria-pressed removed; the label carries the state |
+| prior-work.md stale (FrequencyWords, SCOWL, fonts, MCP SDK) | Medium | Fixed, with links |
+| README accessibility sentence not word for word | Medium | Fixed: the a11y.md sentence is pasted in |
+| AWS account ID and an email in aws-teardown.md | Medium | Fixed: placeholders. Both are still in git history; neither is a secret |
+| Real-word check reads scowl_en_US.txt at load; not proven in the bundle | Medium | Open: Shara checks one AI drill on the preview |
+| README GIF stub, "G16" reference, NCES home-page link | Medium | Fixed: `docs/attract.gif` (100 frames, 10 fps, from the real demo), Table 1 link |
+| chrome.css 154 lines | Low | Fixed: 148 (title-header-right moved to titlePanel.css) |
+| Attract Req 1.3 said 15 s; Spanish tasks 5 and 6 unticked | Low | Fixed |
+| MCP path check didn't resolve symlinks | Low | Fixed: realpath check, dangling symlinks refused, test added |
+| No "Job:" line in analytics.js, build-pack-es.js, check-pack.js | Low | Fixed |
+| "Cheapest Bedrock text model" uncited | Low | Fixed: "low-cost", with the PRD G3 prices |
+| About and demo-status borders about 2:1 | Low | Fixed: `--rule` |
+| Rollback: git tags missing for 8a and 9 to 16 | Fail on G15 #10 | Kiro tags each block's last commit at the push |
+| `.picker-pack` positioning under 1100 px at 200% zoom | Low | Deferred: untested, logged for v2 |
+| Demo lanes measured at 1440x900 only | Low | No change: fit.js scales the page from 1440x900, so the lanes scale with it |
+| About first in the tab order; 3 s idle | Advisory | No change: Shara's decisions |
+| run_golden_set passes error lines through | Low | Deferred: it only runs with confirm and on Shara's machine |
+| 40 skipped e2e tests | Low | The opt-in screenshot spec (`SCREENSHOTS=1`) |
+
+Block 15's file allowlist is in this file's Block 15 notes and in git (97ca361, e4126f5, 4d81f97). Also added in Block 16: `.github/workflows/ci.yml` (lint and unit tests on push; no secrets, no deploy).

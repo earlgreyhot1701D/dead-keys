@@ -8,7 +8,7 @@ import { CAPS_HINT, COACH, PRACTICE_NOTE, WRONG_HINT } from "../../render/playHu
 import { findAll, makeFakeDoc, textOf } from "../fakeDom.js";
 import { practiceScreen } from "./menuRounds.js";
 import { chooseRound } from "./play.js";
-import { isTyping, outOfLivesLines, PAUSE, roundScreen } from "./round.js";
+import { outOfLivesLines, PAUSE, roundScreen } from "./round.js";
 
 const design = readFileSync(
   new URL("../../../.kiro/specs/play/design.md", import.meta.url),
@@ -33,16 +33,6 @@ test("the out-of-lives lines are the copy table's, with the round's real numbers
   const lines = outOfLivesLines(s);
   assert.equal(lines.length, 4);
   for (const l of lines) assert.ok(r.includes(`"${l}"`), l);
-});
-
-test("only single characters without a shortcut key are typing", () => {
-  for (const k of ["a", "Z", " ", ";", "ñ", "¿"]) assert.ok(isTyping({ key: k }), k);
-  for (const k of ["Shift", "Tab", "Backspace", "Enter", "Escape", "ArrowUp", ""])
-    assert.ok(!isTyping({ key: k }), k);
-  assert.ok(!isTyping({ key: "a", ctrlKey: true }));
-  assert.ok(!isTyping({ key: "a", metaKey: true }));
-  assert.ok(!isTyping({ key: "a", altKey: true }));
-  assert.ok(!isTyping(undefined));
 });
 
 /** Start a round on a fake page (falling by default); `frame(dt)` runs one animation frame. */

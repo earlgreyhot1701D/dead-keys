@@ -22,6 +22,7 @@ import { cuesFor } from "../../sound/cues.js";
 import { playCues } from "../../sound/synth.js";
 import { openConfirm } from "../components/confirmDialog.js";
 import { el } from "../dom.js";
+import { isTyping } from "../isTyping.js";
 import { localDay } from "../roundRecord.js";
 import { kindSource, roundOptions } from "./drillRound.js";
 import { nextRound } from "./play.js";
@@ -38,9 +39,7 @@ export const outOfLivesLines = (s) => [
   "End round: see your results. Either way, this round is saved.",
 ];
 
-/** Is this key press one character for the engine (not Shift, Tab, Backspace or a shortcut)? */
-export const isTyping = (e) =>
-  typeof e?.key === "string" && [...e.key].length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey;
+export { isTyping }; // lesson.js imports it from here
 
 let live = null; // the running round: { state, step, ... }; only one at a time
 const tagOf = (n) => (n.tagName ?? n.tag)?.toLowerCase(); // a real element, or the test fake

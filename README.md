@@ -4,11 +4,11 @@
 
 > I learned on a typewriter in middle school, and the Mac games at home helped me improve. In 2000, almost half of US high school grads took a typing class. By 2019 it was 2.5%. So I brought the games back.
 
-The number: US high school graduates who earned keyboarding credit fell from 44.1% in 2000 to 2.5% in 2019 ([NCES, NAEP High School Transcript Study, Table 1](https://nces.ed.gov/)).
+The number: US high school graduates who earned keyboarding credit fell from 44.1% in 2000 to 2.5% in 2019 ([NCES, NAEP High School Transcript Study, Table 1](https://nces.ed.gov/nationsreportcard/hsts/2019_tables/2019_table1.aspx)).
 
 **Play it:** [dead-keys.vercel.app](https://dead-keys.vercel.app)
 
-<!-- STUB: GIF of attract mode goes here (PRD G16 item 1). Record from the title screen after 3 seconds idle. -->
+![The Dead Keys title screen: after 3 idle seconds the game plays itself, typing falling words in the outer lanes.](docs/attract.gif)
 
 Dead Keys rebuilds the 1980s typing games MasterType and Type Attack as a keyboard trainer that notices which keys you miss and drills them. Built with [Kiro](https://kiro.dev) for the [Kiroween Hackathon 2026](https://kiroween.devpost.com/), category Resurrection.
 
@@ -68,7 +68,7 @@ Short form: context, decision, why, trade-off.
 | **Contract first.** Shapes and fixtures (normal and ugly) before any screen. | Both halves build against the same thing, and a layout that survives the ugly fixtures is ready to wire. | Slower start. Changing a shape later costs a contract change. |
 | **Local-only storage.** No accounts, progress in localStorage. | Nothing to breach, nothing to sign up for. | Progress lives in one browser. Backup and import in Settings cover moving it. |
 | **Two-layer adaptive drills.** Built-in drills always work; AI drills sit on top. | The game never waits on a model. | Two drill paths to test. |
-| **Nova Micro.** Lifecycle Active when checked Nov 7, 2026. | Cheapest Bedrock text model that does the job: a few cents per thousand drills. | Other Nova models went legacy in March 2026. Micro could too; the legacy period covers judging, and the fallback covers the rest. |
+| **Nova Micro.** Lifecycle Active when checked Nov 7, 2026. | A low-cost Bedrock text model that does the job ($0.035 per 1M input tokens, $0.14 per 1M output, PRD G3). | Other Nova models went legacy in March 2026. Micro could too; the legacy period covers judging, and the fallback covers the rest. |
 | **The model's words are checked, not trusted.** Each word must be pack letters, 2 to 12 long, a real English word (SCOWL en_US) and off the blocklist. | The model once wrote "zizz". Nothing it writes reaches you unless it passes. | Some good rare words get dropped too. |
 | **Vercel function over Lambda.** | One deploy for site and route. AWS is reached through Vercel OIDC, so there are no AWS keys anywhere. | Tied to Vercel's function runtime. |
 | **Vanilla JS with JSDoc.** | No framework to learn or update; types without a build step. | More DOM code by hand. |
@@ -126,7 +126,9 @@ Same words as the game's Privacy page:
 
 ## Accessibility
 
-Keyboard first, every screen. Screen readers hear screen changes through a polite live region. Motion and scanlines turn off with reduced motion. Sound is off until you turn it on. Every deploy runs axe on each screen. Dead Keys is for a QWERTY keyboard in this version.
+Menus, settings, lesson instructions, results, progress, heat map summary, "How we count," and the share card are fully usable with a screen reader. Gameplay is visual. Practice mode with announcements is the accessible path to practice.
+
+Keyboard first, every screen. Screen readers hear screen changes through a polite live region. Each screen names the browser tab. Spanish characters type with AltGr on Windows and Option on Mac. Motion and scanlines turn off with reduced motion. Sound is off until you turn it on. Every deploy runs axe on each screen. Dead Keys is for a QWERTY keyboard in this version.
 
 ## Credits and licenses
 
@@ -136,6 +138,7 @@ Keyboard first, every screen. Screen readers hear screen changes through a polit
 - Spelling list: SCOWL en_US by Kevin Atkinson, notice in `packs/source/scowl_COPYRIGHT.txt`.
 - Fonts: JetBrains Mono and Roboto Condensed, SIL Open Font License.
 - Research: NCES, NAEP High School Transcript Study. More in [`docs/research.md`](docs/research.md).
+- MCP server: [Model Context Protocol TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk), MIT.
 - Inspiration: MasterType (Lightning Software, 1981), Type Attack (Sirius Software, 1982), Office Keys.
 
 ## Run it locally

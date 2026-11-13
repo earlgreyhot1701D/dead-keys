@@ -24,10 +24,8 @@ test("after 3 idle seconds the game plays itself; Pause demo works; Tab stops it
   expect(bad.map((v) => `${v.id} x${v.nodes.length}`)).toEqual([]);
   const pause = page.getByRole("button", { name: "Pause demo" });
   await pause.click();
-  await expect(page.getByRole("button", { name: "Resume demo" })).toHaveAttribute(
-    "aria-pressed",
-    "true",
-  );
+  const resumeBtn = page.getByRole("button", { name: "Resume demo" });
+  await expect(resumeBtn).not.toHaveAttribute("aria-pressed"); // the label carries the state
   await expect(controls).toContainText("[Demo paused]");
   await page.getByRole("button", { name: "Resume demo" }).click();
   await expect(controls).toContainText("[Demo playing]");

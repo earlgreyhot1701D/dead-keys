@@ -57,3 +57,7 @@ export function isControl(target) {
   const tag = typeof target?.tagName === "string" ? target.tagName.toUpperCase() : "";
   return CONTROL_TAGS.has(tag) || target?.isContentEditable === true;
 }
+
+/** The tab title: the screen's name, then the game, e.g. "Settings · Dead Keys" (WCAG 2.4.2). */
+export const tabTitle = (screen) =>
+  screen?.title && screen.title !== "Dead Keys" ? `${screen.title} · Dead Keys` : "Dead Keys";

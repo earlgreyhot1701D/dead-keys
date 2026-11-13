@@ -36,3 +36,11 @@ test("a change saves at once; a value that is not a pack puts the choice back", 
     assert.deepEqual(ctx.log, [["pack", "spanish"], ["refresh"]]);
   });
 });
+
+test("each pack name carries its language, so Español is spoken in Spanish (WCAG 3.1.2)", () => {
+  withFakeDocument(() => {
+    const node = packRow(ctxFor("general"));
+    const langs = findAll(node, (n) => n.tag === "option").map((o) => o.attrs.lang);
+    assert.deepEqual(langs, ["en", "es"]);
+  });
+});

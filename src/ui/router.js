@@ -3,7 +3,7 @@
 // to the screen's heading, speaks to the live region, and hands each screen a `ctx`.
 import { isHardwareKey, showPhoneNotice } from "./components/phoneNotice.js";
 import { el } from "./dom.js";
-import { createNav, escapeAction } from "./nav.js";
+import { createNav, escapeAction, tabTitle } from "./nav.js";
 import { createNoticeSlot } from "./noticeSlot.js";
 
 /** State keys whose change redraws the current screen, unless the screen lists its own. */
@@ -82,6 +82,7 @@ export function mountRouter({ root, live, screens, app, start = "title", doc = d
     const keep = doc.activeElement?.getAttribute?.("data-focus-id");
     const node = screen.render(ctx());
     screenSlot.replaceChildren(node);
+    if ("title" in doc) doc.title = tabTitle(screen); // each screen names the tab (WCAG 2.4.2)
     shown = app.state;
     if (focusHeading) {
       focusTitle();

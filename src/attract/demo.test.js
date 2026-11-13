@@ -75,7 +75,7 @@ test("Pause demo stops it and says so; Resume demo starts it again", () => {
   const btn = findAll(demo.controls, (n) => n.tag === "button")[0];
   btn.click();
   assert.equal(demo.running(), false);
-  assert.equal(btn.attrs["aria-pressed"], "true");
+  assert.equal(btn.attrs["aria-pressed"], undefined); // the changing label carries the state (a11y audit)
   assert.equal(labelText(btn), DEMO_COPY.resume);
   assert.equal(statusText(demo), `[${DEMO_COPY.paused}]`);
   btn.click();

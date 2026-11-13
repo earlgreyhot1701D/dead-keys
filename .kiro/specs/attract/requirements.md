@@ -6,7 +6,7 @@ PRD: "after ~15s idle on the title screen, a recorded run plays (alternating mec
 
 1.1 The title shows the still frame first. After 3 seconds with no key, click or scroll, the real game plays itself behind the panel. (The PRD said about 15; Shara cut it to 3 on Nov 13, since the moving game explains itself.)
 1.2 While it plays, the header shows "[Demo playing]" and a "Pause demo" button. Before and after, both are hidden.
-1.3 Any key (except on the demo's own button), click or scroll stops the demo, puts the still frame back and starts the 15-second wait again. A start key still starts the game.
+1.3 Any key (except on the demo's own button), click or scroll stops the demo, puts the still frame back and starts the 3-second wait again (IDLE_MS, Req 1.1). A start key still starts the game.
 
 ## Req 2: what plays
 

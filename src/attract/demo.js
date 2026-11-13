@@ -36,7 +36,7 @@ export function createDemo(
   const label = el("span", {}, DEMO_COPY.pause);
   const pauseBtn = el(
     "button",
-    { type: "button", class: "btn demo-pause", "aria-pressed": "false", onClick: () => toggle() },
+    { type: "button", class: "btn demo-pause", onClick: () => toggle() }, // the label says the state
     label,
   );
   const controls = el("div", { class: "demo-controls", hidden: true }, [status, pauseBtn]);
@@ -52,7 +52,6 @@ export function createDemo(
   const show = (paused) => {
     status.textContent = `[${paused ? DEMO_COPY.paused : DEMO_COPY.playing}]`;
     label.textContent = paused ? DEMO_COPY.resume : DEMO_COPY.pause;
-    pauseBtn.setAttribute("aria-pressed", paused ? "true" : "false");
   };
   function newRound(n) {
     const mechanic = DEMO_MECHANICS[n % DEMO_MECHANICS.length];
