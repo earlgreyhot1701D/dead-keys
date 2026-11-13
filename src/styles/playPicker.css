@@ -36,3 +36,24 @@
     grid-template-columns: 1fr;
   }
 }
+/* The Words choice (spanish Req 2) sits in the rules panel's empty right side, so the page
+   keeps its height at 1280x720. */
+.picker-rules {
+  position: relative;
+}
+.picker-rules .picker-pack {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  width: 260px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.picker-pack .hint {
+  flex-basis: 100%;
+}

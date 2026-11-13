@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "pack-check",
+      "trigger": "PostFileSave",
+      "enabled": true,
+      "description": "PRD G12 H4. Added Nov 13 2026 (Block 15). Runs the pack validator when a pack file under packs/ is saved. Lifecycle: retire when the packs are frozen (Block 16).",
+      "matcher": "(^|[\\\\/])packs[\\\\/][^\\\\/]+\\.json$",
+      "action": {
+        "type": "command",
+        "command": "node scripts/check-pack.js"
+      }
+    }
+  ]
+}

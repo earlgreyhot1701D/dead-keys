@@ -1,0 +1,12 @@
+es_frequencywords_top8000.txt
+  The first 8,000 lines of content/2018/es/es_50k.txt from FrequencyWords
+  (github.com/hermitdave/FrequencyWords), word column only, most frequent first. Built from
+  OpenSubtitles 2018. Content license: CC BY-SA 4.0 (creativecommons.org/licenses/by-sa/4.0/).
+  Copied Nov 13 2026. packs/spanish.json is made from it and is shared under the same license.
+
+es_spelled.txt
+  The words of es_frequencywords_top8000.txt that the Spanish Hunspell dictionary accepts, made
+  once with nspell 2.1.5 and dictionary-es 4.0.0 (wooorm/dictionaries, from the LibreOffice
+  Spanish dictionary, GPL-3.0 OR LGPL-3.0 OR MPL-1.1). Used only as a spelling check, the way
+  scowl_en_US.txt is for the English pack: it drops names and English words from subtitles.
+  Neither tool is a dependency of the game.

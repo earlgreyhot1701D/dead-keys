@@ -6,6 +6,7 @@ import { averageLength, paceWpm } from "../../engine/pace.js";
 import { GHOST_COPY } from "../../ghost/ghost.js";
 import { isValidSetting } from "../../storage/settings.js";
 import { termPage } from "../components/chrome.js";
+import { packRow } from "../components/packPick.js";
 import { el } from "../dom.js";
 import { ROUND_KINDS } from "./roundKinds.js";
 import { speedText } from "./settings.js";
@@ -135,7 +136,9 @@ export const playScreen = {
         el(
           "section",
           { class: "term-panel prose-panel picker-rules", "aria-label": "Rules for both games" },
-          [RULES, ESCAPE_LINE, GHOST_COPY.hint].map((t) => el("p", {}, t)).concat(speedRow(ctx)),
+          [RULES, ESCAPE_LINE, GHOST_COPY.hint]
+            .map((t) => el("p", {}, t))
+            .concat(speedRow(ctx), packRow(ctx)),
         ),
       ]),
     });

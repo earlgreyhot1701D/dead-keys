@@ -31,7 +31,8 @@ test("roundOptions: other rounds get exactly what round.js passed before, with n
   const said = [];
   for (const kind of ["falling", "corners", "practice"]) {
     const o = roundOptions(ROUND_KINDS[kind], ctxFor(said), 5);
-    assert.deepEqual(o, { items: pack.pools.words, ...ROUND_KINDS[kind], seed: 5, speed: 1.2 });
+    const want = { items: pack.pools.words, packId: "general", ...ROUND_KINDS[kind] };
+    assert.deepEqual(o, { ...want, seed: 5, speed: 1.2 });
   }
   const items = [{ id: "x", text: "fad" }];
   assert.equal(roundOptions({ ...ROUND_KINDS.practice, items }, ctxFor(said), 5).items, items);

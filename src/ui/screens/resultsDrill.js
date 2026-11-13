@@ -13,6 +13,7 @@ import { roundItems } from "./play.js";
 const packLabel = (r) => {
   if (r.drillSource === AI) return "PACK: AI WORDS"; // ai-drills copy table, decision 6
   if (r.packId === "specwave") return "PACK: SPEC WAVE"; // specwave copy table
+  if (r.packId === "spanish") return "PACK: ESPAÑOL"; // spanish copy table
   return roundItems() && !isDrill(r) ? "PACK: YOUR KEYS" : "PACK: GENERAL";
 };
 

@@ -30,6 +30,7 @@ export const ABOUT_PARAGRAPHS = Object.freeze([
   "The typing games that taught a generation are what this one grew from: MasterType (1981) and Type Attack (1982).",
   "Dead Keys also grew from Office Keys, my first Lovable build (August 2025), a typing practice app. This game carries over its ideas, not its code.",
   "The English word list comes from top-english-wordlists (github.com/david47k/top-english-wordlists), built from Google Books Ngrams, 1950 to 2012, under CC BY 3.0.",
+  "The Spanish word list comes from FrequencyWords (github.com/hermitdave/FrequencyWords), built from OpenSubtitles 2018, under CC BY-SA 4.0; that pack is shared under the same license.",
   "Dead Keys uses JetBrains Mono and Roboto Condensed, both under the SIL Open Font License.",
   "Dead Keys is for a QWERTY keyboard in this version.",
 ]);

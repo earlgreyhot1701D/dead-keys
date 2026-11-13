@@ -14,7 +14,7 @@ import {
 } from "./settings.js";
 import { vet } from "./vet.js";
 
-const KEYS = ["ai", "sound", "speed", "fingerColors", "privacySeen"];
+const KEYS = ["ai", "sound", "speed", "fingerColors", "privacySeen", "pack"];
 const basic = () =>
   JSON.parse(
     readFileSync(new URL("../../fixtures/normal/progress.basic.json", import.meta.url), "utf8"),
@@ -31,6 +31,7 @@ test("defaults: sound off, speed 0.7x (Shara, Nov 12: new typists start slow), A
     speed: 0.7,
     fingerColors: true,
     privacySeen: false,
+    pack: "general", // Block 15: English unless the player picks Español
   });
   assert.ok(Object.isFrozen(DEFAULTS));
   for (const [k, v] of Object.entries(DEFAULTS)) assert.equal(isValidSetting(k, v), true, k);
@@ -95,6 +96,7 @@ test("each field is judged alone: one bad field does not cost the good ones", ()
     speed: 0.7,
     fingerColors: false,
     privacySeen: false,
+    pack: "general",
   });
 });
 
@@ -124,6 +126,7 @@ test("it always returns a new object, and never changes its input", () => {
     speed: 2,
     fingerColors: false,
     privacySeen: true,
+    pack: "spanish",
   });
   const out = normalizeSettings(input);
   assert.notEqual(out, input);
@@ -181,4 +184,11 @@ test("withSetting refuses an unknown setting or a value that is not allowed", ()
   assert.throws(() => withSetting(DEFAULTS, "sound", "loud"), RangeError);
   assert.throws(() => withSetting(DEFAULTS, "speed", SPEED_MAX + 1), RangeError);
   assert.throws(() => withSetting(DEFAULTS, "ai", "yes"), RangeError);
+});
+
+test("pack (Block 15): English or Español only; anything else is English", () => {
+  assert.equal(isValidSetting("pack", "spanish"), true);
+  assert.equal(isValidSetting("pack", "klingon"), false);
+  assert.equal(normalizeSettings({ pack: "klingon" }).pack, "general");
+  assert.equal(normalizeSettings({ pack: "spanish" }).pack, "spanish");
 });

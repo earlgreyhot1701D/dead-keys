@@ -742,3 +742,7 @@ On Shara's instruction. Before the deploy, at `956ca98` with a clean tree: `npm 
 - Deployment: `https://dead-keys-emhvl7ndt-earlgreyhot1701ds-projects.vercel.app`, aliased to `https://dead-keys.vercel.app` (`vercel deploy --prod`).
 - Live check: `curl -sI https://dead-keys.vercel.app` returned `200 OK`; the live index.html loads `/assets/index-q8uk-VYd.js`, the same asset as local `dist/index.html`. Match.
 - Env vars (names only): `AWS_REGION` (Config, Production and Preview), `AWS_ROLE_ARN` (Config, Production and Preview). No AWS key exists.
+
+## Nov 13 2026: Block 15 part 1, Spanish pack and pack validator
+
+Built by Claude, to save credits; Kiro ran the checks, committed and deployed. Spec at `.kiro/specs/spanish/`. `packs/spanish.json` holds 1,400 words from FrequencyWords (OpenSubtitles 2018, CC BY-SA 4.0), filtered by a Spanish Hunspell spelling list (dictionary-es 4.0.0 via nspell, run once and kept as `packs/source/es_spelled.txt`; not a dependency) and `packs/blocklist-es.txt`, plus 21 written ¿…? / ¡…! words; ¿bilingüe? carries ü. The pack is CC BY-SA 4.0; the code stays MIT. A Words choice on Play (setting `pack`: `general` or `spanish`) applies to falling, corners and practice. The validator is `scripts/check-pack.js` with `src/packs/checkPack.js`, documented in `docs/pack-format.md`; hook H4 is `pack-check.json`. Spanish lessons S1 to S3 move to v2 (Shara, Nov 13). The MCP server is part 2.

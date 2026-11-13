@@ -1,7 +1,6 @@
 // The play screen (play Req 2 to 7): engine + loop + renderer + keys + dialogs + moments. Keys go
 // to the engine one at a time, only while no dialog is open. The loop stops when the round ends
 // or the screen is gone; an ended round is recorded (app.finishRound) and shown on results.
-import pack from "../../../packs/general.json" with { type: "json" };
 import { announceAll } from "../../a11y/announce.js";
 import { clockFor } from "../../drills/limits.js";
 import { LIVES_MAX } from "../../engine/config.js";
@@ -48,7 +47,8 @@ const tagOf = (n) => (n.tagName ?? n.tag)?.toLowerCase(); // a real element, or 
 
 function begin(ctx) {
   const kind = nextRound();
-  const r = createRound(roundOptions(kind, ctx)); // a drill's weights and live line: drillRound.js
+  const opts = roundOptions(kind, ctx); // the pack, a drill's weights, its line: drillRound.js
+  const r = createRound(opts);
   const doc = ctx.root?.ownerDocument ?? globalThis.document;
   const run = { state: r.state, loop: null };
   const clock = clockFor(kind, ctx.announce, (s) => step(endRound(s)));
@@ -60,7 +60,7 @@ function begin(ctx) {
     speed: r.state.speed,
     drill: kindSource(kind), // the HUD badge: built-in or AI (drills Req 4.1, ai-drills Req 4.1)
     limitMs: kind.limitMs, // the daily drill's clock counts down (daily Req 2)
-    ghost: kind.items ? null : prepareGhost(findGhost(ctx.state.progress, kind.mode, pack.id)),
+    ghost: kind.items ? null : prepareGhost(findGhost(ctx.state.progress, kind.mode, opts.packId)),
     say: ctx.announce, // "You passed your ghost." (ghost Req 2)
     onPause: () => step(pause(run.state)),
   });
@@ -72,7 +72,7 @@ function begin(ctx) {
   const finish = () => {
     stop();
     const now = Date.now();
-    const meta = { id: `round-${now}`, date: now, packId: kind.packId ?? pack.id, lessonId: null };
+    const meta = { id: `round-${now}`, date: now, packId: opts.packId, lessonId: null };
     const result = toResult(run.state, { ...meta, drillSource: kindSource(kind) });
     const keys = kind.items ? null : run.state.keystrokes; // a ghost is only from the pack's words
     const outcome = ctx.app.finishRound(result, localDay(now), null, keys);

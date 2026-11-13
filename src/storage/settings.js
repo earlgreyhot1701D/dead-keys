@@ -2,6 +2,7 @@
 // this file is where its fields, defaults and checks live. Saved with the rest of Progress through
 // saveClear.js. Pure; never throws on bad saved data, and never keeps a field it does not know.
 import { SPEED_MAX, SPEED_MIN } from "../engine/config.js";
+import { PACK_IDS } from "../packs/registry.js";
 
 /** The sound sets (PRD G2). Off by default; the sounds themselves arrive in Block 14. */
 export const SOUND_SETS = Object.freeze(["off", "typewriter", "arcade"]);
@@ -14,6 +15,7 @@ export const SOUND_SETS = Object.freeze(["off", "typewriter", "arcade"]);
  * @property {number} speed From SPEED_MIN to SPEED_MAX; passed to `createRound` in Block 7.
  * @property {boolean} fingerColors Finger colors on the keyboard.
  * @property {boolean} privacySeen The first-launch privacy card was dismissed (shell Req 4.2).
+ * @property {"general"|"spanish"} pack The words for Falling words, Four corners and Practice.
  */
 
 /** What a new player gets. */
@@ -23,6 +25,7 @@ export const DEFAULTS = Object.freeze({
   speed: 0.7, // new typists start slow; anyone can raise it on the picker (Shara, Nov 12)
   fingerColors: true,
   privacySeen: false,
+  pack: "general", // English (spanish Req 2)
 });
 
 const bool = (v) => typeof v === "boolean";
@@ -32,6 +35,7 @@ const CHECKS = {
   speed: (v) => typeof v === "number" && Number.isFinite(v) && v >= SPEED_MIN && v <= SPEED_MAX,
   fingerColors: bool,
   privacySeen: bool,
+  pack: (v) => PACK_IDS.includes(v),
 };
 
 /**

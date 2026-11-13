@@ -2,9 +2,9 @@
 // weights from the saved key stats at that moment (drills Req 3.2) and says where its words came
 // from in the live region once (drills Req 3.4, ai-drills Req 4.1). An AI drill's words arrive as
 // the kind's items (drillStart.js); every other round starts exactly as it did before Block 9.
-import pack from "../../../packs/general.json" with { type: "json" };
 import { dailySeed } from "../../drills/daily.js";
 import { drillItems, itemWeights } from "../../drills/weights.js";
+import { packFor } from "../../packs/registry.js";
 import { AI, isDrill } from "../components/drillLabel.js";
 
 /** The live lines when a drill starts (drills and ai-drills copy tables). */
@@ -32,7 +32,8 @@ export function kindSource(kind) {
 export function roundOptions(kind, ctx, seed = Date.now()) {
   const daily = kind.mode === "daily"; // the date is the seed: today's words, for everyone
   if (kind.say) ctx.announce(kind.say); // the daily drill and Spec Wave say how they work
-  const o = { items: pack.pools.words, ...kind, seed: daily ? dailySeed() : seed };
+  const pack = packFor(kind, ctx.state.settings); // English, or the pick (spanish Req 2)
+  const o = { items: pack.pools.words, packId: pack.id, ...kind, seed: daily ? dailySeed() : seed };
   o.speed = ctx.state.settings.speed;
   if (!isDrill(kind)) return o;
   ctx.announce(kindSource(kind) === AI ? AI_SAY : DRILL_SAY);
