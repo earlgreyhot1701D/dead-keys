@@ -1,6 +1,5 @@
-// The Lesson screen (lessons Req 3, 4, 7): the chosen lesson or test out, typed line by line
-// through line.js. Escape and Main menu pause into a dialog: Resume, or Leave lesson (nothing is
-// recorded, Req 4.5). The Check's last line records it (finishRound) and shows Lesson done.
+// The Lesson screen (lessons Req 3, 4, 7): a lesson or test out, line by line (line.js). Escape and
+// Main menu pause: Resume, or Leave (nothing recorded). The Check's last line records it (Req 4).
 import { PAUSE, SAY } from "../../lessons/copy.js";
 import { showDip } from "../../lessons/dip.js";
 import { generateLesson, generateTestOut } from "../../lessons/generate.js";
@@ -44,7 +43,8 @@ function begin(ctx) {
       onConfirm: () => ctx.go(where(to)),
     });
   };
-  const view = createLessonView({ id, kind, onMenu: () => run.ask("menu") });
+  const colors = ctx.state?.settings?.fingerColors !== false; // lessons-8b Req 7
+  const view = createLessonView({ id, kind, colors, onMenu: () => run.ask("menu") });
   run.view = view;
   run.draw = () => {
     const p = part();
@@ -60,7 +60,7 @@ function begin(ctx) {
   const startAt = () => {
     run.line = startLine(part().lines[run.lineNo], run.line ?? {});
     if (part().name === "check" && run.lineNo === 0) run.checkFrom = run.line.keystrokes.length;
-    ctx.announce(SAY.line(run.lineNo + 1, part().lines.length, part().lines[run.lineNo]));
+    view.say(ctx.announce, run.part, part().name, run.lineNo + 1, part().lines);
     run.draw();
   };
   run.advance = () => {

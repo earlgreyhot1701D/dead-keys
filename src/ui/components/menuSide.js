@@ -4,16 +4,18 @@
 // streak", which are not stored.
 import { COACH, MENU } from "../../lessons/copy.js";
 import { lessonById } from "../../lessons/ladder.js";
+import { capLabels } from "../../lessons/menuModel.js";
 import { recommend, whyLine } from "../../lessons/recommend.js";
 import { el } from "../dom.js";
 import { panelHead } from "./chrome.js";
+import { whatsThis } from "./glossary.js";
 import { dailyPanel } from "./menuDaily.js";
 import { modeName, NO_BESTS_LINE, setOn } from "./progressText.js";
 
 const REC = "Recommended next lesson";
 export const ALL_PASSED = Object.freeze({
-  title: "All letter lessons passed.",
-  line: "Capitals, punctuation and numbers are next.",
+  title: "All lessons passed.",
+  line: "Keep your keys sharp with the daily drill.",
 });
 
 /**
@@ -32,7 +34,11 @@ export function lessonPanel(p) {
           el(
             "span",
             { class: "rec-caps" },
-            l.keys.filter((k) => /^[a-z]$/.test(k)).map((k) => el("span", {}, k.toUpperCase())),
+            // Lessons 0 to 6: letters only, as Block 8a drew them; from 7, ⇧ and symbols too
+            (l.n <= 6
+              ? l.keys.filter((k) => /^[a-z]$/.test(k)).map((k) => k.toUpperCase())
+              : capLabels(l.id)
+            ).map((k) => el("span", {}, k)),
           ),
         ]),
         // Lesson 0 has no New keys part: its card line (the first card part) stands in.
@@ -100,13 +106,12 @@ export function renderMenuSide(ctx, now = new Date()) {
     dailyPanel(ctx, p, now),
     el("div", { class: "menu-stats" }, [
       best
-        ? tile(
-            "Best speed",
-            String(Math.round(best.wpm)),
-            "WPM",
+        ? tile("Best speed", String(Math.round(best.wpm)), "WPM", [
             [name, setOn(best.date)].filter(Boolean).join(", "),
-          )
-        : tile("Best speed", "--", "WPM", NO_BESTS_LINE),
+            " ",
+            whatsThis("WPM"),
+          ])
+        : tile("Best speed", "--", "WPM", [NO_BESTS_LINE, " ", whatsThis("WPM")]),
       tile("Current streak", String(streak), streak === 1 ? "DAY" : "DAYS", null),
     ]),
     el("div", { class: "menu-status" }, [

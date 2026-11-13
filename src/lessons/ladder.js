@@ -1,6 +1,6 @@
 // The lesson ladder (PRD G7; lessons Req 1): Lessons 0 to 13, each with its id, number, name,
-// group, new keys and whether it is built. 0 to 6 (the letters) are built in Block 8a; 7 to 13
-// show "Later". The ladder lives in code, not in the pack (design decision 1). Pure data.
+// group, new keys and whether it is built. 0 to 6 (the letters) were built in Block 8a, 7 to 13
+// in Block 8b. The ladder lives in code, not in the pack (design decision 1). Pure data.
 
 /**
  * @typedef {object} Lesson
@@ -22,7 +22,7 @@ const L = (n, name, group, keys, note = null) =>
     group,
     keys: Object.freeze(keys),
     note,
-    built: n <= 6,
+    built: true, // all of 0 to 13 since Block 8b
   });
 
 /** @type {readonly Lesson[]} */
@@ -49,6 +49,9 @@ export const LADDER = Object.freeze([
   L(12, "Real-world strings", "beyond", [], "Addresses, dates, money, codes"),
   L(13, "Common pairs", "beyond", ["th", "he", "in", "er", "an", "re", "on"], "(rollover)"),
 ]);
+
+/** The 26 capitals Lesson 7 adds (lessons-8b Req 1.2). */
+export const CAPITALS = Object.freeze([..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"]);
 
 const BY_ID = new Map(LADDER.map((l) => [l.id, l]));
 
@@ -77,6 +80,7 @@ export function learnedKeys(id) {
     if (l.n > n) break;
     for (const k of l.keys) if ([...k].length === 1) keys.add(k);
   }
+  if (n >= 7) for (const k of CAPITALS) keys.add(k); // Lesson 7's "Shift" means every capital
   return [...keys].sort();
 }
 
@@ -86,5 +90,5 @@ export const keysBefore = (id) => {
   return n === 0 ? [] : learnedKeys(LADDER[n - 1].id);
 };
 
-/** The built lessons, 0 to 6. */
+/** The built lessons: all of them since Block 8b. */
 export const BUILT = Object.freeze(LADDER.filter((l) => l.built));

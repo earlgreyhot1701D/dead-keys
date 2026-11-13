@@ -3,6 +3,7 @@
 import { PACK_IDS, PACK_LABELS, PACKS } from "../../packs/registry.js";
 import { isValidSetting } from "../../storage/settings.js";
 import { el } from "../dom.js";
+import { whatsThis } from "./glossary.js";
 
 /** The hint under the choice (spanish copy table). */
 export const PACK_HINT =
@@ -30,5 +31,7 @@ export function packRow(ctx) {
       ),
     ),
     el("span", { id: "pick-pack-hint", class: "hint" }, ` ${PACK_HINT}`),
+    " ",
+    whatsThis("dead key"),
   ]);
 }

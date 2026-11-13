@@ -5,7 +5,7 @@ import { test } from "node:test";
 import { SPEED_MAX, SPEED_MIN } from "../../engine/config.js";
 import { DEFAULTS } from "../../storage/settings.js";
 import { findAll, textOf, withFakeDocument } from "../fakeDom.js";
-import { AI_HINT, SPEED_SETTING_HINT, settingsScreen } from "./settings.js";
+import { AI_HINT, FINGER_HINT, SPEED_SETTING_HINT, settingsScreen } from "./settings.js";
 
 function ctxFor(settings = {}, extra = {}) {
   const log = [];
@@ -129,16 +129,16 @@ test("the AI switch says what leaves the browser, and Back goes back", () => {
   });
 });
 
-test("every setting that saves but does nothing yet says Not built yet, tied to its control", () => {
+test("every setting works now: none says Not built yet; Finger colors has its hint (8b)", () => {
   withFakeDocument(() => {
     const node = settingsScreen.render(ctxFor());
-    assert.equal(byId(node, "st-ai-later"), undefined, "AI drills work (Block 10)");
-    assert.equal(byId(node, "st-sound-later"), undefined, "sound works (Block 14)");
-    for (const id of ["st-fingerColors"]) {
-      const control = byId(node, id);
-      assert.ok(control.attrs["aria-describedby"].split(" ").includes(`${id}-later`), id);
-      assert.equal(textOf(byId(node, `${id}-later`)), "Not built yet");
+    for (const id of ["st-ai", "st-sound", "st-fingerColors"]) {
+      assert.equal(byId(node, `${id}-later`), undefined, id);
     }
+    assert.doesNotMatch(textOf(node), /Not built yet/);
+    const control = byId(node, "st-fingerColors");
+    assert.equal(control.attrs["aria-describedby"], "st-fingerColors-hint");
+    assert.equal(textOf(byId(node, "st-fingerColors-hint")), ` ${FINGER_HINT}`);
   });
 });
 
@@ -151,11 +151,9 @@ test("speed works now (Block 7): Starting speed, with its hint and no Not built 
   });
 });
 
-test("the Not built yet hints use their own class, not progress's .later (Block 7, Req 8.4)", () => {
+test("no setting uses progress's .later class (Block 7, Req 8.4)", () => {
   withFakeDocument(() => {
     const node = settingsScreen.render(ctxFor());
-    const hint = byId(node, "st-fingerColors-later");
-    assert.equal(hint.attrs.class, "hint later-hint");
     assert.equal(findAll(node, (n) => /(^| )later( |$)/.test(n.attrs?.class ?? "")).length, 0);
   });
 });

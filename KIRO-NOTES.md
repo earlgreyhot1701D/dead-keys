@@ -797,3 +797,19 @@ The reviewer and a11y-auditor ran once on Blocks 15 and 16 together (d57e68f) an
 | 40 skipped e2e tests | Low | The opt-in screenshot spec (`SCREENSHOTS=1`) |
 
 Block 15's file allowlist is in this file's Block 15 notes and in git (97ca361, e4126f5, 4d81f97). Also added in Block 16: `.github/workflows/ci.yml` (lint and unit tests on push; no secrets, no deploy).
+
+## Nov 13 2026: Block 8b, lessons 7 to 13 (Claude)
+
+Built by Claude in a copy of the repo, to save Kiro credits; spec in `.kiro/specs/lessons-8b/`, approved by Shara the same day.
+
+| Decision | Why |
+|---|---|
+| Lesson 7 teaches the opposite Shift and never checks it (Shara) | Browsers don't say which Shift was held when the letter arrives; a wrong guess would cost a player a miss they didn't make |
+| Lessons 7 to 13 reuse the 8a lesson shape (warm-up, new keys, mix, check) through `beyond.js` | Same pass rule, same recording, same screens; only the lines differ |
+| Lesson 12's strings are made up from templates | No real address or person in the game |
+| Number row shows from Lesson 8 (its `-`), not 9 as first drafted | `-` lives on the number row; the spec was changed to match |
+| The Lessons menu map keeps the mock's three letter rows | The number row wrapped in the map's width; the map counts letters |
+| Glossary on four spots, not on results | Results already explain WPM and accuracy under each tile |
+| `[WHY]` and `[TEST OUT]` stay as the mock writes them | Plain text, never focusable; changing them would change locked copy |
+| Reflow at 200% (8a deferral) not changed | fit.js scales the whole page, so nothing is cut off; logged for v2 |
+| The first line's announcement waits 50 ms | So the screen's heading is heard first (8a deferral) |

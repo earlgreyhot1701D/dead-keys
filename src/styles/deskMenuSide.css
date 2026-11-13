@@ -33,7 +33,7 @@
   margin-right: 5px;
   border: 1px solid var(--desk-rule);
   font-size: 16px;
-  color: var(--line);
+  color: var(--dim); /* unlit, and still 3:1 or better (lessons-8b Req 9.3) */
 }
 .lm-m.is-on {
   border-color: var(--rule);

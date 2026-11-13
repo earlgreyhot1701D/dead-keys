@@ -36,7 +36,7 @@ async function lesson0(page) {
   await expect(page.locator(".lm-row[aria-current=true]")).toContainText("Meet your keyboard");
   await page.keyboard.press("Enter");
   await h1(page, "LESSON 00 // MEET YOUR KEYBOARD").waitFor();
-  await expect(page.locator(".ls-coach-text")).toHaveText("Does your keyboard look like this?");
+  await expect(page.locator(".ls-coach-text")).toContainText("Does your keyboard look like this?");
   await page.keyboard.press("Enter"); // Yes
   await typeToDone(page);
 }

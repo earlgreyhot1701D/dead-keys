@@ -8,6 +8,7 @@ import {
   coachParts,
   FOOTER_LEFT,
   FOOTER_RIGHT,
+  FOOTER_RIGHT_OFF,
   fixHint,
   KEYS,
   lineCount,
@@ -15,11 +16,12 @@ import {
   STEP_NAMES,
   stepText,
 } from "../../lessons/copy.js";
-import { learnedKeys } from "../../lessons/ladder.js";
+import { learnedKeys, lessonById } from "../../lessons/ladder.js";
 import { el } from "../dom.js";
 import { hints, MAIN_MENU, termBar } from "./chrome.js";
 import { showAsk } from "./lessonAsk.js";
 import { createLessonKeyboard, legend } from "./lessonKeyboard.js";
+import { createSay } from "./lessonSay.js";
 
 /**
  * The desk frame: the shared header with the lesson pill as the h1 and a Main menu button (both
@@ -37,11 +39,15 @@ export function lessonFrame({ id, kind, onMenu, body, footRight }) {
     el("header", { class: "term-header ls-head" }, [
       el("span", { class: "ls-left" }, [
         name,
-        el("h1", { class: "pill ls-pill" }, pillText(id, kind)),
+        el("span", { class: "pill ls-pill", "aria-hidden": "true" }, pillText(id, kind)),
       ]),
       right,
     ]),
-    el("main", { id: "main", class: "ls-main" }, body),
+    // The h1 sits in <main> (lessons-8b Req 9.4); the header's pill is its visible twin.
+    el("main", { id: "main", class: "ls-main" }, [
+      el("h1", { class: "sr-only" }, pillText(id, kind)),
+      ...body,
+    ]),
     el("footer", { class: "term-footer ls-foot" }, [el("span", {}, FOOTER_LEFT), hints(footRight)]),
   ]);
 }
@@ -64,11 +70,13 @@ export function createSteps(kind, id) {
 }
 
 /**
- * @param {{ id: string, kind: "lesson"|"testout", onMenu: () => void }} o
+ * @param {{ id: string, kind: "lesson"|"testout", onMenu: () => void, colors?: boolean }} o
+ *   `colors`: the Finger colors setting; Lessons 0 to 6 always show them (PRD G7).
  * @returns {{ node: HTMLElement, show: (v: object) => void, ask: (onDone: () => void) => void,
  *   askKey: (e: KeyboardEvent) => boolean }} `ask`: Lesson 0's keyboard question.
  */
-export function createLessonView({ id, kind, onMenu }) {
+export function createLessonView({ id, kind, onMenu, colors = true }) {
+  const showColors = colors || lessonById(id).n <= 6;
   const steps = createSteps(kind, id);
   const coach = el("span", { id: "ls-coach-text", class: "ls-coach-text" });
   const count = el("span", { class: "ls-count" });
@@ -76,7 +84,7 @@ export function createLessonView({ id, kind, onMenu }) {
   const hint = el("span", { class: "ls-hint" });
   const acc = el("strong", {});
   const keys = el("strong", {});
-  const kb = createLessonKeyboard(learnedKeys(id));
+  const kb = createLessonKeyboard(learnedKeys(id), { colors: showColors });
   const under = el("p", { class: "ls-under" }, [
     hint,
     el("span", { class: "ls-meta" }, [
@@ -89,7 +97,7 @@ export function createLessonView({ id, kind, onMenu }) {
     id,
     kind,
     onMenu,
-    footRight: FOOTER_RIGHT,
+    footRight: showColors ? FOOTER_RIGHT : FOOTER_RIGHT_OFF,
     body: [steps.node, el("p", { class: "ls-coach" }, [coach, count]), slot, kb.node, legend()],
   });
   let partShown = null;
@@ -129,5 +137,6 @@ export function createLessonView({ id, kind, onMenu }) {
     steps.show(0);
     asking = showAsk({ coach, slot, onDone });
   };
-  return { node, show, ask, askKey: (e) => asking?.onKey(e) ?? false };
+  const say = createSay(id, kind); // part intro and line announcements (lessonSay.js)
+  return { node, show, ask, say, askKey: (e) => asking?.onKey(e) ?? false };
 }

@@ -2,11 +2,13 @@
 // keys; groups one space apart; a line ends on a group, never longer than MAX_LINE.
 import general from "../../packs/general.json" with { type: "json" };
 import lessonWords from "../../packs/lessonWords.json" with { type: "json" };
-import { createRng } from "../engine/rng.js";
+import { beyondMakers } from "./beyond.js";
 import { anchorOf } from "./fingers.js";
 import { keysBefore, learnedKeys, lessonById } from "./ladder.js";
+import { fill, MAX_LINE, pick, randomFrom, size } from "./lineKit.js";
 
-export const MAX_LINE = 28;
+export { MAX_LINE };
+
 export const CHECK_MIN = 50; // the Check's lines together, at least (Req 2.4)
 export const CHECK_WORDS = 6; // with this many words, the Check is real words only
 /** Lesson 0's typing lines, from the copy table (Req 6.2). Part 1 is the keyboard question. */
@@ -16,35 +18,6 @@ export const LESSON0_LINES = Object.freeze([
   "fj dk fd jk fjdk",
 ]);
 const LESSON0_PARTS = ["keyboard", "home", "fingers", "eyes"];
-
-/** A random-number function from a seed: each call gives the next value, 0 to below 1. */
-function randomFrom(seed) {
-  const rng = createRng(seed);
-  let state = rng.state;
-  return () => {
-    const r = rng.next(state);
-    state = r.state;
-    return r.value;
-  };
-}
-const pick = (rand, list) => list[Math.floor(rand() * list.length)];
-const size = (rand) => 2 + Math.floor(rand() * 3); // 2 to 4 keys
-
-/**
- * Fill one line with items, one space apart, never past MAX_LINE. With `spare`, the last 2 to 4
- * places get a short pattern, so a pattern line ends at exactly MAX_LINE.
- */
-function fill(item, spare = null) {
-  let line = "";
-  for (let i = 0, misses = 0; misses < 40; i++) {
-    const room = MAX_LINE - line.length - (line ? 1 : 0);
-    if (room < 2) break;
-    const next = spare && room <= 4 ? spare(room) : item(i);
-    if (next.length <= room) line = line ? `${line} ${next}` : next;
-    else misses++;
-  }
-  return line;
-}
 
 const letters = (keys) => keys.filter((k) => k !== " "); // a lesson's keys without space
 
@@ -111,7 +84,7 @@ function makers(id, rand) {
 
 /**
  * The four parts of a lesson (Req 2.4), or Lesson 0's (Req 6).
- * @param {string} id "L00" to "L06".
+ * @param {string} id "L00" to "L13".
  * @param {number} seed
  * @returns {{ id: string, kind: "lesson", parts: { name: string, lines: string[] }[] }}
  * @throws {RangeError} For a lesson that is not built.
@@ -123,7 +96,7 @@ export function generateLesson(id, seed) {
     const parts = LESSON0_PARTS.map((name, i) => ({ name, lines: lines[i] }));
     return { id, kind: "lesson", parts };
   }
-  const m = makers(id, randomFrom(seed));
+  const m = (lessonById(id).n >= 7 ? beyondMakers : makers)(id, randomFrom(seed));
   return {
     id,
     kind: "lesson",
@@ -138,12 +111,12 @@ export function generateLesson(id, seed) {
 
 /**
  * A test out (Req 4.2): the Check part only, generated for that lesson.
- * @param {string} id "L01" to "L06" (Lesson 0 has no test out).
+ * @param {string} id "L01" to "L13" (Lesson 0 has no test out).
  * @param {number} seed
  * @returns {{ id: string, kind: "testout", parts: { name: "check", lines: string[] }[] }}
  */
 export function generateTestOut(id, seed) {
   if (id === "L00" || !lessonById(id).built) throw new RangeError(`${id} has no test out`);
-  const m = makers(id, randomFrom(seed));
+  const m = (lessonById(id).n >= 7 ? beyondMakers : makers)(id, randomFrom(seed));
   return { id, kind: "testout", parts: [{ name: "check", lines: [m.check(), m.check()] }] };
 }

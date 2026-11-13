@@ -59,7 +59,7 @@ test("weak keys come from the heat map: enough data only, worst first, at most 3
 });
 
 test("every built lesson passed: none", () => {
-  const all = passed("L00", "L01", "L02", "L03", "L04", "L05", "L06");
+  const all = passed(...Array.from({ length: 14 }, (_, i) => `L${String(i).padStart(2, "0")}`));
   assert.equal(recommend(progress({ rounds: aRound, lessonsPassed: all })), null);
 });
 

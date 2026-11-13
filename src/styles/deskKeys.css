@@ -1,0 +1,40 @@
+/* Job: the lesson screens' Block 8b styles (lessons-8b Req 6, 7, 9): the number row, both Shift
+   keys, each key's finger initial, Finger colors off, and the boxed waiting letter. */
+/* The waiting letter is boxed as well as underlined, so it differs by more than color. */
+.desk-paper .ch-wait {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+.ls-row-num {
+  margin-left: -36px;
+}
+.ls-k.is-shift {
+  width: 96px;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+/* The finger's initial, small in the top-left corner, so a finger never shows by color alone. */
+.ls-fi {
+  position: absolute;
+  top: 3px;
+  left: 5px;
+  font-size: 11px;
+  font-weight: 400;
+  opacity: 0.85;
+}
+/* Finger colors off (Lessons 7 to 13 only): plain outlines and text, initials stay. */
+.desk .ls-kb.no-colors .ls-k {
+  border-color: var(--line);
+  color: var(--text);
+}
+.desk .ls-kb.no-colors .ls-k.is-learned {
+  border-color: var(--rule);
+}
+.desk .ls-kb.no-colors .ls-k.is-next {
+  border-color: var(--text);
+  color: var(--on-teal);
+}
+/* "What's this?" on the paper card reads in ink, not teal (axe: 1.27:1 on paper). */
+.desk-card .glossary-btn {
+  color: var(--paper-ink);
+}

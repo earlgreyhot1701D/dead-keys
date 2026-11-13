@@ -5,7 +5,7 @@ import { cardLabel, MENU } from "../../lessons/copy.js";
 import { lessonById } from "../../lessons/ladder.js";
 import { CARD_STATE, capLabels, legendText, mapKeys } from "../../lessons/menuModel.js";
 import { el } from "../dom.js";
-import { LESSON_ROWS } from "./lessonKeyboard.js";
+import { rowsFor } from "./lessonKeyboard.js";
 
 const dot = (cls) => el("span", { class: `lm-dot${cls}`, "aria-hidden": "true" });
 
@@ -14,13 +14,16 @@ export function lessonsMap(states, recommended) {
   const { lit, next, learned } = mapKeys(states, recommended);
   const legend = legendText(learned, next);
   const cls = (k) => `lm-m${lit.has(k) ? " is-on" : ""}${next.includes(k) ? " is-next" : ""}`;
-  const rows = LESSON_ROWS.filter((r) => r[0] !== " ").map((r, i) =>
-    el(
-      "div",
-      { class: `lm-kb-row lm-kb-row-${i}` },
-      r.map((k) => el("span", { class: cls(k) }, k)),
-    ),
-  );
+  // The letter rows, as the locked mock draws them (Block 8b's number row and ' / stay off it).
+  const rows = rowsFor(new Set(), false)
+    .filter((r) => r[0] !== " ")
+    .map((r, i) =>
+      el(
+        "div",
+        { class: `lm-kb-row lm-kb-row-${i}` },
+        r.map((k) => el("span", { class: cls(k) }, k)),
+      ),
+    );
   return el("section", { class: "lm-map", "aria-label": "Learned keys" }, [
     el("div", { class: "lm-kb", "aria-hidden": "true" }, rows),
     el("p", { class: "lm-legend" }, [

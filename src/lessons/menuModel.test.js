@@ -29,7 +29,7 @@ const progress = (passed = [], rounds = [{ id: "r", mode: "falling" }]) => ({
   lessonsPassed: passed,
 });
 
-test("states: passed, tested out, next (recommended), open, later", () => {
+test("states: passed, tested out, next (recommended), open; nothing is later since 8b", () => {
   const p = progress([
     { lessonId: "L00", how: "lesson" },
     { lessonId: "L01", how: "lesson" },
@@ -39,12 +39,12 @@ test("states: passed, tested out, next (recommended), open, later", () => {
   assert.equal(recommended, "L03");
   assert.deepEqual(
     LADDER.map((l) => states[l.id]),
-    ["passed", "passed", "testedOut", "next", "open", "open", "open", ...Array(7).fill("later")],
+    ["passed", "passed", "testedOut", "next", ...Array(10).fill("open")],
   );
   assert.equal(lessonStates(progress([], [])).recommended, "L00", "a new player: Lesson 0");
 });
 
-test("group counts: tested out counts; Beyond letters is LATER (the mock's screen D)", () => {
+test("group counts: tested out counts; Beyond letters counts too since 8b", () => {
   const { states } = lessonStates(
     progress([
       { lessonId: "L00", how: "lesson" },
@@ -55,7 +55,8 @@ test("group counts: tested out counts; Beyond letters is LATER (the mock's scree
   assert.equal(groupCount("home", states), "3 OF 4 PASSED");
   assert.equal(groupCount("top", states), "0 OF 2 PASSED");
   assert.equal(groupCount("bottom", states), "0 OF 1 PASSED");
-  assert.equal(groupCount("beyond", states), "LATER");
+  assert.equal(groupCount("beyond", states), "0 OF 7 PASSED");
+  assert.equal(groupCount("nowhere", states), "LATER"); // a group with nothing built
 });
 
 test("the map: passed lessons' keys lit, the recommended lesson's outlined, as the mock draws", () => {

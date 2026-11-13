@@ -19,7 +19,8 @@ function ask() {
 test("the question with Yes and No; Yes goes on", () => {
   withFakeDocument((doc) => {
     const a = ask();
-    assert.equal(textOf(a.coach), "Does your keyboard look like this?");
+    // the picture in words for a screen reader (lessons-8b Req 9.1)
+    assert.equal(textOf(a.coach), `Does your keyboard look like this? ${LESSON0.picture}`);
     assert.deepEqual(a.buttons().map(textOf), ["Yes", "No"]);
     assert.equal(doc.activeElement, a.buttons()[0]);
     for (const b of a.buttons()) assert.equal(b.getAttribute("aria-describedby"), "ls-coach-text");

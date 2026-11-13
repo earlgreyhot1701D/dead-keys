@@ -52,7 +52,11 @@ test("no saved data: dashes and the approved no-bests line, a zero streak", () =
       /Best speed--WPMNo personal bests yet\. A best needs 90% accuracy or better\./,
     );
     assert.match(text, /Current streak0DAYS/);
-    assert.equal(findAll(node, (n) => n.tag === "button").length, 1); // the daily Start only
+    // the daily Start, and "What's this?" for WPM (lessons-8b Req 8)
+    assert.deepEqual(
+      findAll(node, (n) => n.tag === "button").map((b) => b.attrs["aria-label"] ?? textOf(b)),
+      ["Start daily drill", "What's this: WPM"],
+    );
   });
 });
 
@@ -91,12 +95,12 @@ test("weak keys pick the lesson and name the keys", () => {
 });
 
 test("every built lesson passed: the copy-table title and line, no tag", () => {
-  const all = ["L00", "L01", "L02", "L03", "L04", "L05", "L06"].map(pass);
+  const all = Array.from({ length: 14 }, (_, i) => `L${String(i).padStart(2, "0")}`).map(pass);
   withFakeDocument(() => {
     const node = lessonPanel({ lessonsPassed: all, rounds: [{}], keys: [] });
     assert.equal(
       textOf(node),
-      "Recommended next lessonAll letter lessons passed.Capitals, punctuation and numbers are next.",
+      "Recommended next lessonAll lessons passed.Keep your keys sharp with the daily drill.",
     );
     assert.equal(findAll(node, (n) => n.tag === "h2").length, 1);
     assert.equal(findAll(node, (n) => n.tag === "button").length, 0); // information only
@@ -109,4 +113,16 @@ test("the main menu's right column shows the panel, not Not built yet", () => {
     assert.ok(t.startsWith("Recommended next lesson[L00]"));
     assert.ok(!t.startsWith("Recommended next lessonNot built yet"));
   });
+});
+
+test("from Lesson 7 on, the caps show ⇧ and symbols (lessons-8b)", () => {
+  const upTo = (n) => Array.from({ length: n }, (_, i) => pass(`L${String(i).padStart(2, "0")}`));
+  assert.match(
+    panelText({ lessonsPassed: upTo(7), rounds: [{}], keys: [] }),
+    /Lesson 7: Capitals⇧/,
+  );
+  assert.match(
+    panelText({ lessonsPassed: upTo(11), rounds: [{}], keys: [] }),
+    /Lesson 11: Symbols\$%&\(\)\/@#/,
+  );
 });

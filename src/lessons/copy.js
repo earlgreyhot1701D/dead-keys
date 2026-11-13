@@ -1,5 +1,4 @@
-// Every word the Lesson screen and Lesson done card say (lessons design: copy table, binding).
-// Kept in one place so the tests can hold each line to the table.
+// Every word the Lesson screen and Lesson done card say (lessons and lessons-8b copy tables).
 import { lessonById } from "./ladder.js";
 
 const two = (n) => String(n).padStart(2, "0");
@@ -35,6 +34,13 @@ export const COACH = Object.freeze({
     L04: "Index fingers reach up: left for R and T, right for Y and U.",
     L05: "Reach up from home: Q, W, E with your left hand; I, O, P with your right.",
     L06: "Reach down: Z, X, C, V, B with your left hand; N, M, comma and period with your right.",
+    L07: "Hold Shift with the other hand's pinky: right Shift for A, left Shift for J.",
+    L08: "Right pinky reaches for ' - : ? and \". Left pinky holds Shift for ! with A's finger.",
+    L09: "Reach up to the number row from home: 1 is A's finger, 4 and 5 are F's.",
+    L10: "Right hand reaches up: 6 and 7 are J's finger, 0 is your pinky's.",
+    L11: "Symbols are Shift plus a number or a key you know: $ is Shift and 4.",
+    L12: "Real-world strings: addresses, dates, money and codes. Slow is fine.",
+    L13: "Common pairs: let one key roll into the next, like a drumroll.",
   }),
 });
 /** The coach line for a part of a lesson. */
@@ -48,6 +54,8 @@ export const LESSON0 = Object.freeze({
   notUs:
     "Dead Keys teaches the US keyboard for now. Some keys may sit in other places on yours. You can still go on.",
   goOn: "Go on",
+  picture:
+    "The picture shows a US keyboard: the number row on top, then Q W E R T Y, then A S D F G H J K L, then Z X C V B N M.",
 });
 
 /** Split a coach line so its key letters can be drawn bold teal: [text, isKey][]. */
@@ -66,6 +74,8 @@ export const ACCURACY = "ACCURACY";
 export const KEYS = "KEYS";
 export const FOOTER_LEFT = "NO LIVES. NO TIMER. LESSONS PASS ON ACCURACY, NOT SPEED.";
 export const FOOTER_RIGHT = Object.freeze(["[ESC] PAUSE", "FINGER COLORS: ON"]);
+/** The footer with Finger colors off (Lessons 7 to 13, lessons-8b Req 7). */
+export const FOOTER_RIGHT_OFF = Object.freeze(["[ESC] PAUSE", "FINGER COLORS: OFF"]);
 
 export const PAUSE = Object.freeze({
   title: "Paused",

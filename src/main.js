@@ -41,6 +41,7 @@ import "./styles/resultsLog.css";
 import "./styles/share.css";
 import "./styles/desk.css";
 import "./styles/deskLesson.css";
+import "./styles/deskKeys.css";
 import "./styles/deskDone.css";
 import "./styles/deskMenu.css";
 import "./styles/deskMenuSide.css";

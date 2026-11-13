@@ -129,8 +129,8 @@ test("test out is the Check only, two lines, at least 50 characters", () => {
       assert.ok(t.parts[0].lines.join("").length >= CHECK_MIN);
     }),
   );
-  for (const id of ["L00", "L07", "L13"]) assert.throws(() => generateTestOut(id, 1), RangeError);
-  assert.throws(() => generateLesson("L07", 1), RangeError);
+  assert.throws(() => generateTestOut("L00", 1), RangeError); // Lesson 0 has no test out
+  assert.throws(() => generateLesson("L14", 1), RangeError);
 });
 
 test("words: lesson words for 1 to 3, the general pack's for 4 to 6, only learned keys", () => {

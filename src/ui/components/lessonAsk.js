@@ -16,12 +16,17 @@ export function showAsk({ coach, slot, onDone }) {
   const button = (label, onClick) =>
     el("button", { type: "button", class: "btn btn-term ld-btn", onClick }, label);
   const say = (line, buttons) => {
-    coach.replaceChildren(el("span", {}, line));
+    // The picture stays decorative; its words are here for a screen reader (lessons-8b Req 9.1).
+    const words = [el("span", {}, line)];
+    if (line === LESSON0.question)
+      words.push(el("span", { class: "sr-only" }, ` ${LESSON0.picture}`));
+    coach.replaceChildren(...words);
     slot.replaceChildren(el("div", { class: "desk-paper ls-ask" }, buttons));
     for (const b of buttons) b.setAttribute("aria-describedby", coach.getAttribute("id"));
     first = buttons[0];
     first.setAttribute("class", "btn btn-term ld-btn is-primary");
     first.focus();
+    globalThis.setTimeout?.(() => first?.focus(), 0); // again once the screen is on the page
   };
   say(LESSON0.question, [
     button(LESSON0.yes, onDone),

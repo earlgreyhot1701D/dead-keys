@@ -20,10 +20,10 @@ import {
   stepText,
 } from "./copy.js";
 
-const design = readFileSync(
-  new URL("../../.kiro/specs/lessons/design.md", import.meta.url),
-  "utf8",
-);
+// Block 8a's copy table, then Block 8b's (lessons-8b design), which adds Lessons 7 to 13.
+const design = ["lessons", "lessons-8b"]
+  .map((d) => readFileSync(new URL(`../../.kiro/specs/${d}/design.md`, import.meta.url), "utf8"))
+  .join("\n");
 /** Every row named `where` (the map and the copy table can both have one), joined. */
 const row = (where) => {
   const rows = design.split("\n").filter((l) => l.startsWith(`| ${where} |`));
@@ -102,4 +102,10 @@ test("the Lesson done card", () => {
   has("Card labels", "`LESSON {nn}`");
   assert.equal(cardLabel(3), "LESSON 03");
   assert.equal(nextLabel(4), "Next: Lesson 04");
+});
+
+test("Block 8b's words: the picture in words, and the footer with colors off", async () => {
+  const { FOOTER_RIGHT_OFF, LESSON0 } = await import("./copy.js");
+  has("Lesson 0, picture text", `\`${LESSON0.picture}\``);
+  has("Lesson footer, colors", `\`${FOOTER_RIGHT[1]}\`, \`${FOOTER_RIGHT_OFF[1]}\``);
 });

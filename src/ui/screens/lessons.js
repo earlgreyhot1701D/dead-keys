@@ -6,6 +6,7 @@ import { MENU } from "../../lessons/copy.js";
 import { LADDER, lessonById } from "../../lessons/ladder.js";
 import { GROUPS, groupCount, KEY_LABELS, lessonStates, STATE } from "../../lessons/menuModel.js";
 import { backButton, hints, MAIN_MENU, termBar } from "../components/chrome.js";
+import { whatsThis } from "../components/glossary.js";
 import { lessonsCard, lessonsMap } from "../components/lessonsMenuParts.js";
 import { el } from "../dom.js";
 import { chooseLesson } from "./lesson.js";
@@ -86,8 +87,9 @@ export const lessonsScreen = {
             "div",
             { class: "lm-list" },
             GROUPS.flatMap(([g, heading]) => [
-              el("p", { class: `lm-group${g === "beyond" ? " is-later" : ""}` }, [
-                el("span", {}, heading),
+              // A heading, not a paragraph (lessons-8b Req 9.4); "home row" explained (Req 8)
+              el("h2", { class: "lm-group" }, [
+                el("span", {}, g === "home" ? [heading, " ", whatsThis("home row")] : heading),
                 el("span", { class: "lm-count" }, groupCount(g, states)),
               ]),
               ...LADDER.filter((l) => l.group === g).map((l) => row(ctx, l, states[l.id], rows)),

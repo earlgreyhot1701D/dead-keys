@@ -4,7 +4,7 @@ import { SPEED_MAX, SPEED_MIN } from "../../engine/config.js";
 import { SAMPLE } from "../../sound/cues.js";
 import { synth } from "../../sound/synth.js";
 import { isValidSetting, SOUND_SETS } from "../../storage/settings.js";
-import { NOT_BUILT, panelHead, termPage } from "../components/chrome.js";
+import { panelHead, termPage } from "../components/chrome.js";
 import { el } from "../dom.js";
 import { renderDataSection } from "./settingsData.js";
 
@@ -28,11 +28,9 @@ export const speedText = (v) => `${v}×`;
 export const SPEED_SETTING_HINT =
   "Where wave 1 starts in Falling words and Four corners. Each wave gets a little faster.";
 
-/**
- * The small "Not built yet" line under a setting that saves now but does nothing until a later
- * block (finger colors: Block 8b). Speed works since Block 7, AI drills since 10, sound since 14.
- */
-const later = (id) => el("span", { id: `${id}-later`, class: "hint later-hint" }, NOT_BUILT);
+/** Finger colors' hint (lessons-8b design copy table): it works since Block 8b. */
+export const FINGER_HINT =
+  "Lessons 0 to 6 always show finger colors. This switch is for Lessons 7 to 13.";
 
 /** Change a setting only if the value is allowed; the screen never offers anything else. */
 function change(ctx, key, value) {
@@ -40,9 +38,9 @@ function change(ctx, key, value) {
   else ctx.refresh(); // put the control back to what is saved
 }
 
-function checkbox(ctx, key, label, hint, built = false) {
+function checkbox(ctx, key, label, hint) {
   const id = `st-${key}`;
-  const tied = [hint ? `${id}-hint` : null, built ? null : `${id}-later`].filter(Boolean);
+  const tied = hint ? [`${id}-hint`] : [];
   return el("p", { class: "set-row" }, [
     el("input", {
       type: "checkbox",
@@ -54,7 +52,6 @@ function checkbox(ctx, key, label, hint, built = false) {
     }),
     el("label", { for: id }, ` ${label}`),
     hint ? el("span", { id: `${id}-hint`, class: "hint" }, ` ${hint}`) : null,
-    built ? null : later(id),
   ]);
 }
 
@@ -74,7 +71,7 @@ export const settingsScreen = {
         el("h2", { id: "st-prefs" }, "Preferences"),
         el("span", { class: "flavor" }, "CH-84"),
       ),
-      checkbox(ctx, "ai", "AI drills", AI_HINT, true), // works since Block 10 (ai-drills Req 4.2)
+      checkbox(ctx, "ai", "AI drills", AI_HINT), // works since Block 10 (ai-drills Req 4.2)
       el("p", { class: "set-row" }, [
         el("label", { for: "st-sound" }, "Sound "),
         el(
@@ -117,7 +114,7 @@ export const settingsScreen = {
         shown,
         el("span", { id: "st-speed-hint", class: "hint" }, SPEED_SETTING_HINT),
       ]),
-      checkbox(ctx, "fingerColors", "Finger colors"),
+      checkbox(ctx, "fingerColors", "Finger colors", FINGER_HINT), // works since Block 8b
     ]);
     return termPage(ctx, {
       badgeText: "CONFIG",

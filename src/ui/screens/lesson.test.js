@@ -51,7 +51,9 @@ function typeAll(s, max = 2000) {
   for (let i = 0; i < max && byClass(s.view(), "ld-card").length === 0; i++) s.press(s.wait());
 }
 
-test("the Lesson screen draws the map's parts, with the pill as its h1", () => {
+const tick = () => new Promise((r) => setTimeout(r, 80)); // the first line is said a moment late
+
+test("the Lesson screen draws the map's parts, with the pill as its h1", async () => {
   const s = open("L03");
   try {
     const h1 = findAll(s.view(), (n) => n.tag === "h1")[0];
@@ -62,7 +64,12 @@ test("the Lesson screen draws the map's parts, with the pill as its h1", () => {
     assert.equal(byClass(s.view(), "ls-k").length, 30);
     assert.ok(textOf(s.view()).includes(FOOTER_LEFT));
     assert.ok(textOf(s.view()).includes("FINGER COLORS: ON"));
-    assert.match(s.log.said[0], /^Line 1 of 1: [ ;adfjkls]+$/); // warm-up: keys learned before L03
+    await tick();
+    // The part and its coach line, then the line (lessons-8b Req 9.6); warm-up keys before L03
+    assert.match(
+      s.log.said[0],
+      /^1\. WARM-UP\. Warm up on keys you know\. Line 1 of 1: [ ;adfjkls]+$/,
+    );
   } finally {
     cleanup();
   }
@@ -156,8 +163,10 @@ test("a test out with misses: Not yet, its own line, Again first; Escape goes to
   }
 });
 
-test("only built lessons can be chosen, and Lesson 0 has no test out", () => {
-  assert.throws(() => chooseLesson("L07"), RangeError);
+test("every lesson on the ladder can be chosen, and Lesson 0 has no test out", () => {
+  assert.doesNotThrow(() => chooseLesson("L07"));
+  assert.doesNotThrow(() => chooseLesson("L13", "testout"));
+  assert.throws(() => chooseLesson("L14"), RangeError);
   assert.throws(() => chooseLesson("L00", "testout"), RangeError);
   assert.throws(() => chooseLesson("L01", "drill"), RangeError);
 });
@@ -195,20 +204,23 @@ test("Play these keys is not offered on Not yet", () => {
   }
 });
 
-test("Lesson 0 (Req 6): the keyboard question, Enter takes Yes, three parts, then a pass", () => {
+test("Lesson 0 (Req 6): the keyboard question, Enter takes Yes, three parts, then a pass", async () => {
   const s = open("L00");
   const coach = () => textOf(byClass(s.view(), "ls-coach-text")[0]);
   try {
     const steps = byClass(s.view(), "ls-step").map((n) => n.textContent);
     assert.deepEqual(steps, ["[▶] 1. YOUR KEYBOARD", "2. HOME KEYS", "3. FINGERS", "4. EYES UP"]);
-    assert.equal(coach(), LESSON0.question);
+    assert.equal(coach(), `${LESSON0.question} ${LESSON0.picture}`); // the picture in words
     assert.equal(byClass(s.view(), "ls-k").length, 30, "the US keyboard is drawn");
     assert.equal(s.press("f"), false, "typing does nothing during the question");
     assert.equal(s.press("Escape"), true, "Escape pauses, with no line to lose");
     findAll(s.doc.querySelector("dialog[open]"), (n) => textOf(n) === PAUSE.resume)[0].click();
     assert.equal(s.press("Enter"), true);
     assert.equal(coach(), COACH.home);
-    assert.deepEqual(s.log.said, [SAY.line(1, 1, "fff jjj fjf jfj")]);
+    await tick();
+    assert.deepEqual(s.log.said, [
+      `2. HOME KEYS. ${COACH.home} ${SAY.line(1, 1, "fff jjj fjf jfj")}`,
+    ]);
     typeAll(s);
     assert.deepEqual(s.log.finished[0].pass, { lessonId: "L00", how: "lesson" });
     const card = textOf(byClass(s.view(), "ld-card")[0]);

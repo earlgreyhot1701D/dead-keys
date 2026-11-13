@@ -6,13 +6,14 @@ import { cardLabel, DONE, nextLabel } from "../../lessons/copy.js";
 import { keysItems } from "../../lessons/keysRound.js";
 import { lessonById } from "../../lessons/ladder.js";
 import { el } from "../dom.js";
+import { whatsThis } from "./glossary.js";
 import { createSteps, lessonFrame } from "./lessonView.js";
 
 /** The card's title: Tested out (a test out that passed), Passed, or Not yet. */
 export const doneTitle = (kind, passed) =>
   !passed ? DONE.notYet : kind === "testout" ? DONE.testedOut : DONE.passed;
 
-/** The next built lesson after this one, or null after Lesson 6. */
+/** The next built lesson after this one, or null after Lesson 13. */
 export function nextBuilt(id) {
   const n = lessonById(id).n + 1;
   if (n > 13) return null;
@@ -70,7 +71,7 @@ export function createLessonDone({ id, kind, passed, checkAccuracy, wpm, missed,
     el("h2", { id: "ld-title", class: "ld-title" }, doneTitle(kind, passed)),
     el("div", { class: "ld-stats" }, [
       stat(
-        DONE.checkAcc,
+        [DONE.checkAcc, " ", whatsThis("accuracy")],
         `${Math.floor(checkAccuracy * 100)}%`,
         id === "L00" ? DONE.lesson0Sub : DONE.passLine,
       ),

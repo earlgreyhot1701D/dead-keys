@@ -26,7 +26,7 @@ test("fourteen lessons, ids L00 to L13, names and new keys as PRD G7 lists them"
   assert.deepEqual(lessonById("L06").keys, [..."zxcvbnm,."]);
 });
 
-test("groups: home 0 to 3, top 4 and 5, bottom 6, beyond 7 to 13; built is 0 to 6", () => {
+test("groups: home 0 to 3, top 4 and 5, bottom 6, beyond 7 to 13; all built since Block 8b", () => {
   const ids = (g) => LADDER.filter((l) => l.group === g).map((l) => l.n);
   assert.deepEqual(ids("home"), [0, 1, 2, 3]);
   assert.deepEqual(ids("top"), [4, 5]);
@@ -34,9 +34,9 @@ test("groups: home 0 to 3, top 4 and 5, bottom 6, beyond 7 to 13; built is 0 to 
   assert.deepEqual(ids("beyond"), [7, 8, 9, 10, 11, 12, 13]);
   assert.deepEqual(
     BUILT.map((l) => l.n),
-    [0, 1, 2, 3, 4, 5, 6],
+    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
   );
-  for (const l of LADDER) assert.equal(l.built, l.n <= 6, l.id);
+  for (const l of LADDER) assert.equal(l.built, true, l.id);
 });
 
 test("learned keys: this lesson's and every earlier one's; space from Lesson 1 on", () => {
@@ -58,4 +58,18 @@ test("an id that is not on the ladder is a programmer error", () => {
   for (const bad of ["L14", "l01", "", "1", undefined]) {
     assert.throws(() => lessonById(bad), RangeError);
   }
+});
+
+test("learned keys beyond the letters (lessons-8b Req 1.2): capitals, then each lesson's keys", () => {
+  const has = (id, k) => learnedKeys(id).includes(k);
+  assert.ok(!has("L06", "A") && has("L07", "A") && has("L07", "Z"));
+  assert.ok(!has("L07", "?") && has("L08", "?") && has("L08", '"'));
+  assert.ok(has("L09", "5") && !has("L09", "6") && has("L10", "0"));
+  assert.ok(!has("L10", "$") && has("L11", "$") && has("L11", "#"));
+  assert.deepEqual(learnedKeys("L12"), learnedKeys("L11"));
+  assert.deepEqual(learnedKeys("L13"), learnedKeys("L11"));
+  assert.ok(
+    learnedKeys("L13").every((k) => k.length === 1),
+    "pairs are taught, not added as keys",
+  );
 });
