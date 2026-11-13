@@ -1,8 +1,9 @@
-// Results (play Req 7; mock screen 5 via the map). The round hands over its result with
-// `showResults` first. Enter plays the mode again, Escape: main menu, View progress: progress.
-// Dropped per the map: SESSION, PASS LINE, drill label, coach note, feedback link, SOUND.
-import { hints, menuButton, NOT_BUILT, scanlines, sysLine } from "../components/chrome.js";
+// Results (play Req 7; mock screen 5 via the map; share card: share Req 2). `showResults` comes
+// first. Enter: play again, Escape: menu. Dropped per the map: SESSION, PASS LINE, coach, SOUND.
+import { sharePieces } from "../../share/cardData.js";
+import { hints, menuButton, scanlines, sysLine } from "../components/chrome.js";
 import { breakdownPanel, milestonesPanel, statTiles } from "../components/resultsPanels.js";
+import { openShare } from "../components/shareDialog.js";
 import { el } from "../dom.js";
 import { chooseRound, roundItems } from "./play.js";
 import { againKind, modeBlock } from "./resultsDrill.js";
@@ -67,6 +68,8 @@ function playAgain(ctx) {
   ctx.replace(mode === "practice" && !keep ? "practice" : "round");
 }
 
+const share = (ctx) =>
+  openShare(document, el, sharePieces({ ...shown, progress: ctx.state.progress }));
 const button = (label, cls, onClick, extra = {}) =>
   el(
     "button",
@@ -119,13 +122,7 @@ export const resultsScreen = {
           button("Play again", "btn-primary", () => playAgain(ctx), {
             "data-focus-id": "rs-again",
           }),
-          el("div", { class: "later" }, [
-            button(SHARE, "", () => ctx.announce(`${SHARE}: not built yet`), {
-              "aria-disabled": "true",
-              "aria-describedby": "rs-share-note",
-            }),
-            el("span", { id: "rs-share-note", class: "later-note" }, NOT_BUILT),
-          ]),
+          button(SHARE, "", () => share(ctx), { "aria-haspopup": "dialog" }),
           button("View progress", "", () => ctx.go("progress")),
         ]),
       ]),

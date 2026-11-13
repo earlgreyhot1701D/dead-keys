@@ -706,3 +706,11 @@ Splits (allowed; each next to its source): `src/ui/screens/drillStart.js` (from 
 | AWS setup, golden set and hook H5, teardown doc, preview deploy | Batch B, with Shara | tasks 5 to 7 |
 
 Lesson for the write-up: one plain line of copy (the nudge) broke "no page scrolls" three times, at three sizes, for three different reasons. The fit test caught each one; a screenshot alone would have looked fine.
+
+## Nov 13 2026: Block 10, task 8 close-out
+
+Shara played an AI drill on the preview: the label read `[ DRILL: AI-GENERATED ]`, results read `PACK: AI WORDS`, and Play again made no second call. With AI drills off, she saw the nudge and `[ DRILL: BUILT-IN ]`. Block 10 PASS at `72c6c17`. Reviewer and a11y-auditor deferred to the Block 16 combined run.
+
+## Nov 13 2026: Block 11, share card
+
+Built by Claude, to save credits; Kiro ran the checks, committed and deployed. Spec at `.kiro/specs/share/`. The card is drawn in the browser on a 1200x630 canvas, and nothing is uploaded. The meta line uses the app's mode name (FALLING WORDS), not the mock's FALLING TARGETS. The Share button shows only where the browser can share files.

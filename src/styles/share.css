@@ -1,0 +1,27 @@
+/* The Share card window (share Req 2). The card is drawn at 1200 x 630 and shown scaled to fit,
+   so the preview is the exact picture that downloads. */
+dialog.share {
+  width: min(52rem, calc(100vw - 2rem));
+  max-width: none;
+}
+
+.share-frame canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1200 / 630;
+  border: 1px solid var(--rule);
+}
+
+.share-note {
+  margin: 0.75rem 0 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+/* Holds its line so a status appearing never moves the buttons. */
+.share-status {
+  min-height: 1.5em;
+  margin: 0.25rem 0 0;
+  color: var(--bright);
+}

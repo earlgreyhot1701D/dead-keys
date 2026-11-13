@@ -167,7 +167,7 @@ test("word log, more cleared, and the save status says what really happened", ()
   assert.equal(missedText(result({ totalKeystrokes: 10, correctChars: 10, keyDeltas: {} })), "0");
 });
 
-test("Enter plays the same mode again, Escape goes to the menu; Share card is not built yet", () => {
+test("Enter plays the same mode again, Escape goes to the menu; Share card opens a window", () => {
   for (const [mode, screen] of [
     ["corners", "round"],
     ["practice", "practice"],
@@ -182,9 +182,8 @@ test("Enter plays the same mode again, Escape goes to the menu; Share card is no
   assert.equal(resultsScreen.onKey(ctx, { key: "Escape" }), true);
   assert.deepEqual(log, [["go", "menu"]]);
   const share = findAll(node, (n) => n.tag === "button" && textOf(n) === SHARE)[0];
-  assert.equal(share.attrs["aria-disabled"], "true");
-  share.click();
-  assert.deepEqual(log.at(-1), ["say", "Share card: not built yet"]);
+  assert.equal(share.attrs["aria-haspopup"], "dialog");
+  assert.equal(share.attrs["aria-disabled"], undefined); // built now (share Req 2)
   const how = findAll(node, (n) => n.tag === "button" && textOf(n) === HOW_LINK)[0];
   how.click();
   assert.deepEqual(log.at(-1), ["go", "howWeCount"]);
