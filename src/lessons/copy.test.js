@@ -93,7 +93,9 @@ test("the Lesson done card", () => {
   has("Done, Not yet line", `\`${DONE.notYetLine}\``);
   has("Done, test out Not yet line", `\`${DONE.testOutNotYetLine}\``);
   has("Dip line", `\`${DONE.dip}\``);
-  has("Done buttons", `\`[ ${nextLabel(4).replace("04", "{nn}")} ]\`, \`[ ${DONE.again} ]\``);
+  has("Done buttons", `\`[ ${nextLabel(4).replace("04", "{nn}")} ]\`, \`[ ${DONE.play} ]\``);
+  has("Done buttons", `\`[ ${DONE.play} ]\`, \`[ ${DONE.again} ]\``);
+  has("Done, tested out line", `\`${DONE.testedOutLine}\``);
   has("Done buttons", `\`[ ${DONE.all} ]\``);
   has("Done footers", `\`${DONE.footNext.join("  ")}\``);
   has("Done footers", `\`${DONE.footAgain.join("  ")}\``);

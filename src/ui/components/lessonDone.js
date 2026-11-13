@@ -3,6 +3,7 @@
 // most; the dip line when Req 9 says; and the buttons. Enter takes the first button, Escape goes
 // to all lessons. Drawing only, with textContent; lesson.js records the lesson first.
 import { cardLabel, DONE, nextLabel } from "../../lessons/copy.js";
+import { keysItems } from "../../lessons/keysRound.js";
 import { lessonById } from "../../lessons/ladder.js";
 import { el } from "../dom.js";
 import { createSteps, lessonFrame } from "./lessonView.js";
@@ -36,7 +37,8 @@ const stat = (label, value, sub) =>
  * @param {string[]} o.missed Up to two keys, most missed first.
  * @param {boolean} o.saved
  * @param {boolean} o.dip
- * @param {{ next: (id: string) => void, again: () => void, all: () => void, menu: () => void }} o.go
+ * @param {{ next: (id: string) => void, again: () => void, all: () => void, menu: () => void,
+ *   play?: () => void }} o.go Play: "Play these keys", shown after a pass when there are words.
  * @returns {{ node: HTMLElement, first: HTMLElement, onKey: (e: KeyboardEvent) => boolean }}
  */
 export function createLessonDone({ id, kind, passed, checkAccuracy, wpm, missed, saved, dip, go }) {
@@ -49,11 +51,13 @@ export function createLessonDone({ id, kind, passed, checkAccuracy, wpm, missed,
     );
   const buttons = [
     next ? button(nextLabel(next.n), () => go.next(next.id), true) : null,
+    passed && go.play && keysItems(id) ? button(DONE.play, go.play) : null,
     button(DONE.again, go.again, !next),
     button(DONE.all, go.all),
   ].filter(Boolean);
   const lines = [
     passed ? null : kind === "testout" ? DONE.testOutNotYetLine : DONE.notYetLine,
+    passed && kind === "testout" ? DONE.testedOutLine : null,
     dip ? DONE.dip : null,
   ].filter(Boolean);
   const steps = createSteps(kind, id);

@@ -44,7 +44,7 @@ const tagOf = (n) => (n.tagName ?? n.tag)?.toLowerCase(); // a real element, or 
 function begin(ctx) {
   const kind = nextRound();
   const { speed } = ctx.state.settings;
-  const r = createRound({ ...kind, items: pack.pools.words, seed: Date.now(), speed });
+  const r = createRound({ items: pack.pools.words, ...kind, seed: Date.now(), speed });
   const doc = ctx.root?.ownerDocument ?? globalThis.document;
   const run = { state: r.state, loop: null };
   const stage = createStage(el, {

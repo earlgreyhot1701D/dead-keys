@@ -4,6 +4,7 @@
 import { PAUSE, SAY } from "../../lessons/copy.js";
 import { showDip } from "../../lessons/dip.js";
 import { generateLesson, generateTestOut } from "../../lessons/generate.js";
+import { keysItems } from "../../lessons/keysRound.js";
 import { lessonById } from "../../lessons/ladder.js";
 import { backspace, pauseLine, startLine, typeKey, waitingKey } from "../../lessons/line.js";
 import { accuracyOf, mostMissed, passes, passFor, toLessonResult } from "../../lessons/result.js";
@@ -12,6 +13,7 @@ import { createLessonDone } from "../components/lessonDone.js";
 import { createLessonView } from "../components/lessonView.js";
 import { el } from "../dom.js";
 import { localDay } from "../roundRecord.js";
+import { chooseRound } from "./play.js";
 import { isTyping } from "./round.js";
 
 let chosen = { id: "L01", kind: "lesson" };
@@ -82,14 +84,8 @@ function finish(ctx, run, id, kind) {
   const t = Date.now();
   const { keystrokes, activeMs } = run.line;
   const check = keystrokes.slice(run.checkFrom);
-  const result = toLessonResult({
-    id: `lesson-${t}`,
-    date: t,
-    lessonId: id,
-    kind,
-    keystrokes,
-    activeMs,
-  });
+  const meta = { id: `lesson-${t}`, date: t, lessonId: id, kind };
+  const result = toLessonResult({ ...meta, keystrokes, activeMs });
   const passed = passes(id, check);
   const dip = showDip(ctx.app.state.progress.rounds, result);
   const outcome = ctx.app.finishRound(result, localDay(t), passFor(id, kind, passed));
@@ -106,6 +102,10 @@ function finish(ctx, run, id, kind) {
       again: () => again(id, kind),
       all: () => ctx.go(ctx.has?.("lessons") ? "lessons" : "menu"),
       menu: () => ctx.go("menu"),
+      play: () => {
+        chooseRound("practice", keysItems(id)); // Play these keys: a calm round, these words
+        ctx.replace("round");
+      },
     },
   });
   const { n } = lessonById(id);

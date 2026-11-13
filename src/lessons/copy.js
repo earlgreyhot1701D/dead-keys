@@ -86,7 +86,9 @@ export const DONE = Object.freeze({
   noneSub: "no misses in this lesson",
   notYetLine: "Close. Try it again; going slower helps.",
   testOutNotYetLine: "The full lesson will get you there.",
+  testedOutLine: "You already know these keys. This lesson counts as done.",
   dip: "Speed often dips while your fingers relearn. It comes back faster.",
+  play: "Play these keys",
   again: "Again",
   all: "All lessons",
   footNext: Object.freeze(["[ENTER] NEXT LESSON", "[ESC] ALL LESSONS"]),
@@ -119,6 +121,6 @@ export const MENU = Object.freeze({
   later: "Not built yet",
   start: "Start lesson",
   testOut: "Test out",
-  testOutNote: "Test out: one check line. 95% skips the lesson.",
+  testOutNote: "Already type these keys? Test out: one line. 95% marks the lesson done.",
   footer: Object.freeze(["[UP / DOWN] SELECT", "[ENTER] START", "[T] TEST OUT", "[ESC] BACK"]),
 });

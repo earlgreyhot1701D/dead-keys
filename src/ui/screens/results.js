@@ -5,7 +5,7 @@
 import { hints, menuButton, NOT_BUILT, scanlines, sysLine } from "../components/chrome.js";
 import { breakdownPanel, milestonesPanel, statTiles } from "../components/resultsPanels.js";
 import { el } from "../dom.js";
-import { chooseRound } from "./play.js";
+import { chooseRound, roundItems } from "./play.js";
 
 export const HOW_LINK = "How we count every number";
 export const SHARE = "Share card";
@@ -62,9 +62,9 @@ function wordLogPanel({ result, log, outcome }) {
 }
 
 function playAgain(ctx) {
-  const mode = shown.result.mode;
-  chooseRound(mode);
-  ctx.replace(mode === "practice" ? "practice" : "round");
+  const [mode, keep] = [shown.result.mode, roundItems()]; // Play these keys plays them again
+  chooseRound(mode, keep);
+  ctx.replace(mode === "practice" && !keep ? "practice" : "round");
 }
 
 const button = (label, cls, onClick, extra = {}) =>

@@ -6,6 +6,7 @@ import { test } from "node:test";
 import { DONE, FOOTER_LEFT, PAUSE, SAY } from "../../lessons/copy.js";
 import { findAll, makeFakeDoc, textOf } from "../fakeDom.js";
 import { chooseLesson, lessonScreen, nextLesson } from "./lesson.js";
+import { chooseRound, nextRound, roundItems } from "./play.js";
 
 const cls = (n) => n.attrs?.class ?? "";
 const byClass = (root, c) => findAll(root, (n) => cls(n).split(" ").includes(c));
@@ -159,4 +160,37 @@ test("only built lessons can be chosen, and Lesson 0 has no test out", () => {
   assert.throws(() => chooseLesson("L07"), RangeError);
   assert.throws(() => chooseLesson("L00", "testout"), RangeError);
   assert.throws(() => chooseLesson("L01", "drill"), RangeError);
+});
+
+test("Play these keys: after a pass, a practice round of this lesson's words", () => {
+  const s = open("L01");
+  try {
+    typeAll(s);
+    const btn = findAll(s.view(), (n) => n.tag === "button" && textOf(n) === DONE.play)[0];
+    assert.ok(btn, "the button is on the card");
+    btn.click();
+    assert.deepEqual(s.log.go.at(-1), ["replace", "round"]);
+    const r = nextRound();
+    assert.equal(r.mode, "practice");
+    assert.ok(r.items.length >= 6 && r.items.every((i) => /^[asdfj]+$/.test(i.text)));
+    chooseRound("falling"); // any other way in plays the pack
+    assert.equal(roundItems(), null);
+    assert.equal(nextRound().items, undefined);
+  } finally {
+    cleanup();
+  }
+});
+
+test("Play these keys is not offered on Not yet", () => {
+  const s = open("L01", "testout");
+  try {
+    for (let i = 0; i < 2000 && byClass(s.view(), "ld-card").length === 0; i++) {
+      if (i % 3 === 0) s.press("q");
+      s.press(s.wait());
+    }
+    assert.ok(textOf(byClass(s.view(), "ld-card")[0]).includes(DONE.notYet));
+    assert.ok(!textOf(s.view()).includes(DONE.play));
+  } finally {
+    cleanup();
+  }
 });

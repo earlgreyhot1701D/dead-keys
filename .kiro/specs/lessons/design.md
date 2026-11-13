@@ -55,7 +55,7 @@ Everything a screen shows is decided below. The map says what each mock element 
 | `SPEED 18 WPM`, `any speed is fine` | Real WPM (lesson timing, Req 3.4) |
 | `KEEP PRACTICING h g`, `your most-missed keys here` | Real: up to two keys with the most misses in this lesson; none: the copy-table line |
 | Dip line | Real: only when Req 9 says |
-| `[ NEXT: LESSON 04 ]`, `[ AGAIN ]`, `[ ALL LESSONS ]` | Passed: as drawn (no next built lesson: drop Next). Not yet: `[ AGAIN ]` first, `[ ALL LESSONS ]` |
+| `[ NEXT: LESSON 04 ]`, `[ AGAIN ]`, `[ ALL LESSONS ]` | Passed: as drawn, with `[ PLAY THESE KEYS ]` after Next (decision 10; no next built lesson: drop Next). Not yet: `[ AGAIN ]` first, `[ ALL LESSONS ]` |
 | Footer | Real per state (copy table) |
 
 ### Main menu, recommended lesson panel (`mock/index.html` screen 2, right column top)
@@ -86,7 +86,7 @@ Everything a screen shows is decided below. The map says what each mock element 
 | Card parts, Lesson 0 | `1. Your keyboard. Is it this one?` / `2. Home keys. Find F and J.` / `3. Fingers. One color, one finger.` / `4. Eyes up. Passes when you finish.` |
 | Card, Later lessons | `Not built yet` |
 | Buttons | `[ Start lesson ]`, `[ Test out ]` |
-| Under the buttons | `Test out: one check line. 95% skips the lesson.` |
+| Under the buttons | `Already type these keys? Test out: one line. 95% marks the lesson done.` |
 | Ladder footer | `[UP / DOWN] SELECT`, `[ENTER] START`, `[T] TEST OUT`, `[ESC] BACK` |
 | Step names, Lessons 1 to 6 | `1. WARM-UP`, `2. NEW KEYS`, `3. MIX`, `4. CHECK` |
 | Step names, Lesson 0 | `1. YOUR KEYBOARD`, `2. HOME KEYS`, `3. FINGERS`, `4. EYES UP` |
@@ -116,8 +116,9 @@ Everything a screen shows is decided below. The map says what each mock element 
 | Done, Lesson 0 accuracy sub-line | `finishing passes Lesson 0` |
 | Done, Not yet line | `Close. Try it again; going slower helps.` |
 | Done, test out Not yet line | `The full lesson will get you there.` |
+| Done, tested out line | `You already know these keys. This lesson counts as done.` |
 | Dip line | `Speed often dips while your fingers relearn. It comes back faster.` |
-| Done buttons | `[ Next: Lesson {nn} ]`, `[ Again ]`, `[ All lessons ]` |
+| Done buttons | `[ Next: Lesson {nn} ]`, `[ Play these keys ]`, `[ Again ]`, `[ All lessons ]` |
 | Done footers | `[ENTER] NEXT LESSON  [ESC] ALL LESSONS`; not yet: `[ENTER] AGAIN  [ESC] ALL LESSONS` |
 | Live region | New line: `Line {n} of {m}: {text}`. Wrong key: `Wrong key. Type {key}.` Done: `Lesson {n} passed. Check accuracy {a}%.` / `Not yet. Check accuracy {a}%. 95% passes.` / `Tested out of lesson {n}.` |
 | Menu panel tag | `[L{nn}]` |
@@ -182,3 +183,4 @@ Every file under 150 lines, tests under 250. One job per file.
 7. **Lesson screens have no scanlines** (desk look); `chrome.js`'s scanlines are left out on these two screens only.
 8. **Main menu panel.** Information only (as drawn); Lessons opens the menu on the recommended lesson.
 9. **Batch A flags, decided by Shara and Claude, Nov 12.** Lesson 0's keys are F and J (its D and K lines are practice, not learned keys). Lesson 0 is never recommended for a weak key; it comes first only in order or for a new player. A home key's anchor is its hand's index key; F and J anchor each other. The Check is real words only when the lesson has at least 6 words (patterns like "sury" read as misspellings). `--paper-todo` is `#5f655f` (4.80:1; the mock's `#8a8f88` was 2.65:1). A lesson milestone reads "Lesson 3 passed", not the id (`src/engine/milestones.js`, one line). Dip counts lesson rounds only.
+10. **Play these keys, decided by Shara, Nov 12 (built by Claude).** After a passed lesson or test out, the done card offers `[ Play these keys ]`: a Practice round (falling, no lives lost to waves) whose words use only the keys learned so far (`wordsFor(id)`, `src/lessons/keysRound.js`; no button under 6 words, so never for Lesson 0). Play again on its results keeps the same words. Any other way into a round uses the pack. A passed test out also says `You already know these keys. This lesson counts as done.`, and the test out note under the menu buttons says what test out is for. Why: lessons taught keys the game never asked for, so a new typist went from F and J straight to every letter falling.

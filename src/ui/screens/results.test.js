@@ -18,7 +18,7 @@ import {
   topBandOnly,
 } from "../components/resultsPanels.js";
 import { findAll, textOf, withFakeDocument } from "../fakeDom.js";
-import { nextRound } from "./play.js";
+import { chooseRound, nextRound, roundItems } from "./play.js";
 import { HOW_LINK, overLine, resultsScreen, SHARE, showResults } from "./results.js";
 
 const ACCURACY_BAR = "Accuracy bar"; // the copy table's name for the bar panel (Req 10.1)
@@ -231,4 +231,15 @@ test("a round that earns several WPM bands shows only the highest one (Req 10.2)
   const { text } = draw({ outcome: outcome({ milestones: earned }) });
   assert.ok(text.includes("MILESTONE: 30 words per minute"));
   assert.ok(!text.includes("MILESTONE: 10 words") && !text.includes("MILESTONE: 20 words"));
+});
+
+test("Play again after Play these keys keeps the same words", () => {
+  const items = [{ id: "L01-k1", text: "sad", kind: "word", source: "lesson" }];
+  chooseRound("practice", items);
+  const { log, ctx } = draw({ result: result({ mode: "practice" }) });
+  resultsScreen.onKey(ctx, { key: "Enter", target: { tagName: "BODY" } });
+  assert.deepEqual(log, [["replace", "round"]]);
+  assert.equal(nextRound().items, items);
+  chooseRound("practice");
+  assert.equal(roundItems(), null);
 });

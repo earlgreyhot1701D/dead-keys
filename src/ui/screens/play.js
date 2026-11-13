@@ -17,18 +17,21 @@ export const ROUND_KINDS = Object.freeze({
   practice: { mode: "practice", mechanic: "falling", title: "Practice" },
 });
 let next = "falling";
+let items = null; // "Play these keys": a lesson's words in place of the pack; null: the pack
 
 /**
  * Say which round the round screen starts next (the router has no parameters, so the choice
  * waits here until the screen opens).
  * @throws {RangeError} For a kind that is not a round.
  */
-export function chooseRound(kind) {
+export function chooseRound(kind, list = null) {
   if (!Object.hasOwn(ROUND_KINDS, kind)) throw new RangeError(`"${kind}" is not a round`);
   next = kind;
+  items = list;
 }
-/** The round the round screen will start. */
-export const nextRound = () => ROUND_KINDS[next];
+/** The round the round screen will start, with its own items when it has them. */
+export const nextRound = () => (items ? { ...ROUND_KINDS[next], items } : ROUND_KINDS[next]);
+export const roundItems = () => items; // the next round's items (null: the pack), for Play again
 
 const AVG = averageLength(pack.pools.words);
 
