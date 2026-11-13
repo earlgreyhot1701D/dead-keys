@@ -3,6 +3,8 @@
 // Req 4.1), as the mock draws it, and Play again starts a drill again: a built-in one with fresh
 // weights, or an AI one on the same AI words with no new request (ai-drills Req 3.5; the words
 // stay in play.js's round items). Other rounds draw exactly as before.
+
+import { GHOST_COPY, raceLine } from "../../ghost/ghost.js";
 import { AI, drillBadge, isDrill } from "../components/drillLabel.js";
 import { el } from "../dom.js";
 import { roundItems } from "./play.js";
@@ -13,12 +15,23 @@ const packLabel = (r) => {
   return roundItems() && !isDrill(r) ? "PACK: YOUR KEYS" : "PACK: GENERAL";
 };
 
-/** "MODE: PRACTICE // PACK: GENERAL", with the drill badge under it for a drill. */
-export function modeBlock(r) {
+/** The ghost line under the mode line (ghost Req 3): the race, a new ghost, or nothing. */
+export function ghostLine(r, ghost) {
+  if (!ghost || roundItems()) return null; // Play these keys never raced or saved a ghost
+  const raced = ghost.raced === null ? null : raceLine(Math.round(r.wpm), Math.round(ghost.raced));
+  const line = [raced, ghost.saved ? GHOST_COPY.saved : null].filter(Boolean).join(" ");
+  return line ? el("p", { class: "rs-ghost" }, line) : null;
+}
+
+/** "MODE: PRACTICE // PACK: GENERAL", the drill badge under it for a drill, then the ghost line. */
+export function modeBlock(r, outcome = {}) {
   const line = el("p", { class: "rs-mode" }, `MODE: ${r.mode.toUpperCase()} // ${packLabel(r)}`);
-  if (!isDrill(r)) return line;
-  const badge = drillBadge(el, "rs-drill", r.drillSource === AI ? AI : undefined);
-  return el("div", { class: "rs-mode-col" }, [line, badge]);
+  const badge = isDrill(r)
+    ? drillBadge(el, "rs-drill", r.drillSource === AI ? AI : undefined)
+    : null;
+  const ghost = ghostLine(r, outcome.ghost);
+  if (!badge && !ghost) return line;
+  return el("div", { class: "rs-mode-col" }, [line, badge, ghost]);
 }
 
 /** The round kind Play again starts: a drill again for a drill, else the same mode. */

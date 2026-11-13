@@ -3,6 +3,7 @@
 // `persist` is false. Every failure is a result, never a crash: the round is still shown.
 import { validate } from "../../contract/validate.js";
 import { record } from "../engine/record.js";
+import { findGhost, ghostFrom, saveGhost } from "../ghost/ghost.js";
 
 /**
  * The player's local day, "YYYY-MM-DD", from their own clock.
@@ -29,11 +30,14 @@ export function createRoundRecord({ getState, adopt, persistNow, set }) {
      * @param {string} day The player's local day, "YYYY-MM-DD".
      * @param {{ lessonId: string, how: "lesson"|"testout" } | null} [pass] A lesson this round
      *   passed (lessons Req 4.4), handed to `record`.
+     * @param {object[] | null} [keystrokes] The round's keystrokes: a new best in a ghost mode
+     *   saves them as that mode's ghost (ghost Req 1).
      * @returns {{ recorded: boolean, saved: boolean, newBest: { wpm: number, old: number|null } | null,
      *   milestones: import("../../contract/types.js").Milestone[], previous: any }}
      *   `previous` is the player's last round in the same mode before this one, or null.
+     *   `ghost`: the wpm of the ghost raced (or null) and whether a new ghost was saved.
      */
-    finishRound(result, day, pass = null) {
+    finishRound(result, day, pass = null, keystrokes = null) {
       const before = getState().progress;
       const previous = before.rounds.findLast((r) => r.mode === result?.mode) ?? null;
       const none = { recorded: false, saved: false, newBest: null, milestones: [], previous };
@@ -46,6 +50,9 @@ export function createRoundRecord({ getState, adopt, persistNow, set }) {
         return none;
       }
       if (after === before) return none; // the same round twice: counted once (record.js)
+      const raced = findGhost(before, result.mode, result.packId);
+      const ghost = after.bests !== before.bests && ghostFrom(result, keystrokes);
+      if (ghost) after = saveGhost(after, ghost); // a new best becomes the ghost to race
       adopt(after);
       const old = before.bests[result.mode];
       return {
@@ -54,6 +61,7 @@ export function createRoundRecord({ getState, adopt, persistNow, set }) {
         newBest: after.bests === before.bests ? null : { wpm: result.wpm, old: old?.wpm ?? null },
         milestones: after.milestones.slice(before.milestones.length),
         previous,
+        ghost: { raced: raced?.wpm ?? null, saved: !!ghost },
       };
     },
   };

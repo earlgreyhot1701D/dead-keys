@@ -99,3 +99,13 @@
   padding-bottom: 0;
   border-bottom: 0;
 }
+/* The ghost race (ghost Reqs 2 and 3): the HUD box, and the results line under the mode line. */
+.hud-ghost .hud-ghost-lead {
+  margin-left: 8px;
+  color: var(--bright);
+}
+.rs-ghost {
+  margin: 0;
+  font-size: 14px;
+  color: var(--bright);
+}

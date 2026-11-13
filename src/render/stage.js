@@ -5,6 +5,7 @@ import { scanlines } from "../ui/components/chrome.js";
 import { createCorners } from "./corners.js";
 import { createCornersHud } from "./cornersHud.js";
 import { createFalling } from "./falling.js";
+import { createGhostHud } from "./ghostHud.js";
 import { logWords } from "./hud.js";
 import { createMoments, playMoments } from "./moments.js";
 import { createPlayHud } from "./playHud.js";
@@ -19,6 +20,7 @@ import { createPlayHud } from "./playHud.js";
  * @param {number} o.speed
  * @param {"built-in"|"ai"|null} [o.drill] A drill's source: the HUD shows its badge (falling only).
  * @param {number} [o.limitMs] A time limit: the HUD counts down (the daily drill).
+ * @param {object} [o.ghost] A ghost to race (from `prepareGhost`); `o.say` hears it passed.
  * @param {() => void} o.onPause The footer's pause button.
  */
 export function createStage(el, o) {
@@ -33,6 +35,8 @@ export function createStage(el, o) {
     drill,
     limitMs,
   });
+  const ghost = o.ghost ? createGhostHud(el, o.ghost, o.say) : null;
+  if (ghost) hud.header.children[0].append(ghost.node); // after TERMINAL 84, in both HUDs
   const moments = createMoments();
   let log = { words: [], breaches: 0 };
   const node = el("div", { class: "screen-frame play-frame" }, [
@@ -53,6 +57,7 @@ export function createStage(el, o) {
       log = logWords(log, events, before);
       field.update(state);
       hud.update(state);
+      ghost?.update(state);
     },
     /** Tell the footer whether Caps Lock is on (the round screen reads it from each key). */
     setCaps: (on) => hud.setCaps(on),

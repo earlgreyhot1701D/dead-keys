@@ -1,7 +1,9 @@
-// Job: the main menu's Daily drill panel (daily Req 3; locked mock, screen 2). Its words come
-// from saved rounds only: today's best daily speed, or a line saying today's words are ready.
-// The mock's ghost line and target pace wait for the ghost race (Block 13); the icon stays.
+// Job: the main menu's Daily drill panel (daily Req 3, ghost Req 4; locked mock, screen 2). Its
+// words come from saved data only: your daily ghost and its pace when you have one, else today's
+// best daily speed, or a line saying today's words are ready.
+import pack from "../../../packs/general.json" with { type: "json" };
 import { DAILY_MS, todayBest } from "../../drills/daily.js";
+import { findGhost, paceText, raceIt } from "../../ghost/ghost.js";
 import { timeText } from "../../render/hud.js";
 import { el } from "../dom.js";
 import { ghostIcon, panelHead } from "./chrome.js";
@@ -24,6 +26,9 @@ export const bestLine = (wpm) => `Today's best: ${wpm} WPM`;
  */
 export function dailyPanel(ctx, p, now = new Date()) {
   const best = todayBest(p.rounds, now);
+  const ghost = findGhost(p, "daily", pack.id); // your best daily run, raced in every daily drill
+  const line = ghost ? raceIt(ghost.wpm) : best === null ? DAILY_COPY.ready : bestLine(best);
+  const small = ghost ? `${paceText(ghost.wpm)} // ${DAILY_COPY.same}` : DAILY_COPY.same;
   return el("section", { class: "term-panel daily-panel", "aria-labelledby": "daily-title" }, [
     panelHead(
       el("span", { class: "daily-name" }, [
@@ -35,8 +40,8 @@ export function dailyPanel(ctx, p, now = new Date()) {
     el("div", { class: "daily-row" }, [
       el("span", { class: "ghost-box", "aria-hidden": "true" }, ghostIcon(26, 28)),
       el("div", { class: "daily-text" }, [
-        el("span", { class: "daily-line" }, best === null ? DAILY_COPY.ready : bestLine(best)),
-        el("span", { class: "daily-same" }, DAILY_COPY.same),
+        el("span", { class: "daily-line" }, line),
+        el("span", { class: "daily-same" }, small),
       ]),
       el(
         "button",

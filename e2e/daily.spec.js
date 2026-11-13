@@ -24,7 +24,10 @@ test("Start on the menu panel opens today's daily drill; it counts down and ends
   await endByPause(page);
   await expect(page.locator(".rs-mode")).toHaveText("MODE: DAILY // PACK: GENERAL");
   await page.keyboard.press("Escape");
-  await expect(page.getByRole("region", { name: "DAILY DRILL" })).toContainText("Today's best:");
+  // A first daily best also saves a ghost, which the panel races from then on (Block 13a).
+  await expect(page.getByRole("region", { name: "DAILY DRILL" })).toContainText(
+    /Race your ghost: \d+ WPM|Today's best:/,
+  );
 });
 
 test("the menu item Daily drill is built and opens the same round", async ({ page }) => {

@@ -718,3 +718,7 @@ Built by Claude, to save credits; Kiro ran the checks, committed and deployed. S
 ## Nov 13 2026: Block 12, daily drill
 
 Built by Claude, to save credits; Kiro ran the checks, committed and deployed. Spec at `.kiro/specs/daily/`. The seed is the local date as YYYYMMDD. It is a Falling words round with a 2-minute cap on active play, so pausing stops the clock. The clock lives in the UI (`src/drills/daily.js` `clockFor`, run by `round.js`), so there is no engine change. Practice moved from `round.js` to `menuRounds.js` at the line cap. The mock's ghost line and target pace are stubbed until Block 13. `e2e/flows.spec.js`: the "not built" flow became "every menu item is built", since Daily drill was the last unbuilt item.
+
+## Nov 13 2026: Block 13a, ghost race
+
+Built by Claude, to save credits; Kiro ran the checks, committed and deployed. Spec at `.kiro/specs/ghost/`. A new personal best in falling, corners or daily saves its keystrokes (up to 2,000) as that mode's GhostRun, one per mode and pack. The race compares letters typed right at the same moment of active play. There is no engine change: keystroke `t` was already active milliseconds. Play these keys never saves or races a ghost. The daily panel says "Race your ghost", not the mock's "yesterday's ghost", because the ghost is the best daily run. `e2e/daily.spec.js` now accepts the ghost line after a first daily best. Attract mode is Block 13b.

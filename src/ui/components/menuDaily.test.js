@@ -42,3 +42,10 @@ test("the ghost icon stays decorative until the ghost race (Block 13)", () => {
   assert.equal(box.attrs["aria-hidden"], "true");
   assert.ok(!/ghost/i.test(text));
 });
+
+test("with a daily ghost: race it, with its pace (ghost Req 4)", () => {
+  const ghosts = [{ mode: "daily", packId: "general", wpm: 36.2, keystrokes: [] }];
+  const t = withFakeDocument(() => textOf(dailyPanel({ go() {} }, { rounds: [], ghosts }, NOW)));
+  assert.ok(t.includes("Race your ghost: 36 WPM"));
+  assert.ok(t.includes("TARGET PACE: 181 CPM // SAME WORDS FOR EVERYONE TODAY"));
+});

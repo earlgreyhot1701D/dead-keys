@@ -100,7 +100,7 @@ export const resultsScreen = {
             ]),
             el("h1", {}, "DEAD KEYS // ROUND RESULTS"),
           ]),
-          modeBlock(r), // a drill's badge sits under the mode line (resultsDrill.js)
+          modeBlock(r, data.outcome), // a drill's badge, then the ghost line (resultsDrill.js)
         ]),
         el("div", { class: "rs-main" }, [
           el("div", { class: "rs-col" }, [

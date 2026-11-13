@@ -15,6 +15,7 @@ import {
 } from "../../engine/lifecycle.js";
 import { toResult } from "../../engine/result.js";
 import { createRound, key, pressEscape } from "../../engine/round.js";
+import { findGhost, prepareGhost } from "../../ghost/ghost.js";
 import { liveWpm } from "../../render/hud.js";
 import { startLoop } from "../../render/loop.js";
 import { createStage } from "../../render/stage.js";
@@ -57,6 +58,8 @@ function begin(ctx) {
     speed: r.state.speed,
     drill: kindSource(kind), // the HUD badge: built-in or AI (drills Req 4.1, ai-drills Req 4.1)
     limitMs: kind.limitMs, // the daily drill's clock counts down (daily Req 2)
+    ghost: kind.items ? null : prepareGhost(findGhost(ctx.state.progress, kind.mode, pack.id)),
+    say: ctx.announce, // "You passed your ghost." (ghost Req 2)
     onPause: () => step(pause(run.state)),
   });
   const stop = () => {
@@ -69,7 +72,8 @@ function begin(ctx) {
     const now = Date.now();
     const meta = { id: `round-${now}`, date: now, packId: pack.id, lessonId: null };
     const result = toResult(run.state, { ...meta, drillSource: kindSource(kind) });
-    const outcome = ctx.app.finishRound(result, localDay(now));
+    const keys = kind.items ? null : run.state.keystrokes; // a ghost is only from the pack's words
+    const outcome = ctx.app.finishRound(result, localDay(now), null, keys);
     showResults({ result, log: stage.log(), outcome });
     ctx.replace("results");
   };
