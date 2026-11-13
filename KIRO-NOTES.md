@@ -587,3 +587,56 @@ Reviewer: PASS, no High. a11y-auditor: PASS, no High (axe finds only part of the
 | a11y: "Paused." and "Out of lives." are spoken by the live region and again as the dialog opens | Open: Low, for Shara | `announce.js` |
 | a11y: Enter while the milestones scroll region has focus plays again; its name reads "[═]" aloud | Open: Low, for Shara | `results.js`, `resultsPanels.js` |
 | PASS-line items for Shara: screenshot sign-off on the four pairs at both sizes; playing a round on the preview (gameplay approved Nov 12) | For Shara | `docs/screens/` |
+
+## Nov 12 2026: Block 8a, lessons (letters), close-out (tasks 1 to 14)
+
+Built in Block 8a: the ladder (Lessons 0 to 13, 0 to 6 built), fingers, the early lesson words, the seeded lesson generator, the typing-line engine, the lesson result and the pass handed to `record()`, the recommendation and its Why line, the dip notice, the desk look, the Lesson screen, the Lesson done card, the Lessons menu, Lesson 0's keyboard question, the main menu's recommended lesson panel, How we count's Lessons section, Play these keys (Claude), and the e2e and screenshots. Commits: `554dd22` (Batch A), `d25f4e3` (Batch B), `4b7c2fc` (task 11), `1df79db` (11b, Claude), `abeb634` (tasks 12 and 13, Claude's blocker fixes, WPM rounding, lockfile sync). Previews: task 11, 11b and `dead-keys-1yyuzng0c-earlgreyhot1701ds-projects.vercel.app` (`dpl_5SLB6zp8WxDW3cf5JkJV9A92UesU`, Ready). No production deploy.
+
+Checks before the commit and deploy (Nov 12): `npm ci` exit 0; `npm run lint` clean (274 files); `npm test` 721 of 721; `node scripts/linecap.js` nothing over 250, the only source file over 150 is `scripts/check-fixtures.js` (151, Block 1); `npm run test:e2e` 67 passed, 34 skipped (opt-in screenshots and the like), 0 failed; `check:build` clean as part of `deploy:preview`.
+
+| Flag | Status | Where |
+|---|---|---|
+| Lesson 0's keys are F and J; L00 never recommended for a weak key; anchors; the Check uses real words only at 6+ words; `--paper-todo` `#5f655f` (4.80:1, the mock's was 2.65:1); milestone reads "Lesson 3 passed"; the dip counts lesson rounds only | Decided: design decision 9 | `ladder.js`, `recommend.js`, `generate.js`, `desk.css`, `milestones.js`, `dip.js` |
+| CSS split into `desk.css`, `deskLesson.css`, `deskDone.css`; copy in `src/lessons/copy.js`; the pill is the h1; accuracy shows `--` before the first key; Check accuracy rounds down; Again after a failed test out repeats the test out; L03 coach line from the copy table | Accepted by Shara (Batch B) | `src/styles/desk*.css`, `copy.js`, `lessonView.js`, `lessonDone.js` |
+| Task 11 split files `lessonsMenuParts.js`, `deskMenu.css`, `deskMenuSide.css` (line cap) | Built as flagged; the two CSS files are on the allowlist, `lessonsMenuParts.js` is not named there (corrected after the reviewer's gate note) | `src/ui/components/`, `src/styles/` |
+| Task 11 choices: `{n} OF {m} PASSED` on every group; key labels as the mock writes them; the map's NEXT legend hidden when nothing is recommended; `text-transform: none` on the card and done titles | Built as flagged; not overruled | `lessons.js`, `lessonsMenuParts.js`, `deskMenu*.css` |
+| Play these keys: a Practice round on the lesson's words, no button under 6 words, Play again keeps the words | Decided: design decision 10 (Claude built it, 11b) | `keysRound.js`, `play.js`, `results.js`, `lessonDone.js` |
+| After Play these keys, results reads `PACK: YOUR KEYS` | Done (Shara, Batch C): copy-table row added, unit and e2e tests | `results.js`, `design.md` |
+| Lesson 0's panel line is its first card part ("Your keyboard. Is it this one?") | Accepted (decision 11) | `menuSide.js` |
+| Lesson 0's "picture of the US keyboard" is the lesson keyboard, F and J lit | Accepted (decision 11) | `lessonView.js` |
+| `lessonAsk.js` and its test split out of `lessonView.js` for the line cap | Accepted (decision 11) | `src/ui/components/lessonAsk.js` |
+| The done card's `.btn:hover` put a dark fill under paper ink (1.04:1, axe); hover now keeps the button's own fill, no new color | Accepted (decision 11) | `deskDone.css` |
+| Heading count tests 8 to 9 for How we count's new section; header comment trims and one merged line for the 150 cap | Accepted (decision 11) | `about.test.js`, `screens.spec.js`, `results.js`, `howWeCountText.js`, `lesson.js` |
+| Blocker 1: How we count no longer fit on one screen with nine sections | Fixed by Claude (decision 11): four columns, 13px body, no copy cut; `fit.spec.js` green at all three sizes | `pages.css` |
+| Blockers 2 and 3: Later rows (mock opacity .5/.6) and L00's space key (opacity .45) failed contrast | Fixed by Claude (decision 11): dimmed by `--dim` color with a dashed edge, never opacity; axe 0 serious or critical on every lesson state | `deskMenu.css`, `deskLesson.css` |
+| The Lessons menu kept its last selection within a visit (Req 5.5) | Fixed by Claude (decision 11): starts on the recommended lesson every visit | `lessons.js` |
+| The Progress screen's Lessons button still said Not built yet | Fixed by Claude (decision 11): it opens the Lessons menu | `progress.js`, `progress.test.js` |
+| Personal bests and the menu's Best speed tile showed raw WPM ("20.037849") | Fixed by Claude (demo review): rounded, with a test | `progressPanels.js`, `menuSide.js`, `progress.test.js` |
+| `npm ci` failed: lockfile out of sync | Fixed by Claude: only the two missing optional entries @emnapi/core and @emnapi/runtime 2.0.0-beta.2 (published Oct 15, past the two-week rule) added; Kiro verified `npm ci` exit 0 before the checks | `package-lock.json` |
+| `npm audit` reports high and moderate advisories (undici, path-to-regexp, minimatch, js-yaml, ajv, glob, @fastify/busboy), all under the pinned `vercel` CLI's own packages; `package.json` unchanged since `block-7` | Open: no action (dev tooling only, never in the build); for Shara, recheck when the CLI is next pinned | `node_modules/vercel` |
+| e2e: the bot types instantly, so lesson screenshots show speeds like 2,903 WPM | No action: a test artifact, real play times every key | `docs/screens/built-lesson-done*.png` |
+| Screenshot differences still visible against the mocks: the shared header is shorter (50px against 72px) and carries the terminal icon; Lesson 3's New keys has 2 lines (mock: "LINE 2 OF 3"); the paper text is slightly larger; the Lessons menu drops "Why these lessons" (per the map), writes "0 OF 2 PASSED" (mock "0 OF 2"), has a narrower key map and a taller card (the test out note); the done card sits near the top, not centered, and its four buttons wrap so All lessons takes its own row | Open: for Shara's visual sign-off at 1440x900 and 1366x768 | `docs/screens/` |
+| One earlier full e2e run had a flaky failure in two `keyboard.spec.js` title tests | No action: reruns green, and the final run before deploy was 67 of 67 | `e2e/keyboard.spec.js` |
+| PASS-line items for Shara: screenshot sign-off; play Lesson 1, a test out and Lesson 0 on the preview (Vercel toolbar off) | For Shara | preview URL above |
+
+Lesson for the write-up: three blockers (a page that stopped fitting, and two contrast fails copied faithfully from the mock) were found only by the e2e and axe run, not by unit tests or the map. Kiro stopped instead of picking colors or cutting copy; the rulings went into design decision 11.
+
+### Block 8a gate (task 14, Nov 12)
+
+Reviewer: PASS, no High or Medium. a11y-auditor: FAIL, two High (read from code and CSS, not run in a browser; axe finds only part of the problems, and full WCAG validation needs manual testing with assistive technologies). Neither agent had a shell; both used Kiro's check results in `node_modules/.cache/gate-8a.md`. Kiro fixed nothing.
+
+| Gate finding | Status | Where |
+|---|---|---|
+| Reviewer Low: `lessonsMenuParts.js` and `package-lock.json` are not named on the allowlist | Done (Shara): both added to `docs/current-block.md` | `docs/current-block.md` |
+| Reviewer Low: Req 10.4 has no written finding: `deploy:preview` calls bare `vercel`, `npm run` puts `node_modules/.bin` first, so it runs the pinned 65.5.0 | Open: recorded here; for Shara | `package.json` |
+| Reviewer Low: Check accuracy shown with `Math.floor(x * 100)` can read one point low from floating point (29/50 shows 57%); the pass test uses the raw ratio, so no pass is hidden | Open: Low, for Shara | `lessonDone.js`, `lesson.js` |
+| Reviewer Low: the dip compares with the first lesson round still saved; only matters if it fell out of the 200-round cap, which can't happen on rounds 2 and 3 | No action proposed | `dip.js` |
+| Reviewer: "no e2e leaves a lesson and checks nothing is recorded" | Correction: `e2e/flows.spec.js` "leaving a lesson goes to the Lessons menu and records nothing" covers it (green in the 67) | `flows.spec.js` |
+| a11y High: the global focus ring (`--text` teal) is about 1.3:1 on paper, so focus on Lesson 0's buttons, the done card's buttons and the Lessons card's buttons is hard to see (2.4.7, 1.4.11) | Fixed by Claude (decision 12): the ink ring, `--paper-ink`, on `.desk-card` and `.desk-paper`; an e2e checks the ring color | `deskDone.css`, `lessons.spec.js` |
+| a11y High: on the Lessons menu, Up/Down may lose focus: `select()` refreshes, then focuses the row from the old map (detached), so focus can drop to the page while `aria-current` moves (2.4.3, 4.1.2) | Fixed by Claude (decision 12): Up and Down focus the new render's row; an e2e checks focus | `lessons.js`, `lessons.spec.js` |
+| a11y Medium: Lesson 0's question points at a picture that is `aria-hidden` with no text equivalent; `showAsk`'s focus on Yes runs before the screen is attached, so focus lands on the h1 (Enter still takes Yes) | Deferred to Block 8b (decision 12) | `lessonAsk.js`, `lessonKeyboard.js` |
+| a11y Medium: part changes and their coach lines are not announced; the steps have no `aria-current="step"`; the first line is announced before the heading focus; the done result is heard twice | `aria-current="step"` fixed by Claude (decision 12, `lessonView.js`); the rest deferred to Block 8b (decision 12) | `lesson.js`, `lessonView.js` |
+| a11y Medium: the waiting letter and the typed run are both underlined and differ mainly by color; finger identity is color only, and Lesson 0's fingers line names no finger (1.4.1) | Deferred to Block 8b (decision 12) | `desk.css`, `copy.js` |
+| a11y Low: unlit letters on the Lessons key map use `--line`, about 2:1 | Deferred to Block 8b (decision 12) | `deskMenuSide.css` |
+| a11y Low: group headings are `<p>`; the pill h1 reads "//"; `[WHY]` and `[TEST OUT]` look like buttons; the lesson h1 sits in `<header>`, not `<main>` | Deferred to Block 8b (decision 12) | `lessons.js`, `menuSide.js`, `lessonView.js` |
+| a11y Low: reflow at 200% zoom not tested (fixed widths in the lesson CSS) | Deferred to Block 8b (decision 12) | `deskLesson.css`, `deskDone.css`, `deskMenu.css` |

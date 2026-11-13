@@ -158,6 +158,20 @@ test("Play these keys: only Lesson 1's keys fall, and Play again keeps them", as
   for (const w of await words(3)) expect(w).toMatch(/^[asdfj ]+$/);
 });
 
+test("focus: Up and Down keep focus on the selected row; the paper ring is ink", async ({ page }) => {
+  await toMenu(page);
+  await toLessons(page);
+  await page.locator(".lm-row[aria-current=true]").focus();
+  await page.keyboard.press("ArrowDown");
+  const focused = () => page.evaluate(() => document.activeElement?.getAttribute("data-focus-id"));
+  expect(await focused()).toBe("lm-L01");
+  await page.keyboard.press("ArrowDown");
+  expect(await focused()).toBe("lm-L02");
+  await page.getByRole("button", { name: "Start lesson" }).focus(); // on the paper card
+  const ring = await page.evaluate(() => getComputedStyle(document.activeElement).outlineColor);
+  expect(ring).toBe("rgb(31, 42, 44)"); // --paper-ink #1f2a2c, not teal on paper
+});
+
 test("axe: Lessons menu, Lesson 0's question, a lesson (normal, wrong key, paused), done", async ({
   page,
 }) => {

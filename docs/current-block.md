@@ -17,6 +17,8 @@ Blocks 1 to 4, 6 and 7 passed (tags `block-1` to `block-4`, `block-6`, `block-7`
 - `src/ui/roundRecord.js` and its test (one change: pass the pass through)
 - `src/ui/screens/lessons.js`, `lesson.js` (new), `menu.js`, `howWeCountText.js`, `results.js`, `round.js` (carry-in only), and their tests
 - `src/ui/components/lessonKeyboard.js`, `lessonView.js`, `lessonDone.js` (new), `menuSide.js`, `resultsPanels.js`, and their tests
+- `src/ui/components/lessonsMenuParts.js` (new; split from `lessons.js` at the line cap, task 11)
+- `package-lock.json` (sync only: the two missing optional @emnapi entries, Nov 12)
 - `src/a11y/announce.js` and its test (carry-in only)
 - `src/styles/desk.css`, `deskLesson.css`, `deskDone.css`, `desk.test.js` (new; split for the line cap), and their imports in `src/main.js`
 - `src/main.js` (routes)

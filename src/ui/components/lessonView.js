@@ -56,6 +56,7 @@ export function createSteps(kind, id) {
       items.forEach((li, i) => {
         const state = i < current ? "done" : i === current ? "now" : "todo";
         li.setAttribute("class", `ls-step is-${state}`);
+        li.setAttribute("aria-current", state === "now" ? "step" : "false");
         li.textContent = stepText(names[i], state);
       });
     },

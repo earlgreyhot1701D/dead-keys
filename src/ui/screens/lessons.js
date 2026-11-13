@@ -46,8 +46,8 @@ function row(ctx, l, state, rows) {
 
 function select(ctx, id, rows) {
   selected = id;
-  ctx.refresh();
-  rows.get(id)?.focus();
+  ctx.refresh(); // a new render: focus its row, not the old, detached one (a11y, Nov 12)
+  (lessonsScreen.rows ?? rows).get(id)?.focus();
 }
 
 /** @type {import("../router.js").Screen} */
