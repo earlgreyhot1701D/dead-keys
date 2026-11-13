@@ -28,7 +28,7 @@ When a player turns on AI drills in Settings, Drill these keys asks Amazon Nova 
 2. SHALL validate the body as a `DrillRequest` with the pack charset before anything else.
 3. SHALL apply, in order: a per-visitor limit of 30 calls an hour and a daily cap of 3,000 calls, in memory (approximate, PRD G8 known limit). A visitor is a hash of the forwarded IP with a per-instance salt; the IP is never stored or logged.
 4. SHALL call Bedrock Converse with model `us.amazon.nova-micro-v1:0`, `maxTokens` 300, through `api/bedrock.js`, the only file that imports the AWS SDK.
-5. SHALL discard the answer unless the stop reason is a normal end; then split it into lines, trim, drop empty lines, keep at most 8, and validate as a `DrillResponse` with the pack charset plus space. One bad character rejects the whole answer.
+5. SHALL discard the answer unless the stop reason is a normal end. Then (Shara, Nov 13, after the golden set showed long lines and numbered lists) the answer is a bag of words: each lowercased word is kept only if it is pack-charset letters, 2 to 12 long and not on `packs/blocklist.txt`; everything else is dropped word by word. The kept words are packed into lines of at most 80 characters, at most 8 lines, and validated as a `DrillResponse` with the pack charset plus space. No usable word gives `{ error: "empty" }`.
 6. SHALL return `{ lines, source: "ai" }` on success, or `{ error: "<short code>" }` with 200 for caps and model failures so the browser falls back quietly (429 only for the per-visitor limit).
 7. SHALL write one ledger line per call to the function log: time, input and output tokens, stop reason, latency, result code. No weak keys, no IP, no lines.
 8. SHALL give up on the Bedrock call after 3.5 seconds (abort signal) and answer `{ error: "timeout" }`, so a hung call never runs to the function's time limit (Kiro flag 4, Shara, Nov 12).
@@ -51,16 +51,22 @@ When a player turns on AI drills in Settings, Drill these keys asks Amazon Nova 
 ## Requirement 5: Golden set and hook
 
 1. `evals/golden.json` SHALL hold 6 weak-key profiles (single key, a home-row pair, a rare key like q, a top-row group, a bottom-row group, mixed with high WPM).
-2. `evals/run.js` SHALL call the same prompt and Bedrock path for each profile and pass only when every answer: ends normally, has 1 to 8 lines of at most 80 characters, passes the charset, and at least half its words contain a weak key. It prints one line per profile and a total.
+2. `evals/run.js` SHALL call the same prompt and Bedrock path for each profile and pass only when every answer ends normally and, after the route's cleaning (Req 2.5), has at least `DRILL_MIN_WORDS` (8) different words with a weak key: the words a drill actually keeps, since the drill round narrows AI words to weak-key words the same way as built-in ones (drills decision 5; Shara, Nov 13). The share of weak-key words is printed for watching, not judged.
 3. Hook H5 (`.kiro/hooks/golden-set.json`): on save of `api/prompt.js`, run `node evals/run.js`. Retire when the AI layer passes (PRD G12).
 
-## Requirement 6: AWS setup (Kiro through Shara's AWS CLI, Shara for the key)
+## Requirement 6: AWS setup, no IAM user and no keys (Vercel OIDC federation; Shara, Nov 13)
 
-0. Bedrock model access is automatic for serverless models since Oct 2025 (the console's Model access page is retired). Nova Micro is an Amazon model, so nothing is enabled in the console.
-1. Kiro SHALL create an IAM user `dead-keys-drill` with one inline policy allowing only `bedrock:InvokeModel` and `bedrock:Converse` on the Nova Micro inference profile and its foundation model ARNs in the profile's Regions (check the ARNs against AWS docs on the day).
-2. Kiro SHALL create an AWS Budgets alert at $5 a month, emailing Shara.
-3. Shara SHALL create the access key in the AWS console and enter `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_REGION` in the Vercel dashboard (Preview and Production) herself. Kiro never runs `create-access-key` and never reads, prints or commits a key.
-4. Kiro SHALL write `docs/aws-teardown.md`: the user, policy, Budgets alert and log groups, and the steps to delete them after judging (Jan 29, 2027).
+0. Bedrock model access is automatic for serverless models since Oct 2025. Nova Micro is an Amazon model, so nothing is enabled in the console.
+1. Account 831889733571 through the `default` CLI profile (Shara, Nov 13). Kiro SHALL create no IAM user and no access key.
+2. Kiro SHALL find the Vercel team slug and project name (`vercel project inspect`, `vercel teams ls`) and confirm the project's OIDC issuer mode is Team. If OIDC federation or Team issuer mode is off in the project's settings, stop and tell Shara where to switch it on.
+3. Kiro SHALL create the IAM OIDC identity provider for `https://oidc.vercel.com/<TEAM_SLUG>` with audience `https://vercel.com/<TEAM_SLUG>` (check for an existing one first).
+4. Kiro SHALL create the IAM role `dead-keys-drill` with:
+   - a trust policy allowing `sts:AssumeRoleWithWebIdentity` from that provider, with `StringEquals` `oidc.vercel.com/<TEAM_SLUG>:aud` = `https://vercel.com/<TEAM_SLUG>` and `StringLike` `oidc.vercel.com/<TEAM_SLUG>:sub` in [`owner:<TEAM_SLUG>:project:<PROJECT>:environment:preview`, `owner:<TEAM_SLUG>:project:<PROJECT>:environment:production`] (this project only, never development);
+   - one inline policy, `bedrock:InvokeModel` only (Converse uses it): on `arn:aws:bedrock:us-east-1:831889733571:inference-profile/us.amazon.nova-micro-v1:0`, and on the foundation-model ARNs in us-east-1, us-east-2 and us-west-2 with `StringEquals bedrock:InferenceProfileArn` = that profile ARN.
+5. Kiro SHALL create a $5 monthly AWS Budgets alert named "dead-keys", emailing cordero.lsj@gmail.com.
+6. Kiro SHALL add two Vercel env vars for Preview and Production through the Vercel CLI: `AWS_ROLE_ARN` (the role ARN, not a secret) and `AWS_REGION` = `us-east-1`. No AWS key exists anywhere.
+7. `api/_lib/bedrock.js` (Claude, Nov 13) trades the request's `x-vercel-oidc-token` header for role credentials with `fromWebToken` from `@aws-sdk/credential-provider-web-identity` 3.972.85 (Oct 29, already in the SDK's tree; pinned directly). It never logs the token. Locally it uses the default profile. Claude chose this over `@vercel/oidc-aws-credentials-provider`, whose two-week-old versions carry a high zod advisory and whose fix is one day old.
+8. Kiro SHALL write `docs/aws-teardown.md`: the role, its inline policy, the OIDC provider (shared only if another project uses it), the budget, the log groups, the two Vercel env vars, and the steps to delete them after judging (Jan 29, 2027).
 
 ## Requirement 7: Checks
 

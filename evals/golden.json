@@ -1,0 +1,63 @@
+{
+  "description": "Golden set for AI drills (PRD G8, G12; ai-drills Req 5.1). Six weak-key profiles, each a valid DrillRequest for the general pack. evals/run.js sends each through the real prompt and Bedrock path.",
+  "profiles": [
+    {
+      "name": "single key",
+      "request": { "packId": "general", "weakKeys": [{ "key": "e", "rate": 0.2 }], "recentWpm": 30 }
+    },
+    {
+      "name": "home-row pair",
+      "request": {
+        "packId": "general",
+        "weakKeys": [{ "key": "a", "rate": 0.18 }, { "key": "s", "rate": 0.15 }],
+        "recentWpm": 25
+      }
+    },
+    {
+      "name": "rare key q",
+      "request": { "packId": "general", "weakKeys": [{ "key": "q", "rate": 0.5 }], "recentWpm": 20 }
+    },
+    {
+      "name": "top-row group",
+      "request": {
+        "packId": "general",
+        "weakKeys": [
+          { "key": "r", "rate": 0.22 },
+          { "key": "t", "rate": 0.19 },
+          { "key": "y", "rate": 0.16 },
+          { "key": "u", "rate": 0.12 }
+        ],
+        "recentWpm": 35
+      }
+    },
+    {
+      "name": "bottom-row group",
+      "request": {
+        "packId": "general",
+        "weakKeys": [
+          { "key": "z", "rate": 0.4 },
+          { "key": "x", "rate": 0.3 },
+          { "key": "c", "rate": 0.2 },
+          { "key": "v", "rate": 0.15 },
+          { "key": "b", "rate": 0.1 }
+        ],
+        "recentWpm": 28
+      }
+    },
+    {
+      "name": "mixed, high WPM",
+      "request": {
+        "packId": "general",
+        "weakKeys": [
+          { "key": "p", "rate": 0.12 },
+          { "key": "k", "rate": 0.1 },
+          { "key": "w", "rate": 0.09 },
+          { "key": "m", "rate": 0.08 },
+          { "key": "g", "rate": 0.08 },
+          { "key": "h", "rate": 0.07 }
+        ],
+        "recentWpm": 95
+      }
+    }
+  ]
+}

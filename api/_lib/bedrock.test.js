@@ -3,7 +3,14 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { ConverseCommand } from "@aws-sdk/client-bedrock-runtime";
-import { BedrockTimeout, converse, converseInput, MODEL_ID, TIMEOUT_MS } from "./bedrock.js";
+import {
+  BedrockTimeout,
+  clientFor,
+  converse,
+  converseInput,
+  MODEL_ID,
+  TIMEOUT_MS,
+} from "./bedrock.js";
 import { buildPrompt } from "./prompt.js";
 
 const PROMPT = buildPrompt({ weakKeys: [{ key: "q", rate: 0.5 }], recentWpm: 20 });
@@ -18,7 +25,7 @@ test("Nova Micro, 300 tokens, the system and user text, and nothing else", () =>
     modelId: "us.amazon.nova-micro-v1:0",
     system: [{ text: PROMPT.system }],
     messages: [{ role: "user", content: [{ text: PROMPT.user }] }],
-    inferenceConfig: { maxTokens: 300, temperature: 0.7 },
+    inferenceConfig: { maxTokens: 300, temperature: 0.5 },
   });
 });
 
@@ -78,4 +85,36 @@ test("a hung call is aborted after the timeout and throws BedrockTimeout (Req 2.
     });
   await assert.rejects(converse(PROMPT, { send: hang, timeoutMs: 20 }), BedrockTimeout);
   assert.equal(signal.aborted, true);
+});
+
+test("with an OIDC token and a role, the client uses role credentials; otherwise the default chain", async () => {
+  const env = {
+    AWS_REGION: "us-east-1",
+    AWS_ROLE_ARN: "arn:aws:iam::123456789012:role/dead-keys-drill",
+  };
+  const viaRole = clientFor("header.payload.sig", env);
+  assert.equal(typeof viaRole.config.credentials, "function"); // a provider, not keys
+  assert.equal(await viaRole.config.region(), "us-east-1");
+  const localA = clientFor(null, env);
+  const localB = clientFor("token-without-role", { AWS_REGION: "us-east-1" });
+  assert.equal(localA, localB); // no token or no role: the one local client
+  assert.notEqual(viaRole, localA);
+});
+
+test("the token reaches send and nothing else", async () => {
+  let seen = null;
+  const send = async (_c, _o, token) => {
+    seen = token;
+    return {
+      output: { message: { content: [{ text: "quiz" }] } },
+      stopReason: "end_turn",
+      usage: {},
+    };
+  };
+  const out = await converse(
+    { system: "s", user: "u", temperature: 0.7, maxTokens: 300 },
+    { send, token: "t0k" },
+  );
+  assert.equal(seen, "t0k");
+  assert.ok(!JSON.stringify(out).includes("t0k"));
 });

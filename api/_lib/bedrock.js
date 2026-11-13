@@ -1,17 +1,38 @@
 // The only file that talks to AWS (PRD G3; ai-drills Req 2.4): one Bedrock Converse call to Nova
-// Micro. Credentials and region come from the environment (Vercel env vars Shara enters); nothing
-// here reads, prints or stores them. Tests pass a fake `send`, so no test reaches AWS.
+// Micro. On Vercel there are no AWS keys: the request's short-lived Vercel OIDC token is traded for
+// temporary credentials on the role in AWS_ROLE_ARN (ai-drills Req 6, Nov 13). Locally (the golden
+// set) the default AWS profile is used. Nothing here prints or stores a token or a credential.
+// Tests pass a fake `send`, so no test reaches AWS.
 import { BedrockRuntimeClient, ConverseCommand } from "@aws-sdk/client-bedrock-runtime";
+import { fromWebToken } from "@aws-sdk/credential-provider-web-identity";
 
 export const MODEL_ID = "us.amazon.nova-micro-v1:0";
 /** Give up on a call after this long, so a hung call never runs to the function's limit (Req 2.8). */
 export const TIMEOUT_MS = 3500;
 
-let client = null; // one client per instance, made on the first call
-const realSend = (command, options) => {
-  client ??= new BedrockRuntimeClient({});
-  return client.send(command, options);
-};
+let local = null; // the local client (default AWS profile), made on the first local call
+
+/**
+ * The client for one call: with a Vercel OIDC token and AWS_ROLE_ARN, temporary role credentials
+ * (the token lives about two hours, so a new client per call); otherwise the default chain.
+ * @param {string|null} token The request's `x-vercel-oidc-token`, never logged.
+ */
+export function clientFor(token, env = process.env) {
+  const region = env.AWS_REGION || "us-east-1";
+  if (token && env.AWS_ROLE_ARN) {
+    const credentials = fromWebToken({
+      roleArn: env.AWS_ROLE_ARN,
+      webIdentityToken: token,
+      roleSessionName: "dead-keys-drill",
+      clientConfig: { region },
+    });
+    return new BedrockRuntimeClient({ region, credentials });
+  }
+  local ??= new BedrockRuntimeClient({ region });
+  return local;
+}
+
+const realSend = (command, options, token) => clientFor(token).send(command, options);
 
 /** Thrown when the call took longer than TIMEOUT_MS; the route answers { error: "timeout" }. */
 export class BedrockTimeout extends Error {
@@ -32,20 +53,24 @@ export const converseInput = (p) => ({
 /**
  * Ask the model once.
  * @param {{ system: string, user: string, temperature: number, maxTokens: number }} prompt
- * @param {{ send?: (command: ConverseCommand, options: { abortSignal: AbortSignal }) => Promise<object>, now?: () => number, timeoutMs?: number }} [o]
+ * @param {{ send?: (command: ConverseCommand, options: { abortSignal: AbortSignal }, token?: string|null) => Promise<object>, now?: () => number, timeoutMs?: number, token?: string|null }} [o]
  * @returns {Promise<{ text: string, stopReason: string|null, usage: { inputTokens: number, outputTokens: number }, ms: number }>}
  * @throws {BedrockTimeout} After timeoutMs; otherwise whatever the SDK throws (both become a quiet fallback).
  */
 export async function converse(
   prompt,
-  { send = realSend, now = Date.now, timeoutMs = TIMEOUT_MS } = {},
+  { send = realSend, now = Date.now, timeoutMs = TIMEOUT_MS, token = null } = {},
 ) {
   const start = now();
   const abort = new AbortController();
   const timer = setTimeout(() => abort.abort(), timeoutMs);
   let out;
   try {
-    out = await send(new ConverseCommand(converseInput(prompt)), { abortSignal: abort.signal });
+    out = await send(
+      new ConverseCommand(converseInput(prompt)),
+      { abortSignal: abort.signal },
+      token,
+    );
   } catch (err) {
     throw abort.signal.aborted ? new BedrockTimeout(`no answer in ${timeoutMs} ms`) : err;
   } finally {

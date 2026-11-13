@@ -229,3 +229,10 @@ test("an AI drill's results: the AI badge and row; Play again replays the same A
     delete globalThis.document;
   }
 });
+
+test("AI words with too few weak-key words give the built-in drill (Nov 13)", async () => {
+  const r = rig();
+  const lines = ["tree house dog cat sun sky map road", "quiet queen"]; // only 2 q-words
+  const got = await startDrill(r.ctx, r.ui, { fetch: r.fetchWith(reply({ lines, source: "ai" })) });
+  assert.equal(got, "built-in");
+});

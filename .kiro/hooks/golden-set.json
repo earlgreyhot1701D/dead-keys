@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "H5 Golden set",
+      "trigger": "PostFileSave",
+      "description": "PRD G12 hook H5: when the drill prompt changes, run the golden set against real Bedrock (default AWS profile, AWS_REGION us-east-1). Prints pass or fail per profile, never drill text. Retire when the AI layer passes.",
+      "matcher": "api[\\\\/]_lib[\\\\/]prompt\\.js$",
+      "action": {
+        "type": "command",
+        "command": "node evals/run.js",
+        "timeout": 120
+      }
+    }
+  ]
+}

@@ -76,7 +76,7 @@ export async function handle(request, deps = {}) {
   if (gate === "cap") return done(200, { error: "cap" });
   let answer;
   try {
-    answer = await ask(buildPrompt(req));
+    answer = await ask(buildPrompt(req), { token: request.headers.get("x-vercel-oidc-token") });
   } catch (err) {
     const error = err instanceof BedrockTimeout ? "timeout" : "model"; // Req 2.8
     return done(200, { error }, { ms: now() - at });

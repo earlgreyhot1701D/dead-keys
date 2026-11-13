@@ -56,7 +56,7 @@ async function call(request, { answer = GOOD, limits = createLimits() } = {}) {
 test("a good call: the lines and source ai, JSON, one ledger line", async () => {
   const r = await call(post());
   assert.equal(r.status, 200);
-  assert.deepEqual(r.body, { lines: ["quiet queen quote", "equal square"], source: "ai" });
+  assert.deepEqual(r.body, { lines: ["quiet queen quote equal square"], source: "ai" }); // packed
   assert.equal(r.type, "application/json");
   assert.equal(r.log.length, 1);
   const line = JSON.parse(r.log[0].replace(/^ledger /, ""));
@@ -123,10 +123,10 @@ test("the per-visitor limit is a 429; the daily cap is a quiet 200; neither call
   assert.equal(cap.asked.length, 0);
 });
 
-test("bad answers fall back quietly with 200: cut off, bad character, empty, model error", async () => {
+test("bad answers fall back quietly with 200: cut off, no usable word, empty, model error", async () => {
   const cases = [
     [{ ...GOOD, stopReason: "max_tokens", text: "quiet queen quo" }, "stop"],
-    [{ ...GOOD, text: "quiet queen, quote" }, "invalid"],
+    [{ ...GOOD, text: "1. 2, ñ!" }, "empty"],
     [{ ...GOOD, text: "\n\n" }, "empty"],
     [new Error("ThrottlingException"), "model"],
     [new BedrockTimeout("no answer in 3500 ms"), "timeout"],
@@ -145,4 +145,26 @@ test("the default export is a fetch handler", async () => {
   assert.equal(typeof mod.default.fetch, "function");
   const res = await mod.default.fetch(new Request(`${ORIGIN}/api/drill`, { method: "PUT" }));
   assert.equal(res.status, 405);
+});
+
+test("the request's Vercel OIDC token goes to the model call only, never to the log or the answer", async () => {
+  const log = [];
+  let opts = null;
+  const ask = async (_p, o) => {
+    opts = o;
+    return GOOD;
+  };
+  const res = await handle(post(BODY, { "x-vercel-oidc-token": "secret.jwt.value" }), {
+    ask,
+    log: (s) => log.push(s),
+    limits: createLimits(),
+  });
+  assert.equal(opts.token, "secret.jwt.value");
+  assert.ok(!(await res.text()).includes("secret"));
+  assert.ok(!log.join("").includes("secret"));
+});
+
+test("one bad word no longer throws the drill away: it is dropped and the rest is served", async () => {
+  const r = await call(post(), { answer: { ...GOOD, text: "quiet queen, quote 2" } });
+  assert.deepEqual(r.body, { lines: ["quiet quote"], source: "ai" });
 });

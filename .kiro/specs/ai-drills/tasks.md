@@ -13,7 +13,7 @@ Testing: while building, run only the tests for the files you touch. Lint and th
 
 ## Batch B: AWS, with Shara
 
-- [ ] 5. IAM user and policy, Budgets alert, through Shara's AWS CLI profile (Req 6.1, 6.2). Print only resource names and ARNs. **Stop:** tell Shara to create the access key in the console and put the three env vars in Vercel herself.
-- [ ] 6. After Shara says the env vars are in: golden set and hook H5 (Req 5), run against real Bedrock through Shara's local profile. Report the per-profile lines (pass or fail, never the drill text).
-- [ ] 7. `docs/aws-teardown.md`. Commit "Block 10 B: AWS wired, golden set". `npm run deploy:preview`. **Stop:** Shara turns AI drills on and plays a drill.
+- [x] 5. AWS and Vercel setup per Req 6.1 to 6.6 (OIDC role, no user, no keys). Print only names and ARNs. **Stop** only if Req 6.2 finds OIDC or Team issuer mode switched off.
+- [x] 6. Golden set and hook H5 (Req 5), run against real Bedrock through Shara's local profile. Report the per-profile lines (pass or fail, never the drill text).
+- [x] 7. `docs/aws-teardown.md`. Commit "Block 10 B: AWS wired, golden set". `npm run deploy:preview`. **Stop:** Shara turns AI drills on and plays a drill.
 - [ ] 8. KIRO-NOTES Block 10 entry, every flag with a status. Reviewer and a11y-auditor deferred to the Block 16 combined run.

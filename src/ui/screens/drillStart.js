@@ -5,6 +5,7 @@
 import pack from "../../../packs/general.json" with { type: "json" };
 import { drillRequest, fetchAiWords } from "../../drills/aiClient.js";
 import { aiItems } from "../../drills/aiWords.js";
+import { DRILL_MIN_WORDS } from "../../drills/weights.js";
 import { diagnose } from "../../engine/diagnose.js";
 import { chooseRound } from "./play.js";
 
@@ -26,7 +27,12 @@ export async function startDrill(ctx, ui, o = {}) {
     ui.wait(false);
     if (!ui.here()) return "left"; // the player left Progress while the drill was being written
   }
-  chooseRound("drill", words ? aiItems(words) : null);
+  // An AI drill only when the AI gave enough words with a weak key (Nov 13): otherwise built-in,
+  // which always aims at the weak keys. The drill keeps only the aimed words.
+  const weak = req?.weakKeys.map((k) => k.key) ?? [];
+  const aimed = (words ?? []).filter((w) => weak.some((k) => w.includes(k)));
+  const ai = aimed.length >= DRILL_MIN_WORDS;
+  chooseRound("drill", ai ? aiItems(aimed) : null);
   ctx.go("round");
-  return words ? "ai" : "built-in";
+  return ai ? "ai" : "built-in";
 }

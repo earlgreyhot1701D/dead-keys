@@ -1,5 +1,5 @@
 // The drill prompt (ai-drills design: Prompt; Req 2.4): the design's system rules, a user message
-// of keys, rates and speed only, temperature 0.7 and 300 tokens.
+// of keys, rates and speed only, temperature 0.5 and 300 tokens.
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { buildPrompt, MAX_TOKENS, SYSTEM, TEMPERATURE, userMessage } from "./prompt.js";
@@ -23,22 +23,22 @@ test("the user message holds nothing but the keys, two-place rates and a whole s
   assert.ok(!userMessage(REQ).includes("general"), "not even the pack id");
 });
 
-test("the system rules say what the design says, and the call settings are 0.7 and 300", () => {
+test("the system rules say what the design says, and the call settings are 0.5 and 300", () => {
   for (const rule of [
-    "lowercase English words separated by single spaces",
-    "No numbers, no punctuation.",
-    "Up to 8 lines, each at most 80 characters.",
-    "real common English word",
-    "at least one of the target keys",
+    "lowercase common English words, one word per line",
+    "no numbers, no punctuation, no numbering, no sentences",
+    "Write 30 different words.",
+    "Never repeat a word.",
+    "Every word must contain at least one of the target keys.",
   ]) {
     assert.ok(SYSTEM.includes(rule), rule);
   }
   assert.deepEqual(buildPrompt(REQ), {
     system: SYSTEM,
     user: userMessage(REQ),
-    temperature: 0.7,
+    temperature: 0.5,
     maxTokens: 300,
   });
-  assert.equal(TEMPERATURE, 0.7);
+  assert.equal(TEMPERATURE, 0.5);
   assert.equal(MAX_TOKENS, 300);
 });

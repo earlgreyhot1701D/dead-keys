@@ -1,12 +1,13 @@
-// The drill prompt (ai-drills design: Prompt). Built only from a validated DrillRequest: weak keys
+// The drill prompt (ai-drills design: Prompt; reworded Nov 13: a list of 30 different words, one a
+// line, each with a target key, because sentences gave repeats and too few weak-key words). Built only from a validated DrillRequest: weak keys
 // (single pack-charset letters), their miss rates and the typist's speed. No player text ever.
 // Hook H5 runs the golden set when this file is saved.
 
-export const TEMPERATURE = 0.7;
+export const TEMPERATURE = 0.5;
 export const MAX_TOKENS = 300;
 
 export const SYSTEM =
-  "You write typing practice. Output only plain lines of lowercase English words separated by single spaces, nothing else. No numbers, no punctuation. Up to 8 lines, each at most 80 characters. Every word must be a real common English word. Most words must contain at least one of the target keys.";
+  "You write words for typing practice. Output only lowercase common English words, one word per line, nothing else: no numbers, no punctuation, no numbering, no sentences. Write 30 different words. Never repeat a word. Every word must contain at least one of the target keys.";
 
 /**
  * The user message: the target keys with their miss rates, and the speed. Nothing else.

@@ -29,6 +29,7 @@
     "vite": "8.3.5"
   },
   "dependencies": {
-    "@aws-sdk/client-bedrock-runtime": "3.1160.0"
+    "@aws-sdk/client-bedrock-runtime": "3.1160.0",
+    "@aws-sdk/credential-provider-web-identity": "3.972.85"
   }
 }

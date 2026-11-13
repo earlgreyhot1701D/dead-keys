@@ -16,7 +16,7 @@ Block 9's drill screens, with the AI label from `mock/index.html` "Play: four-co
 - `src/ui/components/drillButton.js`, `drillLabel.js`, `progressPanels.js`, and their tests
 - `src/storage/settings.js` and its test (only if the AI switch needs it)
 - Added Nov 12 for the AI drill wiring: `src/ui/screens/round.js`, `progress.js`, `src/render/stage.js`, `src/render/playHud.js`, `src/ui/components/resultsPanels.js`, and their tests (trim to stay under 150); `src/styles/progressWeak.css` (the note under the buttons), `src/styles/progressRight.css` (chart width, Claude)
-- `package.json`, `package-lock.json` (one dependency: `@aws-sdk/client-bedrock-runtime`)
+- `package.json`, `package-lock.json` (dependencies: `@aws-sdk/client-bedrock-runtime`, `@aws-sdk/credential-provider-web-identity`)
 - New files split out next to any of the above to stay under 150 lines (list each in KIRO-NOTES)
 - `e2e/**`, `docs/screens/**`
 - `.kiro/specs/ai-drills/*`, `KIRO-NOTES.md`
@@ -25,7 +25,7 @@ Anything else, including `contract/**` and `src/engine/**`: stop and ask Shara.
 
 ## Secrets
 
-Shara creates the AWS access key and enters it in the Vercel dashboard. The agent never runs `create-access-key`, never reads, prints or commits a key, and never writes one to a file. `.kiroignore` already blocks `.env*`.
+There are none (Shara, Nov 13). Vercel's OIDC token is traded for temporary credentials on the role `dead-keys-drill`. No IAM user, no access key. The agent never prints a token. `.kiroignore` already blocks `.env*`.
 
 ## Testing rule
 
