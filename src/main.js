@@ -1,5 +1,6 @@
 // Boot: look up storage (wrapped inside the app), load, then draw the first screen. Fonts are
-// self-hosted from npm packages, so a page visit asks no third party for anything.
+// self-hosted from npm packages, so a page visit asks no third party for anything. Analytics is
+// Vercel's own same-origin script, page views only, and only on Vercel.
 import "@fontsource/jetbrains-mono/latin-400.css";
 import "@fontsource/jetbrains-mono/latin-700.css";
 import "@fontsource/roboto-condensed/latin-400.css";
@@ -43,6 +44,7 @@ import "./styles/deskLesson.css";
 import "./styles/deskDone.css";
 import "./styles/deskMenu.css";
 import "./styles/deskMenuSide.css";
+import { loadAnalytics } from "./analytics/analytics.js";
 import { createApp } from "./ui/app.js";
 import { downloadText } from "./ui/download.js";
 import { mountFit } from "./ui/fit.js";
@@ -73,6 +75,7 @@ const app = createApp({
 });
 app.start();
 mountFit();
+loadAnalytics(document, window.location.hostname); // page views only (PRD G9)
 
 // Screens not listed here are not built yet; the menu shows them as such.
 const screens = Object.fromEntries(

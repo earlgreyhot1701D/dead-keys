@@ -1,11 +1,12 @@
 // About (shell Req 7.2): the PRD G2 About list. Links open in a new tab with rel="noopener"
-// (dom.js adds it). The Tally feedback link is missing on purpose: the form has no URL yet, and
-// a link with no target would be worse than none. Add it to LINKS when Shara has the address.
+// (dom.js adds it). The feedback form (Tally, no name or email asked) comes first.
 import { panelHead, termPage } from "../components/chrome.js";
+import { FEEDBACK_LABEL, FEEDBACK_URL } from "../components/feedback.js";
 import { el } from "../dom.js";
 
 /** Where to find the maker and the code. */
 export const LINKS = Object.freeze([
+  { label: FEEDBACK_LABEL, href: FEEDBACK_URL },
   { label: "clewlabs.org", href: "https://clewlabs.org" },
   { label: "X: @clewlabs", href: "https://x.com/clewlabs" },
   { label: "dev.to/earlgreyhot1701d", href: "https://dev.to/earlgreyhot1701d" },

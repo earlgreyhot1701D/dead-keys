@@ -1,5 +1,5 @@
 // The model's answer (ai-drills Req 2.5 as changed Nov 13, 7.1): normal end only; then a bag of
-// words, each kept only if it is charset letters, 2 to 12 long and not blocked; packed into lines of
+// words, each kept only if it is charset letters, 2 to 12 long, a real word and not blocked; packed into lines of
 // at most 80 characters, at most 8 lines. The golden set's failures (a 122-character line, a
 // numbered run-on list) now keep their good words instead of throwing the drill away.
 import assert from "node:assert/strict";
@@ -51,19 +51,24 @@ test("blocklisted words never reach the player", () => {
 });
 
 test("words over 12 letters are dropped; 2 to 12 are kept", () => {
-  assert.deepEqual(cleanWords(`qq ${"q".repeat(12)} ${"q".repeat(13)} q`, CHARSET).kept, [
-    "qq",
-    "q".repeat(12),
+  assert.deepEqual(cleanWords("go quarterbacks questionnaire q", CHARSET).kept, [
+    "go",
+    "quarterbacks",
   ]);
 });
 
+test("made-up words are dropped: only real words reach the player (Block 16)", () => {
+  const r = cleanWords("zizz quiz zzz qazz jazz quizzle", CHARSET);
+  assert.deepEqual(r.kept, ["quiz", "jazz"]);
+  assert.equal(r.dropped, 4);
+});
+
 test("a long run-on answer becomes lines of at most 80 characters, at most 8 lines", () => {
-  const words = Array.from(
-    { length: 200 },
-    (_, i) =>
-      `q${"abcdefghij"[i % 10]}${"klmnopqrst"[Math.floor(i / 10) % 10]}${"uvwxyz"[Math.floor(i / 100)]}`,
+  const pack = JSON.parse(
+    readFileSync(new URL("../../packs/general.json", import.meta.url), "utf8"),
   );
-  const r = ok(words.join(" ")); // one 1,200-character line, like the golden set's failure
+  const words = pack.pools.words.slice(0, 300).map((w) => w.text);
+  const r = ok(words.join(" ")); // one long line, like the golden set's failure
   assert.equal(r.ok, true);
   assert.equal(r.lines.length, MAX_LINES);
   assert.ok(r.lines.every((l) => l.length <= MAX_LINE));

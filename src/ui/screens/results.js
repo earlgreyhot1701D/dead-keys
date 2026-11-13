@@ -2,6 +2,7 @@
 // first. Enter: play again, Escape: menu. Dropped per the map: SESSION, PASS LINE, coach, SOUND.
 import { sharePieces } from "../../share/cardData.js";
 import { hints, menuButton, scanlines, sysLine } from "../components/chrome.js";
+import { feedbackLink } from "../components/feedback.js";
 import { breakdownPanel, milestonesPanel, statTiles } from "../components/resultsPanels.js";
 import { openShare } from "../components/shareDialog.js";
 import { el } from "../dom.js";
@@ -110,6 +111,7 @@ export const resultsScreen = {
               { type: "button", class: "rs-how", onClick: () => ctx.go("howWeCount") },
               HOW_LINK,
             ),
+            feedbackLink("rs-how"),
             milestonesPanel(data),
           ]),
           el("div", { class: "rs-col" }, [
