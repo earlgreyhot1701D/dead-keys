@@ -67,7 +67,7 @@ test("menu: arrows move through it, Enter opens, Escape comes back; arrows on a 
   await page.keyboard.press("ArrowDown");
   await expect(page.getByRole("button", { name: /^Play/ })).toBeFocused();
   await page.keyboard.press("End");
-  await expect(page.getByRole("button", { name: "About", exact: true })).toBeFocused();
+  await expect(page.getByRole("navigation", { name: "Main menu" }).getByRole("button", { name: "About", exact: true })).toBeFocused();
   await page.keyboard.press("ArrowUp");
   await page.keyboard.press("Enter");
   await expect(h1(page, "Settings")).toBeFocused();

@@ -137,3 +137,17 @@
   gap: 18px;
   color: var(--soft);
 }
+
+/* About, top right of the title and menu headers (aboutButton.js). */
+.header-about {
+  min-height: 36px;
+  padding: 0 12px;
+  border-color: var(--line);
+  background: transparent;
+  font-size: 14px;
+}
+.title-header-right {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}

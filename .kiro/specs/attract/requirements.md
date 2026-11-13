@@ -11,7 +11,7 @@ PRD: "after ~15s idle on the title screen, a recorded run plays (alternating mec
 ## Req 2: what plays
 
 2.1 A typist plays the real engine on the general pack: it locks the word nearest to danger, types one key every 250 ms (about 48 WPM) and never misses.
-2.2 Rounds alternate Falling words and Four corners, 40 seconds each, or sooner if the round ends.
+2.2 Rounds alternate Falling words and Four corners, 40 seconds each, or sooner if the round ends. **Changed Nov 13 (Shara):** Falling words only, 25 seconds a round, no warm-up, speed 1.5, words only in the outer lanes 0 and 5, because words were landing behind the title panel and the warm-up made the demo look empty. Four corners moves every word toward the center, so it was dropped from the demo.
 2.3 The field carries "STATION_ID: TER-84 // DEMO".
 
 ## Req 3: access

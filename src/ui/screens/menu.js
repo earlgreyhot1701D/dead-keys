@@ -2,6 +2,7 @@
 // in the command selector, the right column, header and footer. A screen that is not built yet
 // shows "Not built yet" and stays focusable but does nothing, so the menu reads the same in every
 // build. The focused item takes the mock's raised look; that look is also its focus indicator.
+import { aboutButton } from "../components/aboutButton.js";
 import { hints, pill, scanlines, sysLine, TERMINAL, terminalIcon } from "../components/chrome.js";
 import { renderMenuSide } from "../components/menuSide.js";
 import { renderPhoneNotice } from "../components/phoneNotice.js";
@@ -72,6 +73,7 @@ export const menuScreen = {
           el("span", {}, TERMINAL),
           pill("BUILD v1"),
         ]),
+        aboutButton(ctx),
       ]),
       el("main", { id: "main", class: "menu-main" }, [
         el("div", { class: "menu-title-row" }, [

@@ -38,7 +38,7 @@ export async function toMenu(page) {
 
 /** From the menu, open a screen by its menu label. */
 export async function openFromMenu(page, label, title = label) {
-  await page.getByRole("button", { name: label, exact: true }).click();
+  await page.getByRole("navigation", { name: "Main menu" }).getByRole("button", { name: label, exact: true }).click();
   await page.getByRole("heading", { level: 1, name: title }).waitFor();
 }
 

@@ -1,5 +1,5 @@
 // Job: the title screen's attract mode (attract Reqs 1 and 3). The still frame shows first; after
-// IDLE_MS with no input the real game plays itself behind the panel, alternating layouts, until
+// IDLE_MS with no input the real game plays itself (Falling words, outer lanes only) until
 // any key, click or scroll puts the still frame back. A Pause demo button stops it (WCAG 2.2.2).
 // It is silent and hidden from screen readers. Under reduced motion it never starts.
 import pack from "../../packs/general.json" with { type: "json" };

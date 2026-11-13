@@ -4,6 +4,7 @@
 
 import { createDemo } from "../../attract/demo.js";
 import { createEggWatch, EGG_WAIT_MS } from "../../specwave/specwave.js";
+import { aboutButton } from "../components/aboutButton.js";
 import { ghostIcon, hints, scanlines, TERMINAL } from "../components/chrome.js";
 import { renderPhoneNotice } from "../components/phoneNotice.js";
 import { el } from "../dom.js";
@@ -83,7 +84,7 @@ export const titleScreen = {
       scanlines(),
       el("header", { class: "title-header" }, [
         el("span", { class: "term-name" }, TERMINAL),
-        demo.controls,
+        el("div", { class: "title-header-right" }, [demo.controls, aboutButton(ctx)]),
       ]),
       el("main", { id: "main", class: "title-panel" }, [
         el("div", { class: "intercept" }, [ghostIcon(28, 31), el("span", {}, INTERCEPT)]),

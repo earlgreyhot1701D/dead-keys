@@ -48,7 +48,7 @@ test("How we count and About: sections, safe links, a way back", async ({ page }
   const source = page.getByRole("link", { name: "Read the source code" });
   await expect(source).toHaveAttribute("rel", /noopener/);
   await page.getByRole("button", { name: "Back" }).click();
-  await page.getByRole("button", { name: "About", exact: true }).click();
+  await page.getByRole("navigation", { name: "Main menu" }).getByRole("button", { name: "About", exact: true }).click();
   const links = page.locator("main a[target=_blank]");
   expect(await links.count()).toBeGreaterThan(5);
   for (const rel of await links.evaluateAll((n) => n.map((a) => a.rel))) {
@@ -71,7 +71,7 @@ test.describe("phone", () => {
     await page.getByRole("button", { name: "Continue" }).click();
     await expect(page.getByRole("heading", { level: 1, name: "Main menu" })).toBeVisible();
     await expect(notice).toHaveCount(0); // stays hidden on the next screen
-    await page.getByRole("button", { name: "About", exact: true }).click();
+    await page.getByRole("navigation", { name: "Main menu" }).getByRole("button", { name: "About", exact: true }).click();
     await expect(page.getByRole("heading", { level: 1, name: "About" })).toBeVisible();
   });
 });

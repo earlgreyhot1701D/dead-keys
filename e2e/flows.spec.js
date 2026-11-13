@@ -23,7 +23,7 @@ test("the menu works by keyboard alone, with a visible focus ring", async ({ pag
   expect(outline).not.toBe("none");
   await page.keyboard.press("ArrowDown");
   await page.keyboard.press("End");
-  await expect(page.getByRole("button", { name: "About", exact: true })).toBeFocused();
+  await expect(page.getByRole("navigation", { name: "Main menu" }).getByRole("button", { name: "About", exact: true })).toBeFocused();
   await page.keyboard.press("Home");
   await expect(page.getByRole("button", { name: /^Play/ })).toBeFocused();
   await page.getByRole("button", { name: "Settings", exact: true }).focus();

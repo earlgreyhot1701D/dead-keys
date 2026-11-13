@@ -1,9 +1,18 @@
 // The attract demo's typist (attract Req 2): it plays the real engine, never misses, clears
-// words, alternates layouts, and hands over after its time.
+// words, stays out from behind the title panel, and hands over after its time.
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import pack from "../../packs/general.json" with { type: "json" };
-import { BOT_KEY_MS, botKey, DEMO_ROUND_MS, demoRound, demoStep } from "./bot.js";
+import {
+  BOT_KEY_MS,
+  botKey,
+  DEMO_HIDDEN_SLOTS,
+  DEMO_ROUND_MS,
+  DEMO_SPEED,
+  demoRound,
+  demoStep,
+  keepClear,
+} from "./bot.js";
 
 const run = (mechanic, ms) => {
   let s = demoRound(mechanic, pack.pools.words, 84);
@@ -48,4 +57,40 @@ test("a demo round hands over after DEMO_ROUND_MS", () => {
   const { done, s } = run("falling", DEMO_ROUND_MS + 5_000);
   assert.ok(done);
   assert.ok(s.activeMs <= DEMO_ROUND_MS + 16 || s.held || s.ended);
+});
+
+test("a demo round skips the warm-up and runs at DEMO_SPEED, so words fill the screen at once", () => {
+  const s = demoRound("falling", pack.pools.words, 84);
+  assert.equal(s.warmup, 0);
+  assert.equal(s.speed, DEMO_SPEED);
+  const { s: later } = run("falling", 3_000);
+  assert.ok(later.targets.length + later.cleared >= 2, "two or more words in the first 3 s");
+});
+
+test("falling words never show behind the title panel; a word being typed never jumps", () => {
+  for (let t = 0; t < 400; t += 1) {
+    const { s } = run("falling", 50 + t * 37);
+    for (const w of s.targets) {
+      if (w.typed === 0 && w.id !== s.lockId)
+        assert.ok(!DEMO_HIDDEN_SLOTS.includes(w.slot), w.slot);
+    }
+  }
+  const typing = { mechanic: "falling", lockId: 7, targets: [{ id: 7, slot: 2, typed: 1 }] };
+  assert.equal(keepClear(typing), typing);
+  const full = {
+    mechanic: "falling",
+    lockId: null,
+    targets: [0, 3, 5].map((slot, id) => ({ id, slot, typed: 0 })),
+  };
+  assert.deepEqual(
+    keepClear(full).targets.map((w) => w.slot),
+    [0, 5],
+  );
+  const corners = { mechanic: "corners", lockId: null, targets: [{ id: 1, slot: 2, typed: 0 }] };
+  assert.equal(keepClear(corners), corners);
+});
+
+test("the demo plays Falling words only: Four corners would run every word behind the panel", async () => {
+  const { DEMO_MECHANICS } = await import("./bot.js");
+  assert.deepEqual([...DEMO_MECHANICS], ["falling"]);
 });

@@ -71,7 +71,16 @@ test("random play keeps every rule: lives, caps, hold, continue, end, and never 
         if (s.held) assert.ok(s.lives === 0 && !s.continueUsed && !s.ended);
         if (s.mode === "practice") assert.ok(s.lives === LIVES_MAX && !s.held);
         if (prev.ended) assert.equal(s, prev);
-        if (r.events.length === 0 && o[0] !== "tick") assert.deepEqual(s, prev);
+        if (r.events.length === 0 && o[0] !== "tick") {
+          // A swallowed key (the landed word's leftover letter, lostTail.js) may only clear or
+          // shorten lostTail; everything else stays the same (Kiro's finding, Nov 13).
+          const { lostTail: was, ...prevRest } = prev;
+          const { lostTail: now, ...rest } = s;
+          assert.deepEqual(rest, prevRest);
+          const same = JSON.stringify(now ?? null) === JSON.stringify(was ?? null);
+          if (!same && now) assert.ok(was && now.text.length < was.text.length);
+          if (!same && now) assert.ok(was.text.endsWith(now.text));
+        }
       }
     }),
   );

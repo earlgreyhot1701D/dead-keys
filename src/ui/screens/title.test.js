@@ -113,6 +113,16 @@ test("it has the wordmark, the tagline, the still frame and a Start button", () 
   });
 });
 
+test("the About button, top right in the header, opens About (Shara, Nov 13)", () => {
+  withFakeDocument(() => {
+    const ctx = ctxFor();
+    const node = titleScreen.render(ctx);
+    const header = findAll(node, (n) => n.tag === "header")[0];
+    findAll(header, (n) => n.tag === "button" && textOf(n) === "About")[0].click();
+    assert.deepEqual(ctx.went, ["about"]);
+  });
+});
+
 test("the Start button does what the key does", () => {
   withFakeDocument(() => {
     const first = ctxFor();

@@ -196,3 +196,13 @@ test("arrows, Home and End are left alone when focus is on a control outside the
   assert.equal(menuScreen.onKey(ctx, { key: "Home", target: menuButton }), true);
   assert.deepEqual(focused, [0]);
 });
+
+test("About also sits top right in the header, where people look for it (Shara, Nov 13)", () => {
+  withFakeDocument(() => {
+    const ctx = ctxFor();
+    const header = findAll(menuScreen.render(ctx), (n) => n.tag === "header")[0];
+    const about = findAll(header, (n) => n.tag === "button" && textOf(n) === "About")[0];
+    about.click();
+    assert.deepEqual(ctx.log.went, ["about"]);
+  });
+});
