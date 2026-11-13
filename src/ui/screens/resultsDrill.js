@@ -12,6 +12,7 @@ import { roundItems } from "./play.js";
 /** The pack part: an AI drill names the AI's words, Play these keys the lesson's, else the pack. */
 const packLabel = (r) => {
   if (r.drillSource === AI) return "PACK: AI WORDS"; // ai-drills copy table, decision 6
+  if (r.packId === "specwave") return "PACK: SPEC WAVE"; // specwave copy table
   return roundItems() && !isDrill(r) ? "PACK: YOUR KEYS" : "PACK: GENERAL";
 };
 

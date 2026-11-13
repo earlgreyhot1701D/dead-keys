@@ -1,6 +1,8 @@
 // The settings screen (shell Req 5.1, 5.2): AI drills, sound set, speed, finger colors. Each
 // change is saved at once through app.js. The data half (backup, import, clear) is settingsData.js.
 import { SPEED_MAX, SPEED_MIN } from "../../engine/config.js";
+import { SAMPLE } from "../../sound/cues.js";
+import { synth } from "../../sound/synth.js";
 import { isValidSetting, SOUND_SETS } from "../../storage/settings.js";
 import { NOT_BUILT, panelHead, termPage } from "../components/chrome.js";
 import { el } from "../dom.js";
@@ -15,6 +17,10 @@ export const SOUND_LABELS = Object.freeze({
   arcade: "Arcade",
 });
 
+/** What each sound set sounds like (sound copy table). */
+export const SOUND_HINT =
+  "Off by default. Typewriter: a clack per key, a bell each wave. Arcade: a laser per word, a chime each wave. You hear a sample when you pick one.";
+
 /** The speed as the player reads it, and as the slider announces it: "1.2×". */
 export const speedText = (v) => `${v}×`;
 
@@ -24,7 +30,7 @@ export const SPEED_SETTING_HINT =
 
 /**
  * The small "Not built yet" line under a setting that saves now but does nothing until a later
- * block (sound: Block 14, finger colors: Block 8b). Speed works since Block 7, AI drills since 10.
+ * block (finger colors: Block 8b). Speed works since Block 7, AI drills since 10, sound since 14.
  */
 const later = (id) => el("span", { id: `${id}-later`, class: "hint later-hint" }, NOT_BUILT);
 
@@ -76,14 +82,17 @@ export const settingsScreen = {
           {
             id: "st-sound",
             "data-focus-id": "st-sound",
-            "aria-describedby": "st-sound-later",
-            onChange: (e) => change(ctx, "sound", e.target.value),
+            "aria-describedby": "st-sound-hint",
+            onChange: (e) => {
+              change(ctx, "sound", e.target.value);
+              if (SAMPLE[e.target.value]) synth().play(SAMPLE[e.target.value]); // hear it once
+            },
           },
           SOUND_SETS.map((v) =>
             el("option", { value: v, selected: v === s.sound }, SOUND_LABELS[v]),
           ),
         ),
-        later("st-sound"),
+        el("span", { id: "st-sound-hint", class: "hint" }, ` ${SOUND_HINT}`), // works since Block 14
       ]),
       el("p", { class: "set-row" }, [
         el("label", { for: "st-speed" }, "Starting speed "),

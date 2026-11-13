@@ -1,23 +1,17 @@
 // Play: the mode picker (play Req 2.1, 2.3): two choices, the rules and the speed slider. Enter
 // starts a round; Escape goes back. Words: play design.md's copy table; Block 6 page pieces.
 import pack from "../../../packs/general.json" with { type: "json" };
-import { DAILY_MS } from "../../drills/daily.js";
 import { SPEED_MAX, SPEED_MIN } from "../../engine/config.js";
 import { averageLength, paceWpm } from "../../engine/pace.js";
 import { GHOST_COPY } from "../../ghost/ghost.js";
 import { isValidSetting } from "../../storage/settings.js";
 import { termPage } from "../components/chrome.js";
 import { el } from "../dom.js";
+import { ROUND_KINDS } from "./roundKinds.js";
 import { speedText } from "./settings.js";
 
-/** The rounds the picker and the menu can start (play design decision 5). */
-export const ROUND_KINDS = Object.freeze({
-  falling: { mode: "falling", mechanic: "falling", title: "Falling words" },
-  corners: { mode: "corners", mechanic: "corners", title: "Four corners" },
-  practice: { mode: "practice", mechanic: "falling", title: "Practice" },
-  drill: { mode: "practice", mechanic: "falling", title: "Drill", drillSource: "built-in" },
-  daily: { mode: "daily", mechanic: "falling", title: "Daily drill", limitMs: DAILY_MS },
-});
+export { ROUND_KINDS }; // every round the picker, the menu and the title can start
+
 let next = "falling";
 let items = null; // "Play these keys": a lesson's words in place of the pack; null: the pack
 

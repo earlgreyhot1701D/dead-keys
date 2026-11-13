@@ -71,7 +71,7 @@ test("today's best counts only today's daily rounds", () => {
 });
 
 test("clockFor: nothing for a round with no limit; the daily clock says and ends once", async () => {
-  const { clockFor } = await import("./daily.js");
+  const { clockFor } = await import("./limits.js");
   const said = [];
   const ended = [];
   clockFor(

@@ -726,3 +726,11 @@ Built by Claude, to save credits; Kiro ran the checks, committed and deployed. S
 ## Nov 13 2026: Block 13b, attract mode
 
 Built by Claude, to save credits; Kiro ran the checks, committed and deployed. Spec at `.kiro/specs/attract/`. After 15 s idle on the title, the real engine plays itself behind the panel. A typist (`src/attract/bot.js`) locks the word nearest danger, types one key every 250 ms and never misses, and the demo alternates falling and corners every 40 s. The header shows `[Demo playing]` and Pause demo (`aria-pressed`, WCAG 2.2.2). Any key, click or scroll restores the still frame. It is `aria-hidden` and silent, and never starts under reduced motion. Decision: a live typist, not a recording, because a saved ghost has keystrokes but not its words. Ghost Req 5: the Play rules gained a ghost hint, and How we count's Bests line gained one sentence; a separate section made the page scroll at 1440x900. `fakeDom` gained `removeAttribute`. The e2e test uses Playwright's clock for the 15 s wait.
+
+## Nov 13 2026: Block 14, sound sets and Spec Wave
+
+Built by Claude, to save credits; Kiro ran the checks, committed and deployed. Specs at `.kiro/specs/sound/` and `.kiro/specs/specwave/`.
+
+Sound: Off by default. Typewriter (clack per key, carriage return per word, bell per wave, thunk on a landed word) and Arcade (laser per word, thud on a landed word, chime per wave) are synthesized with Web Audio, so there are no audio files. The cues come from the engine's own events. Settings plays a sample on change. Where Web Audio is missing, the game is silent. The attract demo is always silent.
+
+Spec Wave: typing `kiro` on the title (after the privacy card has been seen) starts one falling wave of spec words, mode `specwave`, pack `specwave`. It ends itself after wave 1 and saves no ghost. A `k` waits 600 ms for the next key. Moves at the line cap: `ROUND_KINDS` to `roundKinds.js` (re-exported from `play.js`), and `clockFor` to `src/drills/limits.js`. The mock's `SOUND: OFF` footer label is not added.

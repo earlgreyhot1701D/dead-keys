@@ -3,7 +3,7 @@
 // or the screen is gone; an ended round is recorded (app.finishRound) and shown on results.
 import pack from "../../../packs/general.json" with { type: "json" };
 import { announceAll } from "../../a11y/announce.js";
-import { clockFor } from "../../drills/daily.js";
+import { clockFor } from "../../drills/limits.js";
 import { LIVES_MAX } from "../../engine/config.js";
 import {
   backspace,
@@ -19,6 +19,8 @@ import { findGhost, prepareGhost } from "../../ghost/ghost.js";
 import { liveWpm } from "../../render/hud.js";
 import { startLoop } from "../../render/loop.js";
 import { createStage } from "../../render/stage.js";
+import { cuesFor } from "../../sound/cues.js";
+import { playCues } from "../../sound/synth.js";
 import { openConfirm } from "../components/confirmDialog.js";
 import { el } from "../dom.js";
 import { localDay } from "../roundRecord.js";
@@ -70,14 +72,15 @@ function begin(ctx) {
   const finish = () => {
     stop();
     const now = Date.now();
-    const meta = { id: `round-${now}`, date: now, packId: pack.id, lessonId: null };
+    const meta = { id: `round-${now}`, date: now, packId: kind.packId ?? pack.id, lessonId: null };
     const result = toResult(run.state, { ...meta, drillSource: kindSource(kind) });
     const keys = kind.items ? null : run.state.keystrokes; // a ghost is only from the pack's words
     const outcome = ctx.app.finishRound(result, localDay(now), null, keys);
     showResults({ result, log: stage.log(), outcome });
     ctx.replace("results");
   };
-  const step = ({ state, events }) => {
+  const step = ({ state, events }, typed = false) => {
+    playCues(cuesFor(ctx.state.settings?.sound, events, typed)); // Off by default (sound Req 1)
     const before = run.state;
     run.state = state;
     const lines = announceAll(events, before, state);
@@ -139,7 +142,7 @@ export const roundScreen = {
     // Escape: let go, else pause. Backspace clears a wrong key shown on the word, never the word.
     const special = { Escape: pressEscape, Backspace: backspace }[e.key];
     if (special) live.step(special(live.state));
-    else if (isTyping(e)) live.step(key(live.state, e.key));
+    else if (isTyping(e)) live.step(key(live.state, e.key), true);
     else return false;
     return true;
   },

@@ -1,12 +1,14 @@
 // The title screen (shell Req 1.1, 1.5; design 6), laid out as the locked mock's screen 1. The
 // scene is a still frame until the attract demo starts (src/attract/demo.js, Block 13b); any key,
-// click or scroll stops it. STUB: the `kiro` easter egg and the sound button (Block 14).
+// click or scroll stops it. Typing `kiro` starts the Spec Wave (src/specwave, Block 14).
 
 import { createDemo } from "../../attract/demo.js";
+import { createEggWatch, EGG_WAIT_MS } from "../../specwave/specwave.js";
 import { ghostIcon, hints, scanlines, TERMINAL } from "../components/chrome.js";
 import { renderPhoneNotice } from "../components/phoneNotice.js";
 import { el } from "../dom.js";
 import { isControl } from "../nav.js";
+import { chooseRound } from "./play.js";
 
 export const TAGLINE = "a typing game, back from the dead.";
 export const SUBLINE = "1980s typing games // rebuilt as a real trainer";
@@ -50,9 +52,21 @@ export function startKey(e) {
 }
 
 /** Where "start" goes: the privacy card the first time, the menu after. */
-const begin = (ctx) => ctx.go(ctx.state.settings.privacySeen ? "menu" : "privacy");
+const begin = (ctx) => {
+  clearTimeout(eggTimer); // one start, even if a key was waiting on the egg
+  ctx.go(ctx.state.settings.privacySeen ? "menu" : "privacy");
+};
 
 let demo = null; // the attract demo on the screen now (one title screen at a time)
+const egg = createEggWatch();
+let eggTimer = null; // a key that could begin `kiro` waits a moment before it starts the game
+
+/** Spec Wave, once the privacy card has been seen (the first run always shows it first). */
+function specWave(ctx) {
+  if (!ctx.state.settings.privacySeen) return begin(ctx);
+  chooseRound("specwave");
+  ctx.go("round");
+}
 
 const corner = (c, cls) => el("span", { class: `corner ${cls}`, "aria-hidden": "true" }, c);
 
@@ -107,7 +121,11 @@ export const titleScreen = {
     // Enter and Space on a focused button (a notice, "Got it", Start) press that button.
     if (isControl(e.target) && (e.key === "Enter" || e.key === " ")) return false;
     if (!startKey(e)) return false;
-    begin(ctx);
+    clearTimeout(eggTimer);
+    const r = egg.feed(e.key);
+    if (r === "wait") eggTimer = setTimeout(() => begin(ctx), EGG_WAIT_MS);
+    else if (r === "egg") specWave(ctx);
+    else begin(ctx);
     return true;
   },
 };

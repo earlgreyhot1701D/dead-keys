@@ -58,20 +58,3 @@ export function todayBest(rounds, now = new Date()) {
   }
   return best === null ? null : Math.round(best);
 }
-
-/**
- * A round's clock: for a kind with `limitMs`, call it after every frame; for any other, it does
- * nothing.
- * @param {{ limitMs?: number }} kind
- * @param {(line: string) => void} say The live region.
- * @param {(state: object) => void} end Ends the round.
- */
-export function clockFor(kind, say, end) {
-  if (!kind.limitMs) return () => {};
-  const watch = createWatch();
-  return (state) => {
-    const r = watch(state);
-    if (r.say) say(r.say);
-    if (r.end) end(state);
-  };
-}

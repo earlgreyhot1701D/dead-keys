@@ -133,7 +133,8 @@ test("every setting that saves but does nothing yet says Not built yet, tied to 
   withFakeDocument(() => {
     const node = settingsScreen.render(ctxFor());
     assert.equal(byId(node, "st-ai-later"), undefined, "AI drills work (Block 10)");
-    for (const id of ["st-sound", "st-fingerColors"]) {
+    assert.equal(byId(node, "st-sound-later"), undefined, "sound works (Block 14)");
+    for (const id of ["st-fingerColors"]) {
       const control = byId(node, id);
       assert.ok(control.attrs["aria-describedby"].split(" ").includes(`${id}-later`), id);
       assert.equal(textOf(byId(node, `${id}-later`)), "Not built yet");
@@ -153,8 +154,17 @@ test("speed works now (Block 7): Starting speed, with its hint and no Not built 
 test("the Not built yet hints use their own class, not progress's .later (Block 7, Req 8.4)", () => {
   withFakeDocument(() => {
     const node = settingsScreen.render(ctxFor());
-    const hint = byId(node, "st-sound-later");
+    const hint = byId(node, "st-fingerColors-later");
     assert.equal(hint.attrs.class, "hint later-hint");
     assert.equal(findAll(node, (n) => /(^| )later( |$)/.test(n.attrs?.class ?? "")).length, 0);
+  });
+});
+
+test("sound works now (Block 14): its hint, tied to the control, and no Not built yet", async () => {
+  const { SOUND_HINT } = await import("./settings.js");
+  withFakeDocument(() => {
+    const node = settingsScreen.render(ctxFor());
+    assert.equal(byId(node, "st-sound").attrs["aria-describedby"], "st-sound-hint");
+    assert.equal(textOf(byId(node, "st-sound-hint")).trim(), SOUND_HINT);
   });
 });

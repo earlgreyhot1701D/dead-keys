@@ -210,3 +210,18 @@ test("the footer never claims a save while this browser is not saving", () => {
     );
   });
 });
+
+test("typing kiro starts the Spec Wave; a k then another key starts the game as always", async () => {
+  const { nextRound } = await import("./play.js");
+  const ctx = ctxFor({ privacySeen: true });
+  for (const key of "kiro") titleScreen.onKey(ctx, { key, target: { tagName: "BODY" } });
+  assert.deepEqual(ctx.went, ["round"]);
+  assert.equal(nextRound().mode, "specwave");
+  const other = ctxFor({ privacySeen: true });
+  titleScreen.onKey(other, { key: "k", target: { tagName: "BODY" } });
+  titleScreen.onKey(other, { key: "a", target: { tagName: "BODY" } });
+  assert.deepEqual(other.went, ["menu"]);
+  const first = ctxFor(); // the privacy card always comes first, egg or not
+  for (const key of "kiro") titleScreen.onKey(first, { key, target: { tagName: "BODY" } });
+  assert.deepEqual(first.went, ["privacy"]);
+});

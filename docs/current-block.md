@@ -1,21 +1,20 @@
 # Current block
 
-**Block 13b: Attract mode** (PRD shell, design brief screen 1), plus ghost Req 5. Spec: `.kiro/specs/attract/`.
+**Block 14: Sound sets and the Spec Wave easter egg** (PRD G2). Specs: `.kiro/specs/sound/`, `.kiro/specs/specwave/`.
 
-Blocks 1 to 4, 6 to 12, 13a and 8a passed. Block 5 (design) is locked in `docs/design-brief.md`. The contract is frozen. Block 8b comes later.
+Blocks 1 to 4, 6 to 13 and 8a passed. Block 5 (design) is locked in `docs/design-brief.md`. The contract is frozen. Block 8b comes later.
 
 ## Spec for how screens look
 
-The locked mock's title (screen 1), header status and Pause demo, filtered through the copy table in `.kiro/specs/attract/design.md`. Binding: anything they don't cover, stop and ask.
+No new screen. The copy tables in both specs' design.md are binding.
 
 ## Files this block may touch
 
-- `src/attract/**` (new)
-- `src/ui/screens/title.js` and its test; `src/ui/fakeDom.js` (one helper)
-- `src/styles/attract.css` (new), `src/main.js`
-- `src/ghost/ghost.js`, `src/ui/screens/play.js`, `howWeCountText.js`, and their tests
-- `e2e/attract.spec.js` (new)
-- `.kiro/specs/attract/*`, `docs/current-block.md`, `KIRO-NOTES.md`
+- `src/sound/**`, `src/specwave/**` (new)
+- `src/drills/limits.js` (new), `src/drills/daily.js`, and tests
+- `src/ui/screens/roundKinds.js` (new), `play.js`, `drillRound.js`, `round.js`, `resultsDrill.js`, `title.js`, `settings.js`, `menuRounds.js`, and their tests
+- `e2e/specwave.spec.js` (new)
+- `.kiro/specs/sound/*`, `.kiro/specs/specwave/*`, `docs/current-block.md`, `KIRO-NOTES.md`
 
 Anything else, including `contract/**`, `src/engine/**` and `api/**`: stop and ask Shara.
 
@@ -33,7 +32,7 @@ Full.
 
 ## PASS line
 
-Every requirement in `.kiro/specs/attract/requirements.md` has a test or an e2e flow. `npm test`, `npm run test:e2e` (0 serious or critical axe issues), `npm run lint` and `npm run check:build` pass. Source files under 150 lines; nothing over 250. Shara has watched the demo on the preview and paused it. Reviewer and a11y-auditor: deferred to the Block 16 combined run.
+Every requirement in `.kiro/specs/sound/requirements.md` and `.kiro/specs/specwave/requirements.md` has a test or an e2e flow. `npm test`, `npm run test:e2e` (0 serious or critical axe issues), `npm run lint` and `npm run check:build` pass. Source files under 150 lines; nothing over 250. Shara has heard both sound sets and played the Spec Wave on the preview. Reviewer and a11y-auditor: deferred to the Block 16 combined run.
 
 ## Hooks alive
 

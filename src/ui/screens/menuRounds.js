@@ -1,5 +1,5 @@
 // Job: the menu's one-step rounds. Practice (play Req 2.2) and Daily drill (daily Req 1) open
-// their round at once. The daily clock is `clockFor` in src/drills/daily.js, run by round.js.
+// their round at once. The daily clock is `clockFor` in src/drills/limits.js, run by round.js.
 import { chooseRound } from "./play.js";
 import { roundScreen } from "./round.js";
 
