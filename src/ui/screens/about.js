@@ -34,6 +34,7 @@ export const ABOUT_PARAGRAPHS = Object.freeze([
   "The Spanish word list comes from FrequencyWords (github.com/hermitdave/FrequencyWords), built from OpenSubtitles 2018, under CC BY-SA 4.0; that pack is shared under the same license.",
   "Dead Keys uses JetBrains Mono and Roboto Condensed, both under the SIL Open Font License.",
   "Dead Keys is for a QWERTY keyboard in this version.",
+  "Install it like an app from your browser's address bar. After your first visit it plays offline; AI drills need the internet and fall back to built-in drills without it.",
 ]);
 
 const link = ({ label, href }) =>

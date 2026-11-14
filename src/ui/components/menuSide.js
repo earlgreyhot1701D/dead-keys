@@ -93,6 +93,9 @@ const tile = (label, value, unit, foot) =>
   ]);
 
 const onOff = (v) => (v ? "ON" : "OFF");
+/** " // OFFLINE: READY" only once the service worker runs this page (PWA block): never a promise. */
+export const offline = (nav = globalThis.navigator) =>
+  nav?.serviceWorker?.controller ? " // OFFLINE: READY" : "";
 
 /** @param {object} ctx The router's ctx. */
 export function renderMenuSide(ctx, now = new Date()) {
@@ -117,7 +120,7 @@ export function renderMenuSide(ctx, now = new Date()) {
     el("div", { class: "menu-status" }, [
       el("span", {}, [
         el("span", { class: "prompt", "aria-hidden": "true" }, ">_ "),
-        `LAYOUT: QWERTY // AI DRILLS: ${onOff(s.ai)} // FINGER COLORS: ${onOff(s.fingerColors)}`,
+        `LAYOUT: QWERTY // AI DRILLS: ${onOff(s.ai)} // FINGER COLORS: ${onOff(s.fingerColors)}${offline()}`,
       ]),
       el("span", { class: "mem" }, "MEM_ADDR: 0x84FF_DEAD"),
     ]),

@@ -126,3 +126,11 @@ test("from Lesson 7 on, the caps show ⇧ and symbols (lessons-8b)", () => {
     /Lesson 11: Symbols\$%&\(\)\/@#/,
   );
 });
+
+test("OFFLINE: READY shows only once the service worker runs the page (PWA block)", async () => {
+  const { offline } = await import("./menuSide.js");
+  assert.equal(offline({ serviceWorker: { controller: {} } }), " // OFFLINE: READY");
+  assert.equal(offline({ serviceWorker: { controller: null } }), "");
+  assert.equal(offline({}), "");
+  assert.equal(offline(undefined), "");
+});
