@@ -813,3 +813,13 @@ Built by Claude in a copy of the repo, to save Kiro credits; spec in `.kiro/spec
 | `[WHY]` and `[TEST OUT]` stay as the mock writes them | Plain text, never focusable; changing them would change locked copy |
 | Reflow at 200% (8a deferral) not changed | fit.js scales the whole page, so nothing is cut off; logged for v2 |
 | The first line's announcement waits 50 ms | So the screen's heading is heard first (8a deferral) |
+
+## Nov 13 2026: Block 17, PWA (Claude)
+
+| Decision | Why |
+|---|---|
+| Hand-written `public/sw.js`, no plugin | One small file, no new dependency, easy to read in review |
+| Install caches the page, the built files it names, the fonts its CSS names, favicons and manifest | The first visit is enough to play offline; Vite's hashed names aren't known to a static file, so the worker reads them from the page |
+| `ignoreVary` when matching built files | Module scripts ask with an Origin header the install-time copy didn't send; found by the offline e2e |
+| `/api/` and `/_vercel/` never handled | A drill is never stale; analytics never cached |
+| Registered on Vercel hosts only (`?sw` locally) | A cached copy on this machine would hide fresh code during dev and e2e |

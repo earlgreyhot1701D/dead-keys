@@ -46,6 +46,7 @@ import "./styles/deskDone.css";
 import "./styles/deskMenu.css";
 import "./styles/deskMenuSide.css";
 import { loadAnalytics } from "./analytics/analytics.js";
+import { registerSw } from "./pwa/register.js";
 import { createApp } from "./ui/app.js";
 import { downloadText } from "./ui/download.js";
 import { mountFit } from "./ui/fit.js";
@@ -77,6 +78,8 @@ const app = createApp({
 app.start();
 mountFit();
 loadAnalytics(document, window.location.hostname); // page views only (PRD G9)
+// Install and offline play (PWA block); "?sw" turns it on locally for the PWA e2e.
+registerSw(navigator, window.location.hostname, new URLSearchParams(location.search).has("sw"));
 
 // Screens not listed here are not built yet; the menu shows them as such.
 const screens = Object.fromEntries(

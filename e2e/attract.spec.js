@@ -19,8 +19,11 @@ test("after 3 idle seconds the game plays itself; Pause demo works; Tab stops it
   await expect(controls).toBeVisible();
   await expect(controls).toContainText("[Demo playing]");
   await expect(page.locator(".attract-field .fw-word").first()).toBeAttached(); // a live word
-  const axe = await new AxeBuilder({ page }).analyze();
+  // A cleared word fades out over 250 ms (playMoments.css); caught mid-fade it reads as low
+  // contrast. That was the attract test's occasional failure (Nov 13), so it's left out here.
+  const axe = await new AxeBuilder({ page }).exclude('[data-moment="clear"]').analyze();
   const bad = axe.violations.filter((v) => v.impact === "serious" || v.impact === "critical");
+  for (const v of bad) for (const n of v.nodes) console.log(`AXE ${v.id} ${n.target}`);
   expect(bad.map((v) => `${v.id} x${v.nodes.length}`)).toEqual([]);
   const pause = page.getByRole("button", { name: "Pause demo" });
   await pause.click();

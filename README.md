@@ -41,7 +41,7 @@ Browser (static, on Vercel)                    Server (one Vercel function)
                        { lines, source } or { error } -> built-in drill
 ```
 
-The AI writes practice lines from your weak keys with Amazon Nova Micro on Amazon Bedrock. Everything else runs in your browser. If the AI is off, capped, slow or wrong, you get the built-in drill and the game carries on.
+The AI writes practice lines from your weak keys with Amazon Nova Micro on Amazon Bedrock. Everything else runs in your browser, and after one visit it installs as an app and plays offline. The service worker (`public/sw.js`) never touches the AI route. If the AI is off, capped, slow or wrong, you get the built-in drill and the game carries on.
 
 **File map.** One file, one job. Source files stay under 150 lines and nothing goes over 250 (a Kiro hook checks).
 
