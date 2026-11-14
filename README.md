@@ -118,6 +118,10 @@ Hooks retire because a check that keeps firing after its job is done turns into 
 
 Kiroween asks for prior work to be disclosed. In short: Office Keys (August 2025) and README Clew 2 (October 2026) came before, with no code reused (README Clew 2's design tokens are reused by decision). A throwaway feel test was made Oct 17, 2026, before the window; none of its code is here. The PRD, research, cover art and X image were made before the build and live in `docs/`. Full list: [`docs/prior-work.md`](docs/prior-work.md).
 
+## Known limits
+
+- `api/drill.js` checks the 2 KB body limit after reading the body when a request has no Content-Length header. Vercel caps function request bodies at 4.5 MB, so the exposure is bounded. Deferred to v2: stream the body and stop at 2 KB.
+
 ## Privacy
 
 Same words as the game's Privacy page:
